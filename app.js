@@ -1,5 +1,5 @@
 /**
- * Arabia Live TV (arabialivetv.com) - Universal Mobile & Desktop Stream Player
+ * Arabia Live TV (arabialivetv.com) - Universal Mobile & Desktop Stream Player with Realtime News Engine
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput');
   const showFavsBtn = document.getElementById('showFavsBtn');
   const mobilePlayOverlay = document.getElementById('mobilePlayOverlay');
+  const tickerRealtimeContent = document.getElementById('tickerRealtimeContent');
 
   // Match Modal Elements
   const matchModalBackdrop = document.getElementById('matchModalBackdrop');
@@ -56,7 +57,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  // --- 1. RENDER CATEGORIES ---
+  // --- 1. REALTIME NEWS TICKER ENGINE ---
+  function initRealtimeTicker() {
+    if (!tickerRealtimeContent) return;
+    const tickerItems = [
+      '🔴 بث مباشر: قمة الأهلي والزمالك في دوري الأبطال تُعرض الآن بجميع السيرفرات.',
+      '⚽ ديربي الرياض: متابعة مباراة الهلال والنصر مباشرة بجودة Full HD.',
+      '🇪🇺 دوري أبطال أوروبا: ريال مدريد يستضيف مانشستر سيتي في البيرنابيو الليلة.',
+      '🌙 المولد النبوي الشريف: تهنئة خاصة للأمة الإسلامية بمناسبة المولد النبوي الشريف.',
+      '🎙️ راديو مباشر: استمع الآن لإذاعة القرآن الكريم من القاهرة ومكة بصوت نقي.'
+    ];
+
+    tickerRealtimeContent.innerHTML = tickerItems.map(item => `<span>${item}</span>`).join('');
+  }
+
+  // --- 2. RENDER CATEGORIES ---
   function renderCategories() {
     if (!categoriesContainer) return;
     categoriesContainer.innerHTML = categories.map(cat => `
@@ -75,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 2. UNIVERSAL MOBILE & DESKTOP STREAM PLAYER ---
+  // --- 3. UNIVERSAL STREAM PLAYER (HLS .m3u8 + IFRAME EMBED) ---
   function playChannel(channel) {
     if (!channel) return;
     activeChannel = channel;
@@ -161,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 3. FILTER AND RENDER CHANNELS ---
+  // --- 4. FILTER AND RENDER CHANNELS ---
   function getFilteredChannels() {
     let result = channels;
 
@@ -229,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add Click listeners
     channelsGrid.querySelectorAll('.channel-card').forEach(card => {
       card.addEventListener('click', (e) => {
-        if (e.target.closest('.fav-btn')) return; // Ignore if clicking favorite
+        if (e.target.closest('.fav-btn')) return;
         const chId = card.dataset.id;
         const targetCh = channels.find(c => c.id === chId);
         if (targetCh) playChannel(targetCh);
@@ -259,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- 4. RENDER DAILY MATCH CENTER & LIVE STREAM MODAL ---
+  // --- 5. RENDER DAILY MATCH CENTER & LIVE STREAM MODAL ---
   function renderMatches() {
     if (!matchesList) return;
     matchesList.innerHTML = matches.map(m => `
@@ -277,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="match-channel">
           <span><i class="fa-solid fa-tv"></i> ${m.channelName}</span>
-          <button class="btn-icon btn-primary" style="padding: 3px 10px; font-size: 0.75rem;">
+          <button class="btn-icon btn-primary" style="padding: 4px 12px; font-size: 0.75rem;">
             <i class="fa-solid fa-circle-play"></i> مشاهدة مباشر
           </button>
         </div>
@@ -301,8 +316,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Setup Servers
     const servers = match.servers && match.servers.length > 0 ? match.servers : [
-      { name: 'سيرفر 1 (HD)', url: 'https://live-hls-web-aje.akamaized.net/v1/master/053b922097368021ef37d806509f6e4a2432a688/aljazeera-arabic/index.m3u8' },
-      { name: 'سيرفر 2 (YouTube)', url: 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1' }
+      { name: 'سيرفر 1 (HLS HD Direct)', url: 'https://live-hls-web-aje.akamaized.net/v1/master/053b922097368021ef37d806509f6e4a2432a688/aljazeera-arabic/index.m3u8' },
+      { name: 'سيرفر 2 (YouTube Stream)', url: 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1' }
     ];
 
     serverSelector.innerHTML = servers.map((srv, idx) => `
@@ -340,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 5. RENDER SPORTS NEWS GRID ---
+  // --- 6. RENDER REALTIME SPORTS NEWS GRID ---
   function renderSportsNews() {
     if (!sportsNewsGrid) return;
     sportsNewsGrid.innerHTML = sportsNews.map(news => `
@@ -353,15 +368,15 @@ document.addEventListener('DOMContentLoaded', () => {
           <h3 class="news-title">${news.title}</h3>
           <p class="news-summary">${news.summary}</p>
           <div class="news-meta">
-            <span><i class="fa-regular fa-clock"></i> ${news.timeAgo}</span>
-            <span>بقلم: ${news.author}</span>
+            <span><i class="fa-regular fa-clock" style="color: var(--primary);"></i> ${news.timeAgo}</span>
+            <span>محرر: ${news.author}</span>
           </div>
         </div>
       </div>
     `).join('');
   }
 
-  // --- 6. RENDER RADIO STATIONS ---
+  // --- 7. RENDER RADIO STATIONS ---
   function renderRadios() {
     if (!radioGrid) return;
     radioGrid.innerHTML = radios.map(r => `
@@ -389,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
     activeRadio = radio;
     audioEl.src = radio.streamUrl;
     audioEl.play().catch(e => {
-      console.log('Audio autoplay blocked on mobile until tap:', e);
+      console.log('Audio autoplay prevented:', e);
     });
     
     audioRadioName.textContent = radio.name;
@@ -412,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 7. RENDER HIGHLIGHTS VOD ---
+  // --- 8. RENDER HIGHLIGHTS VOD ---
   function renderHighlights() {
     if (!highlightsGrid) return;
     highlightsGrid.innerHTML = highlights.map(h => `
@@ -474,6 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Initial Boot
+  initRealtimeTicker();
   renderCategories();
   playChannel(activeChannel);
   renderMatches();

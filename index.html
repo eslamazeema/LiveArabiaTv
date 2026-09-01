@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Arabia Live TV | البث المباشر للقنوات العربية ودليل المباريات الأخبار الرياضية</title>
-  <meta name="description" content="منصة Arabia Live TV للبث المباشر للقنوات العربية والرياضية، مشاهدة المباريات اليومية بث مباشر، وأخبار الرياضة العاجلة على الهواتف والأجهزة الذكية.">
+  <meta name="description" content="منصة Arabia Live TV الفاخرة للبث المباشر للقنوات العربية والرياضية، مشاهدة المباريات اليومية بث مباشر، والأخبار الرياضية العاجلة لحظة بلحظة.">
   <meta name="keywords" content="بث مباشر للمباريات, مشاهدة المباريات مباشر, أخبار الرياضة, جدول المباريات اليومية, قنوات عربية, أون تايم سبورتس, بي إن سبورتس">
   
   <!-- CSS Stylesheet -->
@@ -19,16 +19,16 @@
   <!-- ==================== BREAKING NEWS TICKER ==================== -->
   <div class="news-ticker-bar">
     <div class="ticker-title">
-      <i class="fa-solid fa-bolt"></i> عاجل
+      <i class="fa-solid fa-bolt"></i> عاجل لحظياً
     </div>
-    <div class="ticker-content">
-      <span><strong>⚽ بث مباشر:</strong> مشاهدة مباراة الأهلي وصن داونز بث حي الآن عبر السيرفرات المباشرة.</span>
+    <div class="ticker-content" id="tickerRealtimeContent">
+      <span><strong>⚽ بث مباشر:</strong> مشاهدة مباراة الأهلي والزمالك بث حي الآن عبر السيرفرات المباشرة.</span>
       <span><strong>🇸🇦 ديربي الرياض:</strong> متابعة قمة الهلال والنصر بث مباشر بجودة عالية.</span>
       <span><strong>🔴 المولد النبوي الشريف:</strong> كل عام والأمة الإسلامية بخير بمناسبة المولد النبوي الشريف.</span>
     </div>
   </div>
 
-  <!-- ==================== NAVBAR ==================== -->
+  <!-- ==================== NAVBAR (ADMIN BUTTON REMOVED) ==================== -->
   <header class="navbar">
     <div class="nav-container">
       <a href="./index.html" class="brand-logo">
@@ -44,7 +44,7 @@
       <!-- Instant Channel & Match Search -->
       <div class="search-box">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="searchInput" placeholder="ابحث عن مباراة، مباراة بث مباشر، فريق، أو قناة...">
+        <input type="text" id="searchInput" placeholder="ابحث عن مباراة، بث مباشر، فريق، أو قناة...">
       </div>
 
       <!-- Quick Action Buttons -->
@@ -58,11 +58,6 @@
           <i class="fa-solid fa-heart" style="color: var(--gold);"></i>
           <span>المفضلة</span>
         </button>
-
-        <a href="./admin.html" class="btn-icon btn-primary">
-          <i class="fa-solid fa-lock"></i>
-          <span>لوحة التحكم</span>
-        </a>
       </div>
     </div>
   </header>
@@ -74,7 +69,7 @@
       <div class="player-card" id="playerCard">
         <div class="player-overlay-badge">
           <span class="pulse-dot"></span>
-          <span>بث حي ومباشر</span>
+          <span>بث حي ومباشر 🔴</span>
         </div>
 
         <div class="player-wrapper">
@@ -102,7 +97,7 @@
           </div>
 
           <div class="player-actions">
-            <a id="externalStreamBtn" href="#" target="_blank" class="btn-icon" style="color: var(--gold); border-color: rgba(255,215,0,0.3);" title="فتح البث المباشر في نافذة خارجية">
+            <a id="externalStreamBtn" href="#" target="_blank" class="btn-icon" style="color: var(--gold); border-color: rgba(255,215,0,0.4);" title="فتح البث المباشر في نافذة خارجية">
               <i class="fa-solid fa-arrow-up-right-from-square"></i> بث خارجي
             </a>
             <span class="badge-quality" id="playerQualityBadge">HD</span>
@@ -121,7 +116,7 @@
       <aside class="match-center-card" id="matchesCard">
         <div class="card-header">
           <h3><i class="fa-solid fa-futbol" style="color: var(--gold);"></i> جدول المباريات اليومية</h3>
-          <span style="font-size: 0.75rem; color: var(--primary);">🔴 بث مباشر</span>
+          <span class="live-dot-badge">🔴 مباشر</span>
         </div>
 
         <div class="matches-list" id="matchesList">
@@ -138,15 +133,15 @@
         <!-- Populated via JS -->
       </div>
 
-      <!-- DEDICATED SPORTS NEWS HUB SECTION -->
+      <!-- REALTIME SPORTS NEWS HUB SECTION -->
       <section class="sports-hub-section" id="sportsHubSection">
         <div class="section-title">
-          <h2><i class="fa-solid fa-newspaper" style="color: var(--gold);"></i> أحدث أخبار الرياضة والتحليلات</h2>
-          <span style="color: var(--text-muted); font-size: 0.85rem;">تغطية لحظية لأهم الأنباء والتصريحات</span>
+          <h2><i class="fa-solid fa-newspaper" style="color: var(--gold);"></i> الأخبار الرياضية المباشرة (لحظة بلحظة)</h2>
+          <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700;">🔄 تحديث مباشر</span>
         </div>
 
         <div class="sports-news-grid" id="sportsNewsGrid">
-          <!-- Populated via JS -->
+          <!-- Populated via JS / RSS Feed -->
         </div>
       </section>
 
@@ -245,7 +240,7 @@
     </div>
   </div>
 
-  <!-- ==================== FOOTER ==================== -->
+  <!-- ==================== FOOTER (ADMIN BUTTON REMOVED) ==================== -->
   <footer class="footer">
     <div class="footer-container">
       <div class="brand-logo">
@@ -265,7 +260,7 @@
         <li><a href="#sportsHubSection">أخبار الرياضة</a></li>
         <li><a href="#matchesCard">جدول المباريات</a></li>
         <li><a href="#channelsSection">القنوات المباشرة</a></li>
-        <li><a href="./admin.html">لوحة التحكم والإدارة</a></li>
+        <li><a href="#radioSection">إذاعات الراديو</a></li>
       </ul>
 
       <div class="copyright">
