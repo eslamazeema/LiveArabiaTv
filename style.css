@@ -82,13 +82,13 @@ body {
   padding-top: 24px;
 }
 
-/* SHIFTED BACKGROUND POSITION DOWNWARDS BY 10% (center 60%) AS REQUESTED BY USER */
+/* SHIFTED BACKGROUND POSITION UPWARDS BY 15% (center 35%) AS REQUESTED BY USER */
 .stars-banner-bg {
   position: absolute;
   inset: 0;
   background-image: url('./banner.png');
   background-size: cover;
-  background-position: center 60%;
+  background-position: center 35%;
   filter: brightness(0.95) contrast(1.1);
   transform: scale(1.01);
   transition: transform 8s ease;
