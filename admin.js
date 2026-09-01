@@ -52,6 +52,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // YouTube URL Converter Helper
+  function formatStreamUrl(url) {
+    if (!url) return '';
+    url = url.trim();
+    if (url.includes('youtube.com/watch?v=')) {
+      const videoId = url.split('v=')[1].split('&')[0];
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    }
+    if (url.includes('youtu.be/')) {
+      const videoId = url.split('youtu.be/')[1].split('?')[0];
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    }
+    return url;
+  }
+
   // Load data or defaults
   let channels = JSON.parse(localStorage.getItem('altv_channels')) || DEFAULT_CHANNELS;
   let matches = JSON.parse(localStorage.getItem('altv_matches')) || DEFAULT_MATCHES;
@@ -77,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     channelsTableBody.innerHTML = channels.map((ch) => `
       <tr>
         <td>
-          <img src="${ch.logo}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; vertical-align:middle; margin-left:8px;">
+          <img src="${ch.logo}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; vertical-align:middle; margin-left:8px; background:#fff;">
           <strong>${ch.name}</strong>
         </td>
         <td><span class="badge-quality">${ch.category}</span></td>
@@ -172,14 +187,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const idx = channels.findIndex(c => c.id === id);
 
       if (idx !== -1) {
+        const rawUrl = document.getElementById('editChStreamUrl').value.trim();
+        const formattedUrl = formatStreamUrl(rawUrl);
+
         channels[idx] = {
           ...channels[idx],
           name: document.getElementById('editChName').value.trim(),
           category: document.getElementById('editChCategory').value,
           country: document.getElementById('editChCountry').value.trim(),
           quality: document.getElementById('editChQuality').value,
-          streamUrl: document.getElementById('editChStreamUrl').value.trim(),
-          fallbackUrl: document.getElementById('editChStreamUrl').value.trim(),
+          streamUrl: formattedUrl,
+          fallbackUrl: formattedUrl,
           logo: document.getElementById('editChLogo').value.trim(),
           description: document.getElementById('editChDesc').value.trim()
         };
@@ -187,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('altv_channels', JSON.stringify(channels));
         renderChannelsTable();
         editChannelModalBackdrop.classList.remove('active');
-        alert('تم تعديل القناة وحفظ التحديثات بنجاح!');
+        alert('تم تعديل القناة، تحويل رابط البث وحفظ اللوجو بنجاح!');
       }
     });
   }
@@ -196,16 +214,19 @@ document.addEventListener('DOMContentLoaded', () => {
   if (addChannelForm) {
     addChannelForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      const rawUrl = document.getElementById('chStreamUrl').value.trim();
+      const formattedUrl = formatStreamUrl(rawUrl);
+
       const newCh = {
         id: 'ch-' + Date.now(),
         name: document.getElementById('chName').value.trim(),
         category: document.getElementById('chCategory').value,
         country: document.getElementById('chCountry').value.trim() || 'عربي',
         quality: document.getElementById('chQuality').value || 'HD',
-        logo: document.getElementById('chLogo').value.trim() || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=150',
-        type: 'iframe',
-        streamUrl: document.getElementById('chStreamUrl').value.trim(),
-        fallbackUrl: document.getElementById('chStreamUrl').value.trim(),
+        logo: document.getElementById('chLogo').value.trim() || 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Al_Jazeera_English_logo.svg/300px-Al_Jazeera_English_logo.svg.png',
+        type: formattedUrl.includes('.m3u8') ? 'hls' : 'iframe',
+        streamUrl: formattedUrl,
+        fallbackUrl: formattedUrl,
         description: document.getElementById('chDesc').value.trim() || 'بث مباشر عالي الجودة',
         isFeatured: false,
         viewersCount: Math.floor(Math.random() * 20000) + 5000
@@ -215,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('altv_channels', JSON.stringify(channels));
       renderChannelsTable();
       addChannelForm.reset();
-      alert('تم إضافة القناة بنجاح!');
+      alert('تم إضافة القناة ورابط البث واللوجو بنجاح!');
     });
   }
 
@@ -223,7 +244,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (addMatchForm) {
     addMatchForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const streamUrl = document.getElementById('mStreamUrl').value.trim() || 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1';
+      const rawUrl = document.getElementById('mStreamUrl').value.trim() || 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1';
+      const formattedUrl = formatStreamUrl(rawUrl);
+
       const newMatch = {
         id: 'match-' + Date.now(),
         league: document.getElementById('mLeague').value.trim(),
@@ -240,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         stadium: 'الملعب الرئيسي',
         score: document.getElementById('mStatus').value === 'live' ? '0 - 0' : 'vs',
         servers: [
-          { name: 'سيرفر 1 (Full HD)', url: streamUrl },
+          { name: 'سيرفر 1 (Full HD)', url: formattedUrl },
           { name: 'سيرفر 2 (سريع بدون تقطيع)', url: 'https://www.youtube.com/embed/ww9P1LqjV2E?autoplay=1' }
         ]
       };
@@ -308,6 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('altv_matches');
         localStorage.removeItem('altv_sports_news');
         localStorage.removeItem('altv_radios');
+        localStorage.removeItem('altv_data_version');
         location.reload();
       }
     });
