@@ -1,10 +1,10 @@
 /**
- * بث مباشر للقنوات الفضائية (arabialivetv.com) - Universal Stream Player & Cache Auto-Refresh Logic
+ * بث مباشر للقنوات الفضائية (arabialivetv.com) - Universal Stream Player & Deep-Linking / Social Sharing Engine
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // AUTO-REFRESH CACHE VERSION TO FORCE OFFICIAL CHANNEL LOGOS & TRANSLUCENT GLASS SITE BRAND LOGO
-  const CURRENT_DATA_VERSION = 'altv_v8_official_logos_glass_brand';
+  // AUTO-REFRESH CACHE VERSION TO FORCE WORKING STREAMS & DEEP-LINKING SUPPORT
+  const CURRENT_DATA_VERSION = 'altv_v9_deeplink_social_share';
   if (localStorage.getItem('altv_data_version') !== CURRENT_DATA_VERSION) {
     localStorage.setItem('altv_channels', JSON.stringify(DEFAULT_CHANNELS));
     localStorage.setItem('altv_matches', JSON.stringify(DEFAULT_MATCHES));
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let favorites = JSON.parse(localStorage.getItem('altv_favorites')) || [];
 
   let currentCategory = 'all';
-  let activeChannel = channels.find(c => c.isFeatured) || channels[0];
+  let activeChannel = null;
   let activeRadio = null;
   let hlsInstance = null;
   const audioEl = new Audio();
@@ -39,6 +39,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const showFavsBtn = document.getElementById('showFavsBtn');
   const mobilePlayOverlay = document.getElementById('mobilePlayOverlay');
   const tickerRealtimeContent = document.getElementById('tickerRealtimeContent');
+
+  // Share Modal Elements
+  const shareChannelBtn = document.getElementById('shareChannelBtn');
+  const shareModalBackdrop = document.getElementById('shareModalBackdrop');
+  const closeShareModalBtn = document.getElementById('closeShareModalBtn');
+  const shareModalText = document.getElementById('shareModalText');
+  const shareLinkInput = document.getElementById('shareLinkInput');
+  const copyShareLinkBtn = document.getElementById('copyShareLinkBtn');
+  const shareWhatsapp = document.getElementById('shareWhatsapp');
+  const shareFacebook = document.getElementById('shareFacebook');
+  const shareTelegram = document.getElementById('shareTelegram');
+  const shareTwitter = document.getElementById('shareTwitter');
 
   // Article Modal Elements
   const articleModalBackdrop = document.getElementById('articleModalBackdrop');
@@ -111,13 +123,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 3. UNIVERSAL STREAM PLAYER WITH AUTOMATIC SCROLL TO PLAYER AT TOP ---
+  // --- 3. UNIVERSAL STREAM PLAYER WITH DEEP-LINKING URL HASH UPDATER ---
   function playChannel(channel, shouldScroll = true) {
     if (!channel) return;
     activeChannel = channel;
     const streamUrl = channel.streamUrl || channel.fallbackUrl;
 
-    // Update details
+    // UPDATE DEEP-LINKING URL HASH (e.g. arabialivetv.com/#ch-aljazeera-news)
+    if (window.history.replaceState) {
+      window.history.replaceState(null, null, `#${channel.id}`);
+    }
+
+    // Update player details
     playerChannelLogo.src = channel.logo;
     playerChannelName.textContent = channel.name;
     playerChannelDesc.textContent = channel.description || `${channel.country} • بث حي ومباشر`;
@@ -184,6 +201,74 @@ document.addEventListener('DOMContentLoaded', () => {
     renderChannelsGrid(getFilteredChannels());
   }
 
+  // --- 4. DEEP-LINKING DETECTION ON BOOT ---
+  function getChannelFromUrlHash() {
+    const hash = window.location.hash.replace('#', '').trim();
+    if (hash) {
+      const match = channels.find(c => c.id === hash);
+      if (match) return match;
+    }
+    return null;
+  }
+
+  // --- 5. SOCIAL SHARE MECHANISM FOR CHANNELS & PAGES ---
+  function openShareModal() {
+    if (!activeChannel) return;
+    const directUrl = `${window.location.origin}${window.location.pathname}#${activeChannel.id}`;
+    const shareText = `شاهد البث المباشر لقناة ${activeChannel.name} مجاناً وبدون تقطيع عبر منصة بث مباشر للقنوات الفضائية: ${directUrl}`;
+
+    shareLinkInput.value = directUrl;
+    shareModalText.textContent = `انشر رابط البث المباشر لقناة "${activeChannel.name}" لأصدقائك:`;
+
+    // Social share links
+    shareWhatsapp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+    shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(directUrl)}`;
+    shareTelegram.href = `https://t.me/share/url?url=${encodeURIComponent(directUrl)}&text=${encodeURIComponent(`شاهد ${activeChannel.name} بث مباشر`)}`;
+    shareTwitter.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+
+    // Try native share API first on mobile devices
+    if (navigator.share) {
+      navigator.share({
+        title: `بث مباشر: ${activeChannel.name}`,
+        text: `مشاهدة بث مباشر لقناة ${activeChannel.name}`,
+        url: directUrl
+      }).catch(() => {
+        shareModalBackdrop.classList.add('active');
+      });
+    } else {
+      shareModalBackdrop.classList.add('active');
+    }
+  }
+
+  if (shareChannelBtn) {
+    shareChannelBtn.addEventListener('click', openShareModal);
+  }
+
+  if (closeShareModalBtn) {
+    closeShareModalBtn.addEventListener('click', () => {
+      shareModalBackdrop.classList.remove('active');
+    });
+  }
+
+  if (shareModalBackdrop) {
+    shareModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === shareModalBackdrop) {
+        shareModalBackdrop.classList.remove('active');
+      }
+    });
+  }
+
+  if (copyShareLinkBtn) {
+    copyShareLinkBtn.addEventListener('click', () => {
+      shareLinkInput.select();
+      document.execCommand('copy');
+      copyShareLinkBtn.innerHTML = '<i class="fa-solid fa-check"></i> تم النسخ!';
+      setTimeout(() => {
+        copyShareLinkBtn.innerHTML = '<i class="fa-regular fa-copy"></i> نسخ الرابط';
+      }, 2500);
+    });
+  }
+
   // Mobile Tap Overlay
   if (mobilePlayOverlay) {
     mobilePlayOverlay.addEventListener('click', () => {
@@ -195,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 4. FILTER AND RENDER CHANNELS ---
+  // --- 6. FILTER AND RENDER CHANNELS ---
   function getFilteredChannels() {
     let result = channels;
 
@@ -289,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- 5. RENDER DAILY MATCH CENTER & LIVE STREAM MODAL ---
+  // --- 7. RENDER DAILY MATCH CENTER & LIVE STREAM MODAL ---
   function renderMatches() {
     if (!matchesList) return;
     matchesList.innerHTML = matches.map(m => `
@@ -369,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 6. RENDER REALTIME SPORTS NEWS GRID & FULL ARTICLE MODAL ---
+  // --- 8. RENDER REALTIME SPORTS NEWS GRID & FULL ARTICLE MODAL ---
   function renderSportsNews() {
     if (!sportsNewsGrid) return;
     sportsNewsGrid.innerHTML = sportsNews.map(news => `
@@ -437,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 7. RENDER RADIO STATIONS ---
+  // --- 9. RENDER RADIO STATIONS ---
   function renderRadios() {
     if (!radioGrid) return;
     radioGrid.innerHTML = radios.map(r => `
@@ -488,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 8. RENDER HIGHLIGHTS VOD ---
+  // --- 10. RENDER HIGHLIGHTS VOD ---
   function renderHighlights() {
     if (!highlightsGrid) return;
     highlightsGrid.innerHTML = highlights.map(h => `
@@ -551,10 +636,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Initial Boot
+  // Initial Boot Logic
   initRealtimeTicker();
   renderCategories();
-  playChannel(activeChannel, false); // Boot up without forced scroll
+
+  // Check URL Hash for Direct Channel Deep-Link
+  const urlChannel = getChannelFromUrlHash();
+  activeChannel = urlChannel || channels.find(c => c.isFeatured) || channels[0];
+
+  playChannel(activeChannel, !!urlChannel); // Scroll if opened via direct deep link
   renderMatches();
   renderSportsNews();
   renderRadios();

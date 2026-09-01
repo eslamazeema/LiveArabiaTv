@@ -50,9 +50,9 @@
 
       <!-- Quick Action Buttons -->
       <div class="nav-actions">
-        <a href="#playerCard" class="btn-icon btn-primary" onclick="document.getElementById('playerCard').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-          <i class="fa-solid fa-play"></i>
-          <span>البث المباشر</span>
+        <a href="#channelsSection" class="btn-icon btn-primary">
+          <i class="fa-solid fa-satellite-dish"></i>
+          <span>القنوات الفضائية</span>
         </a>
 
         <a href="#sportsHubSection" class="btn-icon btn-sports-hub">
@@ -115,6 +115,11 @@
           </div>
 
           <div class="player-actions">
+            <!-- Share Channel Direct Button -->
+            <button class="btn-icon" id="shareChannelBtn" style="color: var(--secondary); border-color: rgba(0,176,255,0.4);" title="مشاركة رابط البث المباشر لهذه القناة">
+              <i class="fa-solid fa-share-nodes"></i> مشاركة القناة
+            </button>
+
             <a id="externalStreamBtn" href="#" target="_blank" class="btn-icon" style="color: var(--gold); border-color: rgba(255,215,0,0.4);" title="فتح البث المباشر في نافذة خارجية">
               <i class="fa-solid fa-arrow-up-right-from-square"></i> بث خارجي
             </a>
@@ -151,6 +156,18 @@
         <!-- Populated via JS -->
       </div>
 
+      <!-- Live Channels Grid Section (REORDERED: CHANNELS FIRST BEFORE NEWS) -->
+      <section id="channelsSection" style="margin-bottom: 44px;">
+        <div class="section-title">
+          <h2><i class="fa-solid fa-satellite-dish" style="color: var(--primary);"></i> القنوات الفضائية المباشرة</h2>
+          <span style="color: var(--text-muted); font-size: 0.85rem;">اختر القناة لمشاهدة البث وتداول رابطها المباشر</span>
+        </div>
+
+        <div class="channels-grid" id="channelsGrid">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+
       <!-- REALTIME SPORTS NEWS HUB SECTION -->
       <section class="sports-hub-section" id="sportsHubSection">
         <div class="section-title">
@@ -160,18 +177,6 @@
 
         <div class="sports-news-grid" id="sportsNewsGrid">
           <!-- Populated via JS / News Engine -->
-        </div>
-      </section>
-
-      <!-- Live Channels Grid Section -->
-      <section id="channelsSection">
-        <div class="section-title">
-          <h2>القنوات المباشرة</h2>
-          <span style="color: var(--text-muted); font-size: 0.85rem;">اختر القناة للمشاهدة المباشرة</span>
-        </div>
-
-        <div class="channels-grid" id="channelsGrid">
-          <!-- Populated via JS -->
         </div>
       </section>
 
@@ -200,6 +205,46 @@
       </section>
     </div>
   </main>
+
+  <!-- ==================== SHARE MODAL DIALOG ==================== -->
+  <div class="modal-backdrop" id="shareModalBackdrop" style="z-index: 1600;">
+    <div class="match-modal" style="max-width: 480px; padding: 24px; text-align: center;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-glass); padding-bottom: 12px;">
+        <h3 style="color: var(--primary); font-weight: 900; font-size: 1.2rem;">
+          <i class="fa-solid fa-share-nodes"></i> مشاركة البث المباشر للقناة
+        </h3>
+        <button class="modal-close-btn" id="closeShareModalBtn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;" id="shareModalText">
+        انشر رابط هذه القناة مباشرة لأصدقائك في شبكات التواصل الاجتماعي:
+      </p>
+
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px;">
+        <a id="shareWhatsapp" href="#" target="_blank" class="btn-icon" style="background: #25D366; color: #fff; border: none; padding: 10px 18px;">
+          <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> واتساب
+        </a>
+        <a id="shareFacebook" href="#" target="_blank" class="btn-icon" style="background: #1877F2; color: #fff; border: none; padding: 10px 18px;">
+          <i class="fa-brands fa-facebook-f"></i> فيسبوك
+        </a>
+        <a id="shareTelegram" href="#" target="_blank" class="btn-icon" style="background: #0088cc; color: #fff; border: none; padding: 10px 18px;">
+          <i class="fa-brands fa-telegram"></i> تليجرام
+        </a>
+        <a id="shareTwitter" href="#" target="_blank" class="btn-icon" style="background: #000; color: #fff; border: 1px solid #333; padding: 10px 18px;">
+          <i class="fa-brands fa-x-twitter"></i> X
+        </a>
+      </div>
+
+      <div class="form-group" style="position: relative; margin-bottom: 0;">
+        <input type="text" id="shareLinkInput" class="form-control" readonly style="padding-left: 100px; text-align: left; direction: ltr; font-size: 0.85rem;">
+        <button class="btn-icon btn-primary" id="copyShareLinkBtn" style="position: absolute; left: 4px; top: 4px; bottom: 4px; border-radius: var(--radius-sm); padding: 0 16px; font-size: 0.82rem;">
+          <i class="fa-regular fa-copy"></i> نسخ الرابط
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ==================== FULL ARTICLE READING MODAL ==================== -->
   <div class="modal-backdrop" id="articleModalBackdrop" style="z-index: 1200;">
@@ -327,9 +372,9 @@
 
       <ul class="footer-links">
         <li><a href="./index.html">الرئيسية</a></li>
+        <li><a href="#channelsSection">القنوات المباشرة</a></li>
         <li><a href="#sportsHubSection">أخبار الرياضة</a></li>
         <li><a href="#matchesCard">جدول المباريات</a></li>
-        <li><a href="#channelsSection">القنوات المباشرة</a></li>
         <li><a href="#radioSection">إذاعات الراديو</a></li>
       </ul>
 
