@@ -1,8 +1,18 @@
 /**
- * Arabia Live TV (arabialivetv.com) - Universal Stream Player & Full Article Reader Logic
+ * Arabia Live TV (arabialivetv.com) - Universal Stream Player & Cache Auto-Refresh Logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // AUTO-REFRESH CACHE VERSION TO FORCE WORKING HLS STREAMS ON ALL DEVICES
+  const CURRENT_DATA_VERSION = 'altv_v4_hls_streams_fixed';
+  if (localStorage.getItem('altv_data_version') !== CURRENT_DATA_VERSION) {
+    localStorage.setItem('altv_channels', JSON.stringify(DEFAULT_CHANNELS));
+    localStorage.setItem('altv_matches', JSON.stringify(DEFAULT_MATCHES));
+    localStorage.setItem('altv_sports_news', JSON.stringify(DEFAULT_SPORTS_NEWS));
+    localStorage.setItem('altv_radios', JSON.stringify(DEFAULT_RADIOS));
+    localStorage.setItem('altv_data_version', CURRENT_DATA_VERSION);
+  }
+
   // Initialize state from LocalStorage or channels_data.js defaults
   let categories = JSON.parse(localStorage.getItem('altv_categories')) || DEFAULT_CATEGORIES;
   let channels = JSON.parse(localStorage.getItem('altv_channels')) || DEFAULT_CHANNELS;
