@@ -1,6 +1,5 @@
 /**
- * بث مباشر للقنوات الفضائية (arabialivetv.com) - Verified Data Store
- * Fully Tested Live HLS TV Streams, Radio Audio Streams & Real Sports News.
+ * بث مباشر للقنوات الفضائية (arabialivetv.com) - Official Channel Logos Data Store
  */
 
 const DEFAULT_CATEGORIES = [
@@ -14,14 +13,14 @@ const DEFAULT_CATEGORIES = [
 ];
 
 const DEFAULT_CHANNELS = [
-  // --- NEWS CHANNELS (DIRECT HIGH-SPEED HLS .M3U8) ---
+  // --- NEWS CHANNELS (OFFICIAL HIGH-RES LOGOS) ---
   {
     id: 'ch-aljazeera-news',
     name: 'الجزيرة الإخبارية',
     category: 'news',
     country: 'قطر',
     quality: 'Full HD',
-    logo: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=150&auto=format&fit=crop&q=60',
+    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/7/77/Al_Jazeera_English_logo.svg/300px-Al_Jazeera_English_logo.svg.png',
     type: 'hls',
     streamUrl: 'https://live-hls-web-aje.akamaized.net/v1/master/053b922097368021ef37d806509f6e4a2432a688/aljazeera-arabic/index.m3u8',
     fallbackUrl: 'https://www.youtube.com/embed/bNyUyrR0PHo',
@@ -35,7 +34,7 @@ const DEFAULT_CHANNELS = [
     category: 'news',
     country: 'السعودية',
     quality: 'Full HD',
-    logo: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=150&auto=format&fit=crop&q=60',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Al_Arabiya_Logo.svg/300px-Al_Arabiya_Logo.svg.png',
     type: 'hls',
     streamUrl: 'https://live.alarabiya.net/alarabiya/live/playlist.m3u8',
     fallbackUrl: 'https://www.youtube.com/embed/2M-x9s_lqX4',
@@ -49,7 +48,7 @@ const DEFAULT_CHANNELS = [
     category: 'news',
     country: 'الإمارات',
     quality: 'HD',
-    logo: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=150&auto=format&fit=crop&q=60',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Sky_News_Arabia_logo.svg/300px-Sky_News_Arabia_logo.svg.png',
     type: 'hls',
     streamUrl: 'https://stream.skynewsarabia.com/hls/skynews_hd.m3u8',
     fallbackUrl: 'https://www.youtube.com/embed/0_QW_lDk3B4',
@@ -63,7 +62,7 @@ const DEFAULT_CHANNELS = [
     category: 'news',
     country: 'فرنسا',
     quality: 'HD',
-    logo: 'https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=150&auto=format&fit=crop&q=60',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/France_24_logo.svg/300px-France_24_logo.svg.png',
     type: 'hls',
     streamUrl: 'https://stream.france24.com/hls/ar/live/2038753/f24_ar.m3u8',
     fallbackUrl: 'https://www.france24.com/ar',
@@ -77,7 +76,7 @@ const DEFAULT_CHANNELS = [
     category: 'news',
     country: 'تركيا',
     quality: 'HD',
-    logo: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=150&auto=format&fit=crop&q=60',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/TRT_Arabi_logo.png/300px-TRT_Arabi_logo.png',
     type: 'hls',
     streamUrl: 'https://tv-trtarabi.medya.trt.com.tr/master.m3u8',
     fallbackUrl: 'https://www.trtarabi.com',
@@ -91,7 +90,7 @@ const DEFAULT_CHANNELS = [
     category: 'news',
     country: 'مصر',
     quality: 'Full HD',
-    logo: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=150&auto=format&fit=crop&q=60',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Al_Ghad_TV_Logo.png/300px-Al_Ghad_TV_Logo.png',
     type: 'hls',
     streamUrl: 'https://stream.skynewsarabia.com/hls/skynews_hd.m3u8',
     fallbackUrl: 'https://www.alghad.tv',
@@ -100,14 +99,14 @@ const DEFAULT_CHANNELS = [
     viewersCount: 23500
   },
 
-  // --- ISLAMIC CHANNELS (DIRECT HLS .M3U8) ---
+  // --- ISLAMIC CHANNELS (OFFICIAL LOGOS) ---
   {
     id: 'ch-saudi-quran',
     name: 'قناة القرآن الكريم (مكة المكرمة)',
     category: 'islamic',
     country: 'السعودية',
     quality: '4K Ultra',
-    logo: 'https://images.unsplash.com/photo-1542816417-0983cbe82752?w=150&auto=format&fit=crop&q=60',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Saudi_Quran_TV_Logo.png/300px-Saudi_Quran_TV_Logo.png',
     type: 'hls',
     streamUrl: 'https://shls-quran-prod-dub.savanacdn.net/out/v1/678a1b5c394f4bf2b2ec9103e33c7f99/index.m3u8',
     fallbackUrl: 'https://www.youtube.com/embed/Y0W8V9m1wB4',
@@ -121,7 +120,7 @@ const DEFAULT_CHANNELS = [
     category: 'islamic',
     country: 'السعودية',
     quality: '4K Ultra',
-    logo: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?w=150&auto=format&fit=crop&q=60',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Saudi_Sunnah_TV_Logo.png/300px-Saudi_Sunnah_TV_Logo.png',
     type: 'hls',
     streamUrl: 'https://shls-sunna-prod-dub.savanacdn.net/out/v1/fa6164f9b2fa41a998bb55efbf6f5f3e/index.m3u8',
     fallbackUrl: 'https://www.youtube.com/embed/J7wP1_q_sW0',
@@ -130,14 +129,14 @@ const DEFAULT_CHANNELS = [
     viewersCount: 89500
   },
 
-  // --- SPORTS CHANNELS ---
+  // --- SPORTS CHANNELS (OFFICIAL LOGOS) ---
   {
     id: 'ch-ontime-1',
-    name: 'أون تايم سبورتس 1 (ON Time Sports 1)',
+    name: 'أون تايم سبورتس 1 (ON Time Sports)',
     category: 'sports',
     country: 'مصر',
     quality: 'Full HD',
-    logo: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=150&auto=format&fit=crop&q=60',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/ON_Time_Sports_logo.svg/300px-ON_Time_Sports_logo.svg.png',
     type: 'iframe',
     streamUrl: 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1',
     fallbackUrl: 'https://www.youtube.com/embed/5_fQ_1nJpEE',
@@ -151,7 +150,7 @@ const DEFAULT_CHANNELS = [
     category: 'sports',
     country: 'قطر',
     quality: 'HD',
-    logo: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=150&auto=format&fit=crop&q=60',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/BeIN_Sports_Logo.svg/300px-BeIN_Sports_Logo.svg.png',
     type: 'iframe',
     streamUrl: 'https://www.youtube.com/embed/ww9P1LqjV2E?autoplay=1',
     fallbackUrl: 'https://www.youtube.com/embed/ww9P1LqjV2E',
@@ -161,11 +160,11 @@ const DEFAULT_CHANNELS = [
   },
   {
     id: 'ch-ksa-sports',
-    name: 'السعودية الرياضية 1 (KSA Sports HD)',
+    name: 'السعودية الرياضية 1 (KSA Sports)',
     category: 'sports',
     country: 'السعودية',
     quality: 'HD',
-    logo: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=150&auto=format&fit=crop&q=60',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/KSA_Sports_logo.svg/300px-KSA_Sports_logo.svg.png',
     type: 'iframe',
     streamUrl: 'https://www.youtube.com/embed/2g811V88880?autoplay=1',
     fallbackUrl: 'https://www.youtube.com/embed/2g811V88880',
@@ -174,14 +173,14 @@ const DEFAULT_CHANNELS = [
     viewersCount: 46200
   },
 
-  // --- DRAMA & ENTERTAINMENT ---
+  // --- DRAMA & ENTERTAINMENT (OFFICIAL LOGOS) ---
   {
     id: 'ch-mbc-masr',
     name: 'MBC مصر',
     category: 'drama',
     country: 'مصر',
     quality: 'HD',
-    logo: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?w=150&auto=format&fit=crop&q=60',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/MBC_Masr_logo.svg/300px-MBC_Masr_logo.svg.png',
     type: 'iframe',
     streamUrl: 'https://www.youtube.com/embed/Xqz4W04g90A?autoplay=1',
     fallbackUrl: 'https://www.youtube.com/embed/Xqz4W04g90A',
@@ -195,7 +194,7 @@ const DEFAULT_CHANNELS = [
     category: 'drama',
     country: 'السعودية',
     quality: 'HD',
-    logo: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=150&auto=format&fit=crop&q=60',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Rotana_Cinema_Logo.png/300px-Rotana_Cinema_Logo.png',
     type: 'iframe',
     streamUrl: 'https://www.youtube.com/embed/7X8m_v7S184?autoplay=1',
     fallbackUrl: 'https://www.youtube.com/embed/7X8m_v7S184',
@@ -211,7 +210,7 @@ const DEFAULT_CHANNELS = [
     category: 'kids',
     country: 'الإمارات',
     quality: 'HD',
-    logo: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=150&auto=format&fit=crop&q=60',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Spacetoon_logo.svg/300px-Spacetoon_logo.svg.png',
     type: 'iframe',
     streamUrl: 'https://www.youtube.com/embed/k8W9x1P9tT8?autoplay=1',
     fallbackUrl: 'https://www.youtube.com/embed/k8W9x1P9tT8',
@@ -345,7 +344,7 @@ const DEFAULT_SPORTS_NEWS = [
   }
 ];
 
-// TESTED & WORKING LIVE ARABIC RADIO AUDIO STREAMS (MP3 / AAC)
+// TESTED & WORKING LIVE ARABIC RADIO AUDIO STREAMS
 const DEFAULT_RADIOS = [
   {
     id: 'rad-quran-cairo',

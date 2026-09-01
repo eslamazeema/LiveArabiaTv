@@ -3,8 +3,8 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // AUTO-REFRESH CACHE VERSION TO FORCE WORKING HLS STREAMS & EXPANDED RADIOS ON ALL DEVICES
-  const CURRENT_DATA_VERSION = 'altv_v7_expanded_streams_audited';
+  // AUTO-REFRESH CACHE VERSION TO FORCE OFFICIAL CHANNEL LOGOS & TRANSLUCENT GLASS SITE BRAND LOGO
+  const CURRENT_DATA_VERSION = 'altv_v8_official_logos_glass_brand';
   if (localStorage.getItem('altv_data_version') !== CURRENT_DATA_VERSION) {
     localStorage.setItem('altv_channels', JSON.stringify(DEFAULT_CHANNELS));
     localStorage.setItem('altv_matches', JSON.stringify(DEFAULT_MATCHES));
