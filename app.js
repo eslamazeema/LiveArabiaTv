@@ -1,5 +1,5 @@
 /**
- * Arabia Live TV (arabialivetv.com) - Universal Mobile & Desktop Stream Player with Realtime News Engine
+ * Arabia Live TV (arabialivetv.com) - Universal Stream Player & Full Article Reader Logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -29,6 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const showFavsBtn = document.getElementById('showFavsBtn');
   const mobilePlayOverlay = document.getElementById('mobilePlayOverlay');
   const tickerRealtimeContent = document.getElementById('tickerRealtimeContent');
+
+  // Article Modal Elements
+  const articleModalBackdrop = document.getElementById('articleModalBackdrop');
+  const closeArticleModalBtn = document.getElementById('closeArticleModalBtn');
+  const articleCategoryTag = document.getElementById('articleCategoryTag');
+  const articleTitle = document.getElementById('articleTitle');
+  const articleTimeAgo = document.getElementById('articleTimeAgo');
+  const articleAuthor = document.getElementById('articleAuthor');
+  const articleImage = document.getElementById('articleImage');
+  const articleContent = document.getElementById('articleContent');
+  const articleGallery = document.getElementById('articleGallery');
+  const articleGallerySection = document.getElementById('articleGallerySection');
 
   // Match Modal Elements
   const matchModalBackdrop = document.getElementById('matchModalBackdrop');
@@ -90,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 3. UNIVERSAL STREAM PLAYER (HLS .m3u8 + IFRAME EMBED) ---
+  // --- 3. UNIVERSAL STREAM PLAYER ---
   function playChannel(channel) {
     if (!channel) return;
     activeChannel = channel;
@@ -122,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
       mainIframe.src = '';
       mainVideo.style.display = 'block';
 
-      // iOS Native Safari HLS Check first (best for iPhone/iPad)
       if (mainVideo.canPlayType('application/vnd.apple.mpegurl')) {
         mainVideo.src = streamUrl;
         mainVideo.play().catch(() => {
@@ -143,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
     } else {
-      // Iframe / YouTube / Dailymotion Embed
       if (mainVideo) {
         mainVideo.pause();
         mainVideo.style.display = 'none';
@@ -157,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
     playerFavBtn.innerHTML = `<i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>`;
     playerFavBtn.style.color = isFav ? 'var(--gold)' : 'var(--text-muted)';
 
-    // Scroll smoothly to player on mobile screens
     if (isMobile) {
       document.getElementById('playerCard').scrollIntoView({ behavior: 'smooth' });
     }
@@ -165,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderChannelsGrid(getFilteredChannels());
   }
 
-  // Mobile Tap-To-Play Overlay Event Listener
+  // Mobile Tap Overlay
   if (mobilePlayOverlay) {
     mobilePlayOverlay.addEventListener('click', () => {
       mobilePlayOverlay.style.display = 'none';
@@ -180,14 +189,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function getFilteredChannels() {
     let result = channels;
 
-    // Filter by Category
     if (currentCategory === 'favs') {
       result = result.filter(c => favorites.includes(c.id));
     } else if (currentCategory !== 'all') {
       result = result.filter(c => c.category === currentCategory);
     }
 
-    // Filter by Search Query
     const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
     if (query) {
       result = result.filter(c => 
@@ -241,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }).join('');
 
-    // Add Click listeners
     channelsGrid.querySelectorAll('.channel-card').forEach(card => {
       card.addEventListener('click', (e) => {
         if (e.target.closest('.fav-btn')) return;
@@ -251,7 +257,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Favorite buttons
     channelsGrid.querySelectorAll('.fav-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -314,7 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
     modalMatchTitle.innerHTML = `⚽ مشاهدة مباراة: ${match.homeTeam} vs ${match.awayTeam} بث مباشر`;
     modalMatchMeta.textContent = `🏆 ${match.league} • 🎤 المعلق: ${match.commentator} • 📍 ${match.stadium || 'الملعب الرئيسي'}`;
 
-    // Setup Servers
     const servers = match.servers && match.servers.length > 0 ? match.servers : [
       { name: 'سيرفر 1 (HLS HD Direct)', url: 'https://live-hls-web-aje.akamaized.net/v1/master/053b922097368021ef37d806509f6e4a2432a688/aljazeera-arabic/index.m3u8' },
       { name: 'سيرفر 2 (YouTube Stream)', url: 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1' }
@@ -355,11 +359,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 6. RENDER REALTIME SPORTS NEWS GRID ---
+  // --- 6. RENDER REALTIME SPORTS NEWS GRID & FULL ARTICLE MODAL ---
   function renderSportsNews() {
     if (!sportsNewsGrid) return;
     sportsNewsGrid.innerHTML = sportsNews.map(news => `
-      <div class="sports-news-card">
+      <div class="sports-news-card" data-news-id="${news.id}" style="cursor: pointer;">
         <div class="news-img-wrapper">
           <img src="${news.image}" alt="${news.title}">
           <span class="news-tag">${news.category}</span>
@@ -369,11 +373,58 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="news-summary">${news.summary}</p>
           <div class="news-meta">
             <span><i class="fa-regular fa-clock" style="color: var(--primary);"></i> ${news.timeAgo}</span>
-            <span>محرر: ${news.author}</span>
+            <span style="color: var(--gold); font-weight:700;">اقرأ الخبر كاملاً ←</span>
           </div>
         </div>
       </div>
     `).join('');
+
+    sportsNewsGrid.querySelectorAll('.sports-news-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const nId = card.dataset.newsId;
+        const targetNews = sportsNews.find(n => n.id === nId);
+        if (targetNews) openArticleModal(targetNews);
+      });
+    });
+  }
+
+  function openArticleModal(news) {
+    if (!articleModalBackdrop) return;
+
+    articleCategoryTag.textContent = news.category || 'خبر رياضي';
+    articleTitle.textContent = news.title;
+    articleTimeAgo.textContent = news.timeAgo || 'الآن';
+    articleAuthor.textContent = news.author || 'التحرير الرياضي';
+    articleImage.src = news.image;
+    articleContent.innerHTML = news.content || `<p>${news.summary}</p><p>تغطية حصرية مستمرة للأحداث والتطورات الميدانية الكبرى عبر منصة Arabia Live TV.</p>`;
+
+    // Render Gallery Photos
+    if (news.gallery && news.gallery.length > 0) {
+      articleGallerySection.style.display = 'block';
+      articleGallery.innerHTML = news.gallery.map(imgUrl => `
+        <div style="height: 140px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border-glass);">
+          <img src="${imgUrl}" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+      `).join('');
+    } else {
+      articleGallerySection.style.display = 'none';
+    }
+
+    articleModalBackdrop.classList.add('active');
+  }
+
+  if (closeArticleModalBtn) {
+    closeArticleModalBtn.addEventListener('click', () => {
+      articleModalBackdrop.classList.remove('active');
+    });
+  }
+
+  if (articleModalBackdrop) {
+    articleModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === articleModalBackdrop) {
+        articleModalBackdrop.classList.remove('active');
+      }
+    });
   }
 
   // --- 7. RENDER RADIO STATIONS ---

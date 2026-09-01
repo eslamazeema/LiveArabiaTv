@@ -28,7 +28,7 @@
     </div>
   </div>
 
-  <!-- ==================== NAVBAR (ADMIN BUTTON REMOVED) ==================== -->
+  <!-- ==================== NAVBAR ==================== -->
   <header class="navbar">
     <div class="nav-container">
       <a href="./index.html" class="brand-logo">
@@ -136,12 +136,12 @@
       <!-- REALTIME SPORTS NEWS HUB SECTION -->
       <section class="sports-hub-section" id="sportsHubSection">
         <div class="section-title">
-          <h2><i class="fa-solid fa-newspaper" style="color: var(--gold);"></i> الأخبار الرياضية المباشرة (لحظة بلحظة)</h2>
-          <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700;">🔄 تحديث مباشر</span>
+          <h2><i class="fa-solid fa-newspaper" style="color: var(--gold);"></i> الأخبار الرياضية الحصرية والكاملة</h2>
+          <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700;">🔄 اضغط لقراءة الخبر كاملاً بالمستندات والبرهان</span>
         </div>
 
         <div class="sports-news-grid" id="sportsNewsGrid">
-          <!-- Populated via JS / RSS Feed -->
+          <!-- Populated via JS / News Engine -->
         </div>
       </section>
 
@@ -182,6 +182,58 @@
       </section>
     </div>
   </main>
+
+  <!-- ==================== FULL ARTICLE READING MODAL ==================== -->
+  <div class="modal-backdrop" id="articleModalBackdrop" style="z-index: 1200;">
+    <div class="match-modal" style="max-width: 850px;">
+      <div class="modal-header">
+        <span class="badge-quality" id="articleCategoryTag" style="font-size: 0.8rem;">خبر رياضي</span>
+        <button class="modal-close-btn" id="closeArticleModalBtn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div style="padding: 24px; max-height: 80vh; overflow-y: auto;">
+        <h2 id="articleTitle" style="font-size: 1.45rem; font-weight: 900; line-height: 1.4; margin-bottom: 12px; color: #fff;">
+          عنوان الخبر الرياضي الكامل
+        </h2>
+
+        <div style="display: flex; gap: 16px; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 20px; border-bottom: 1px solid var(--border-glass); padding-bottom: 12px;">
+          <span><i class="fa-regular fa-clock" style="color: var(--primary);"></i> <span id="articleTimeAgo">الآن</span></span>
+          <span><i class="fa-solid fa-user-pen" style="color: var(--gold);"></i> <span id="articleAuthor">بقلم التحرير</span></span>
+        </div>
+
+        <!-- Featured Main Image -->
+        <div style="width: 100%; height: 320px; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 20px;">
+          <img id="articleImage" src="" alt="Article Photo" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+
+        <!-- Detailed Full Article Body Text -->
+        <div id="articleContent" style="font-size: 1rem; line-height: 1.8; color: var(--text-main); margin-bottom: 24px;">
+          <!-- Article HTML Body Injected via JS -->
+        </div>
+
+        <!-- Documented Photo Gallery -->
+        <div id="articleGallerySection" style="margin-top: 24px; border-top: 1px solid var(--border-glass); padding-top: 20px;">
+          <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--gold); margin-bottom: 12px;">
+            📸 توثيق الخبر بالصور والمعاينات الميدانية:
+          </h4>
+          <div id="articleGallery" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+            <!-- Gallery images injected via JS -->
+          </div>
+        </div>
+      </div>
+
+      <div style="padding: 16px 24px; background: rgba(18, 26, 43, 0.95); display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-glass);">
+        <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700;">
+          📌 تم توثيق وتأكيد هذا الخبر عبر فريق تحرير Arabia Live TV
+        </span>
+        <button class="btn-icon btn-primary" onclick="document.getElementById('articleModalBackdrop').classList.remove('active')">
+          إغلاق الخبر
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ==================== LIVE MATCH STREAMING MODAL ==================== -->
   <div class="modal-backdrop" id="matchModalBackdrop">
@@ -240,7 +292,7 @@
     </div>
   </div>
 
-  <!-- ==================== FOOTER (ADMIN BUTTON REMOVED) ==================== -->
+  <!-- ==================== FOOTER ==================== -->
   <footer class="footer">
     <div class="footer-container">
       <div class="brand-logo">
