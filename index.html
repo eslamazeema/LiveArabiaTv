@@ -20,30 +20,28 @@
 </head>
 <body>
 
-  <!-- ==================== BREAKING NEWS TICKER ==================== -->
-  <div class="news-ticker-bar">
-    <div class="ticker-title">
-      <i class="fa-solid fa-bolt"></i> عاجل لحظياً
-    </div>
-    <div class="ticker-content" id="tickerRealtimeContent">
-      <span><strong>⚽ بث مباشر:</strong> مشاهدة مباراة الأهلي والزمالك بث حي الآن عبر السيرفرات المباشرة.</span>
-      <span><strong>🇸🇦 ديربي الرياض:</strong> متابعة قمة الهلال والنصر بث مباشر بجودة عالية.</span>
-      <span><strong>🔴 المولد النبوي الشريف:</strong> كل عام والأمة الإسلامية بخير بمناسبة المولد النبوي الشريف.</span>
-    </div>
-  </div>
-
-  <!-- ==================== NAVBAR ==================== -->
-  <header class="navbar">
-    <div class="nav-container">
-      <a href="./index.html" class="brand-logo">
-        <div class="logo-icon">
-          <i class="fa-solid fa-tv"></i>
+  <!-- ==================== TOP FULL-WIDTH 200PX STARS HEADER BANNER ==================== -->
+  <header class="top-stars-header">
+    <div class="stars-banner-bg"></div>
+    <div class="stars-banner-overlay"></div>
+    
+    <div class="stars-banner-content">
+      <!-- Site Brand Logo & Stars Badges -->
+      <div class="banner-brand-info">
+        <a href="./index.html" class="brand-logo">
+          <div class="logo-icon">
+            <i class="fa-solid fa-tv"></i>
+          </div>
+          <div class="brand-text">
+            <h1>Arabia Live TV</h1>
+            <span>arabialivetv.com</span>
+          </div>
+        </a>
+        <div class="stars-badges">
+          <span class="stars-badge hot"><i class="fa-solid fa-star"></i> نجوم الكرة والسينما العالمية</span>
+          <span class="stars-badge live">🔴 بث مباشر 4K</span>
         </div>
-        <div class="brand-text">
-          <h1>Arabia Live TV</h1>
-          <span>arabialivetv.com</span>
-        </div>
-      </a>
+      </div>
 
       <!-- Instant Channel & Match Search -->
       <div class="search-box">
@@ -53,6 +51,11 @@
 
       <!-- Quick Action Buttons -->
       <div class="nav-actions">
+        <a href="#playerCard" class="btn-icon btn-primary" onclick="document.getElementById('playerCard').scrollIntoView({ behavior: 'smooth', block: 'start' });">
+          <i class="fa-solid fa-play"></i>
+          <span>البث المباشر</span>
+        </a>
+
         <a href="#sportsHubSection" class="btn-icon btn-sports-hub">
           <i class="fa-solid fa-trophy"></i>
           <span>المباريات والأخبار</span>
@@ -66,39 +69,17 @@
     </div>
   </header>
 
-  <!-- ==================== GRAND STARZPLAY HERO FEATURED BANNER ==================== -->
-  <section class="starz-hero-banner">
-    <div class="banner-backdrop-img"></div>
-    <div class="banner-gradient-overlay"></div>
-    
-    <div class="banner-content-container">
-      <div class="banner-tags">
-        <span class="tag-badge hot-tag">🔥 البث الأكثر مشاهدة اليوم</span>
-        <span class="tag-badge live-tag">🔴 4K ULTRA HD</span>
-        <span class="tag-badge rating-tag">⭐ 100% مجاني</span>
-      </div>
-
-      <h1 class="banner-title">عالم الرياضة والترفيه المباشر في مكان واحد</h1>
-      
-      <p class="banner-description">
-        شاهد البث الحي المباشر لأهم قمم الكرة العالمية والمحلية (دوري أبطال إفريقيا، دوري روشن، ودوري أبطال أوروبا)، بالإضافة لأشهر القنوات الفضائية 4K والأخبار العاجلة على مدار الساعة بدون تقطيع.
-      </p>
-
-      <div class="banner-cta-group">
-        <a href="#playerCard" class="btn-hero btn-hero-primary" onclick="document.getElementById('playerCard').scrollIntoView({ behavior: 'smooth', block: 'start' });">
-          <i class="fa-solid fa-play"></i> ابدأ المشاهدة المباشرة الآن
-        </a>
-
-        <a href="#matchesCard" class="btn-hero btn-hero-secondary">
-          <i class="fa-solid fa-futbol"></i> جدول مباريات اليوم
-        </a>
-
-        <a href="#sportsHubSection" class="btn-hero btn-hero-outline">
-          <i class="fa-solid fa-newspaper"></i> الأخبار الحصرية
-        </a>
-      </div>
+  <!-- ==================== BREAKING NEWS TICKER ==================== -->
+  <div class="news-ticker-bar">
+    <div class="ticker-title">
+      <i class="fa-solid fa-bolt"></i> عاجل لحظياً
     </div>
-  </section>
+    <div class="ticker-content" id="tickerRealtimeContent">
+      <span><strong>⚽ بث مباشر:</strong> مشاهدة مباراة الأهلي والزمالك بث حي الآن عبر السيرفرات المباشرة.</span>
+      <span><strong>🇸🇦 ديربي الرياض:</strong> متابعة قمة الهلال والنصر بث مباشر بجودة عالية.</span>
+      <span><strong>🔴 المولد النبوي الشريف:</strong> كل عام والأمة الإسلامية بخير بمناسبة المولد النبوي الشريف.</span>
+    </div>
+  </div>
 
   <!-- ==================== HERO PLAYER & MATCH CENTER ==================== -->
   <main>
