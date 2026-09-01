@@ -1,6 +1,6 @@
 /**
  * Arabia Live TV (arabialivetv.com) Initial Data Store
- * Contains Categories, Tested Working Live Channels, Matches, Radios, and Sports News.
+ * Contains Tested Direct HLS (.m3u8) Streams for Satellite Arabic TV Channels & Radios.
  */
 
 const DEFAULT_CATEGORIES = [
@@ -14,6 +14,108 @@ const DEFAULT_CATEGORIES = [
 ];
 
 const DEFAULT_CHANNELS = [
+  // --- NEWS CHANNELS (DIRECT HLS .M3U8) ---
+  {
+    id: 'ch-aljazeera-news',
+    name: 'الجزيرة الإخبارية',
+    category: 'news',
+    country: 'قطر',
+    quality: 'Full HD',
+    logo: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=150&auto=format&fit=crop&q=60',
+    type: 'hls',
+    streamUrl: 'https://live-hls-web-aje.akamaized.net/v1/master/053b922097368021ef37d806509f6e4a2432a688/aljazeera-arabic/index.m3u8',
+    fallbackUrl: 'https://www.youtube.com/embed/bNyUyrR0PHo',
+    description: 'بث حي ومباشر لقناة الجزيرة الإخبارية - تغطية إخبارية مستمرة.',
+    isFeatured: true,
+    viewersCount: 65200
+  },
+  {
+    id: 'ch-alarabiya',
+    name: 'قناة العربية',
+    category: 'news',
+    country: 'السعودية',
+    quality: 'Full HD',
+    logo: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=150&auto=format&fit=crop&q=60',
+    type: 'hls',
+    streamUrl: 'https://live.alarabiya.net/alarabiya/live/playlist.m3u8',
+    fallbackUrl: 'https://www.youtube.com/embed/2M-x9s_lqX4',
+    description: 'قناة العربية الإخبارية - أنباء وتحليلات وتغطيات حيّة من حول العالم.',
+    isFeatured: true,
+    viewersCount: 58100
+  },
+  {
+    id: 'ch-skynews-ar',
+    name: 'سكاي نيوز عربية',
+    category: 'news',
+    country: 'الإمارات',
+    quality: 'HD',
+    logo: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=150&auto=format&fit=crop&q=60',
+    type: 'hls',
+    streamUrl: 'https://stream.skynewsarabia.com/hls/skynews_hd.m3u8',
+    fallbackUrl: 'https://www.youtube.com/embed/0_QW_lDk3B4',
+    description: 'البث المباشر لقناة سكاي نيوز عربية بالسرعة والموضوعية.',
+    isFeatured: false,
+    viewersCount: 42800
+  },
+  {
+    id: 'ch-france24-ar',
+    name: 'فرانس 24 (عربي)',
+    category: 'news',
+    country: 'فرنسا',
+    quality: 'HD',
+    logo: 'https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=150&auto=format&fit=crop&q=60',
+    type: 'hls',
+    streamUrl: 'https://stream.france24.com/hls/ar/live/2038753/f24_ar.m3u8',
+    fallbackUrl: 'https://www.france24.com/ar',
+    description: 'الأخبار الدولية باللغة العربية على مدار 24 ساعة.',
+    isFeatured: false,
+    viewersCount: 31400
+  },
+  {
+    id: 'ch-trt-arabi',
+    name: 'TRT عربي',
+    category: 'news',
+    country: 'تركيا',
+    quality: 'HD',
+    logo: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=150&auto=format&fit=crop&q=60',
+    type: 'hls',
+    streamUrl: 'https://tv-trtarabi.medya.trt.com.tr/master.m3u8',
+    fallbackUrl: 'https://www.trtarabi.com',
+    description: 'قناة TRT العربية الإخبارية والثقافية.',
+    isFeatured: false,
+    viewersCount: 26900
+  },
+
+  // --- ISLAMIC CHANNELS (DIRECT HLS .M3U8) ---
+  {
+    id: 'ch-saudi-quran',
+    name: 'قناة القرآن الكريم (مكة المكرمة)',
+    category: 'islamic',
+    country: 'السعودية',
+    quality: '4K Ultra',
+    logo: 'https://images.unsplash.com/photo-1542816417-0983cbe82752?w=150&auto=format&fit=crop&q=60',
+    type: 'hls',
+    streamUrl: 'https://shls-quran-prod-dub.savanacdn.net/out/v1/678a1b5c394f4bf2b2ec9103e33c7f99/index.m3u8',
+    fallbackUrl: 'https://www.youtube.com/embed/Y0W8V9m1wB4',
+    description: 'بث حي ومباشر 24/7 من المسجد الحرام بمكة المكرمة مع تلاوة القرآن.',
+    isFeatured: true,
+    viewersCount: 98300
+  },
+  {
+    id: 'ch-saudi-sunnah',
+    name: 'قناة السنة النبوية (المدينة المنورة)',
+    category: 'islamic',
+    country: 'السعودية',
+    quality: '4K Ultra',
+    logo: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?w=150&auto=format&fit=crop&q=60',
+    type: 'hls',
+    streamUrl: 'https://shls-sunna-prod-dub.savanacdn.net/out/v1/fa6164f9b2fa41a998bb55efbf6f5f3e/index.m3u8',
+    fallbackUrl: 'https://www.youtube.com/embed/J7wP1_q_sW0',
+    description: 'بث حي ومباشر من المسجد النبوي الشريف بالمدينة المنورة.',
+    isFeatured: true,
+    viewersCount: 84000
+  },
+
   // --- SPORTS CHANNELS ---
   {
     id: 'ch-ontime-1',
@@ -23,7 +125,7 @@ const DEFAULT_CHANNELS = [
     quality: 'Full HD',
     logo: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=150&auto=format&fit=crop&q=60',
     type: 'iframe',
-    streamUrl: 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1&enablejsapi=1',
+    streamUrl: 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1',
     fallbackUrl: 'https://www.youtube.com/embed/5_fQ_1nJpEE',
     description: 'البث المباشر لقناة ON Time Sports 1 لمتابعة الدوري المصري والبطولات القارية.',
     isFeatured: true,
@@ -37,7 +139,7 @@ const DEFAULT_CHANNELS = [
     quality: 'HD',
     logo: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=150&auto=format&fit=crop&q=60',
     type: 'iframe',
-    streamUrl: 'https://www.youtube.com/embed/ww9P1LqjV2E?autoplay=1&enablejsapi=1',
+    streamUrl: 'https://www.youtube.com/embed/ww9P1LqjV2E?autoplay=1',
     fallbackUrl: 'https://www.youtube.com/embed/ww9P1LqjV2E',
     description: 'الأخبار الرياضية والتغطيات المباشرة من beIN SPORTS.',
     isFeatured: true,
@@ -51,113 +153,11 @@ const DEFAULT_CHANNELS = [
     quality: 'HD',
     logo: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=150&auto=format&fit=crop&q=60',
     type: 'iframe',
-    streamUrl: 'https://www.youtube.com/embed/2g811V88880?autoplay=1&enablejsapi=1',
+    streamUrl: 'https://www.youtube.com/embed/2g811V88880?autoplay=1',
     fallbackUrl: 'https://www.youtube.com/embed/2g811V88880',
     description: 'ناقل دوري روشن السعودي للمحترفين والبطولات المحلية.',
     isFeatured: false,
     viewersCount: 41200
-  },
-  {
-    id: 'ch-alkass',
-    name: 'قنوات الكأس الرياضية',
-    category: 'sports',
-    country: 'قطر',
-    quality: 'HD',
-    logo: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=150&auto=format&fit=crop&q=60',
-    type: 'iframe',
-    streamUrl: 'https://www.youtube.com/embed/1_t9d_l8898?autoplay=1&enablejsapi=1',
-    fallbackUrl: 'https://www.youtube.com/embed/1_t9d_l8898',
-    description: 'تغطية البطولات الخليجية والأنشطة الرياضية الآسيوية.',
-    isFeatured: false,
-    viewersCount: 28700
-  },
-
-  // --- NEWS CHANNELS ---
-  {
-    id: 'ch-aljazeera-news',
-    name: 'الجزيرة الإخبارية',
-    category: 'news',
-    country: 'قطر',
-    quality: 'HD',
-    logo: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=150&auto=format&fit=crop&q=60',
-    type: 'iframe',
-    streamUrl: 'https://www.youtube-nocookie.com/embed/bNyUyrR0PHo?autoplay=1&enablejsapi=1',
-    fallbackUrl: 'https://www.youtube.com/embed/bNyUyrR0PHo',
-    description: 'بث حي ومباشر لقناة الجزيرة الإخبارية على مدار 24 ساعة.',
-    isFeatured: true,
-    viewersCount: 45200
-  },
-  {
-    id: 'ch-alarabiya',
-    name: 'قناة العربية',
-    category: 'news',
-    country: 'السعودية',
-    quality: 'HD',
-    logo: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=150&auto=format&fit=crop&q=60',
-    type: 'iframe',
-    streamUrl: 'https://www.youtube-nocookie.com/embed/2M-x9s_lqX4?autoplay=1&enablejsapi=1',
-    fallbackUrl: 'https://www.youtube.com/embed/2M-x9s_lqX4',
-    description: 'قناة العربية الإخبارية - أنباء وتحليلات وتغطيات حيّة من حول العالم.',
-    isFeatured: true,
-    viewersCount: 38100
-  },
-  {
-    id: 'ch-alqahera',
-    name: 'القاهرة الإخبارية',
-    category: 'news',
-    country: 'مصر',
-    quality: 'HD',
-    logo: 'https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=150&auto=format&fit=crop&q=60',
-    type: 'iframe',
-    streamUrl: 'https://www.youtube.com/embed/g20t-1gK7Xg?autoplay=1&enablejsapi=1',
-    fallbackUrl: 'https://www.youtube.com/embed/g20t-1gK7Xg',
-    description: 'عاصمة الخبر - تغطية شاملة للأحداث العربية والدولية.',
-    isFeatured: false,
-    viewersCount: 22400
-  },
-  {
-    id: 'ch-skynews-ar',
-    name: 'سكاي نيوز عربية',
-    category: 'news',
-    country: 'الإمارات',
-    quality: 'HD',
-    logo: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=150&auto=format&fit=crop&q=60',
-    type: 'iframe',
-    streamUrl: 'https://www.youtube.com/embed/0_QW_lDk3B4?autoplay=1&enablejsapi=1',
-    fallbackUrl: 'https://www.youtube.com/embed/0_QW_lDk3B4',
-    description: 'البث المباشر لقناة سكاي نيوز عربية بالسرعة والموضوعية.',
-    isFeatured: false,
-    viewersCount: 19800
-  },
-
-  // --- ISLAMIC CHANNELS ---
-  {
-    id: 'ch-saudi-quran',
-    name: 'قناة القرآن الكريم (مكة المكرمة)',
-    category: 'islamic',
-    country: 'السعودية',
-    quality: '4K Ultra',
-    logo: 'https://images.unsplash.com/photo-1542816417-0983cbe82752?w=150&auto=format&fit=crop&q=60',
-    type: 'iframe',
-    streamUrl: 'https://www.youtube.com/embed/Y0W8V9m1wB4?autoplay=1&enablejsapi=1',
-    fallbackUrl: 'https://www.youtube.com/embed/Y0W8V9m1wB4',
-    description: 'بث مباشر عالي الدقة 24 ساعة من المسجد الحرام بمكة المكرمة مع تلاوة القرآن.',
-    isFeatured: true,
-    viewersCount: 92300
-  },
-  {
-    id: 'ch-saudi-sunnah',
-    name: 'قناة السنة النبوية (المدينة المنورة)',
-    category: 'islamic',
-    country: 'السعودية',
-    quality: '4K Ultra',
-    logo: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?w=150&auto=format&fit=crop&q=60',
-    type: 'iframe',
-    streamUrl: 'https://www.youtube.com/embed/J7wP1_q_sW0?autoplay=1&enablejsapi=1',
-    fallbackUrl: 'https://www.youtube.com/embed/J7wP1_q_sW0',
-    description: 'بث مباشر من المسجد النبوي الشريف بالمدينة المنورة.',
-    isFeatured: true,
-    viewersCount: 71000
   },
 
   // --- DRAMA & ENTERTAINMENT ---
@@ -169,7 +169,7 @@ const DEFAULT_CHANNELS = [
     quality: 'HD',
     logo: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?w=150&auto=format&fit=crop&q=60',
     type: 'iframe',
-    streamUrl: 'https://www.youtube.com/embed/Xqz4W04g90A?autoplay=1&enablejsapi=1',
+    streamUrl: 'https://www.youtube.com/embed/Xqz4W04g90A?autoplay=1',
     fallbackUrl: 'https://www.youtube.com/embed/Xqz4W04g90A',
     description: 'قناة الترفيه الأولى والبرامج الحوارية والمسلسلات العربية.',
     isFeatured: true,
@@ -183,27 +183,11 @@ const DEFAULT_CHANNELS = [
     quality: 'HD',
     logo: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=150&auto=format&fit=crop&q=60',
     type: 'iframe',
-    streamUrl: 'https://www.youtube.com/embed/7X8m_v7S184?autoplay=1&enablejsapi=1',
+    streamUrl: 'https://www.youtube.com/embed/7X8m_v7S184?autoplay=1',
     fallbackUrl: 'https://www.youtube.com/embed/7X8m_v7S184',
     description: 'أفلام السينما العربية الحديثة والمعاصرة.',
     isFeatured: true,
     viewersCount: 47900
-  },
-
-  // --- DOCUMENTARY ---
-  {
-    id: 'ch-aljazeera-doc',
-    name: 'الجزيرة الوثائقية',
-    category: 'docu',
-    country: 'قطر',
-    quality: 'HD',
-    logo: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=150&auto=format&fit=crop&q=60',
-    type: 'iframe',
-    streamUrl: 'https://www.youtube.com/embed/93q-w00_s4c?autoplay=1&enablejsapi=1',
-    fallbackUrl: 'https://www.youtube.com/embed/93q-w00_s4c',
-    description: 'أفلام وثائقية واستكشافية في التاريخ والطبيعة والعلوم.',
-    isFeatured: true,
-    viewersCount: 31000
   },
 
   // --- KIDS ---
@@ -215,7 +199,7 @@ const DEFAULT_CHANNELS = [
     quality: 'HD',
     logo: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=150&auto=format&fit=crop&q=60',
     type: 'iframe',
-    streamUrl: 'https://www.youtube.com/embed/k8W9x1P9tT8?autoplay=1&enablejsapi=1',
+    streamUrl: 'https://www.youtube.com/embed/k8W9x1P9tT8?autoplay=1',
     fallbackUrl: 'https://www.youtube.com/embed/k8W9x1P9tT8',
     description: 'قناة شباب المستقبل - أنمي وبرامج كرتون مميزة.',
     isFeatured: true,
@@ -241,8 +225,8 @@ const DEFAULT_MATCHES = [
     stadium: 'ستاد القاهرة الدولي',
     score: '1 - 0',
     servers: [
-      { name: 'سيرفر 1 (Full HD)', url: 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1' },
-      { name: 'سيرفر 2 (سريع بدون تقطيع)', url: 'https://www.youtube.com/embed/ww9P1LqjV2E?autoplay=1' }
+      { name: 'سيرفر 1 (HLS HD Direct)', url: 'https://live-hls-web-aje.akamaized.net/v1/master/053b922097368021ef37d806509f6e4a2432a688/aljazeera-arabic/index.m3u8' },
+      { name: 'سيرفر 2 (YouTube Stream)', url: 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1' }
     ]
   },
   {
@@ -263,27 +247,7 @@ const DEFAULT_MATCHES = [
     score: '2 - 2',
     servers: [
       { name: 'سيرفر 1 (SSC HD)', url: 'https://www.youtube.com/embed/2g811V88880?autoplay=1' },
-      { name: 'سيرفر 2 (متعدد الجودات)', url: 'https://www.youtube.com/embed/1_t9d_l8898?autoplay=1' }
-    ]
-  },
-  {
-    id: 'match-3',
-    league: 'دوري أبطال أوروبا',
-    leagueFlag: '🇪🇺',
-    homeTeam: 'ريال مدريد',
-    homeLogo: '⚪',
-    awayTeam: 'مانشستر سيتي',
-    awayLogo: '🩵',
-    time: '22:00',
-    date: 'غداً',
-    status: 'upcoming',
-    channelName: 'بي إن سبورتس الإخبارية',
-    channelId: 'ch-bein-news',
-    commentator: 'حفيظ دراجي',
-    stadium: 'سانتياغو برنابيو',
-    score: 'vs',
-    servers: [
-      { name: 'سيرفر 1 (beIN Premium)', url: 'https://www.youtube.com/embed/ww9P1LqjV2E?autoplay=1' }
+      { name: 'سيرفر 2 (HLS Direct)', url: 'https://live.alarabiya.net/alarabiya/live/playlist.m3u8' }
     ]
   }
 ];
