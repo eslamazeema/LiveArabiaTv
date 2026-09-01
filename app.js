@@ -1,10 +1,10 @@
 /**
- * Arabia Live TV (arabialivetv.com) - Universal Stream Player & Smooth Scroll to Main Player
+ * بث مباشر للقنوات الفضائية (arabialivetv.com) - Universal Stream Player & Cache Auto-Refresh Logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // AUTO-REFRESH CACHE VERSION TO FORCE WORKING HLS STREAMS ON ALL DEVICES
-  const CURRENT_DATA_VERSION = 'altv_v5_hls_streams_fixed';
+  // AUTO-REFRESH CACHE VERSION TO FORCE WORKING HLS STREAMS & EXPANDED RADIOS ON ALL DEVICES
+  const CURRENT_DATA_VERSION = 'altv_v7_expanded_streams_audited';
   if (localStorage.getItem('altv_data_version') !== CURRENT_DATA_VERSION) {
     localStorage.setItem('altv_channels', JSON.stringify(DEFAULT_CHANNELS));
     localStorage.setItem('altv_matches', JSON.stringify(DEFAULT_MATCHES));
@@ -406,7 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
     articleTimeAgo.textContent = news.timeAgo || 'الآن';
     articleAuthor.textContent = news.author || 'التحرير الرياضي';
     articleImage.src = news.image;
-    articleContent.innerHTML = news.content || `<p>${news.summary}</p><p>تغطية حصرية مستمرة للأحداث والتطورات الميدانية الكبرى عبر منصة Arabia Live TV.</p>`;
+    articleContent.innerHTML = news.content || `<p>${news.summary}</p><p>تغطية حصرية مستمرة للأحداث والتطورات الميدانية الكبرى عبر منصة بث مباشر للقنوات الفضائية.</p>`;
 
     // Render Gallery Photos
     if (news.gallery && news.gallery.length > 0) {
