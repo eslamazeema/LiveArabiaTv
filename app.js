@@ -1,5 +1,5 @@
 /**
- * Arabia Live TV (arabialivetv.com) - Universal Dual HLS + Embed Player Logic
+ * Arabia Live TV (arabialivetv.com) - Universal Mobile & Desktop Stream Player
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const highlightsGrid = document.getElementById('highlightsGrid');
   const searchInput = document.getElementById('searchInput');
   const showFavsBtn = document.getElementById('showFavsBtn');
+  const mobilePlayOverlay = document.getElementById('mobilePlayOverlay');
 
   // Match Modal Elements
   const matchModalBackdrop = document.getElementById('matchModalBackdrop');
@@ -53,6 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const audioRadioDesc = document.getElementById('audioRadioDesc');
   const audioPlayPauseBtn = document.getElementById('audioPlayPauseBtn');
 
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
   // --- 1. RENDER CATEGORIES ---
   function renderCategories() {
     if (!categoriesContainer) return;
@@ -72,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 2. UNIVERSAL PLAYER (HLS .m3u8 + IFRAME EMBED) ---
+  // --- 2. UNIVERSAL MOBILE & DESKTOP STREAM PLAYER ---
   function playChannel(channel) {
     if (!channel) return;
     activeChannel = channel;
@@ -89,13 +92,14 @@ document.addEventListener('DOMContentLoaded', () => {
       externalStreamBtn.href = streamUrl;
     }
 
-    // Clean up previous HLS instance if any
+    if (mobilePlayOverlay) mobilePlayOverlay.style.display = 'none';
+
+    // Clean up previous HLS instance
     if (hlsInstance) {
       hlsInstance.destroy();
       hlsInstance = null;
     }
 
-    // Check if Stream URL is an HLS (.m3u8) file
     const isHls = streamUrl.includes('.m3u8');
 
     if (isHls && mainVideo) {
@@ -103,22 +107,28 @@ document.addEventListener('DOMContentLoaded', () => {
       mainIframe.src = '';
       mainVideo.style.display = 'block';
 
-      if (window.Hls && Hls.isSupported()) {
+      // iOS Native Safari HLS Check first (best for iPhone/iPad)
+      if (mainVideo.canPlayType('application/vnd.apple.mpegurl')) {
+        mainVideo.src = streamUrl;
+        mainVideo.play().catch(() => {
+          if (mobilePlayOverlay) mobilePlayOverlay.style.display = 'flex';
+        });
+      } else if (window.Hls && Hls.isSupported()) {
         hlsInstance = new Hls({
           enableWorker: true,
-          lowLatencyMode: true
+          lowLatencyMode: true,
+          backBufferLength: 90
         });
         hlsInstance.loadSource(streamUrl);
         hlsInstance.attachMedia(mainVideo);
         hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
-          mainVideo.play().catch(e => console.log('HLS Autoplay:', e));
+          mainVideo.play().catch(() => {
+            if (mobilePlayOverlay) mobilePlayOverlay.style.display = 'flex';
+          });
         });
-      } else if (mainVideo.canPlayType('application/vnd.apple.mpegurl')) {
-        mainVideo.src = streamUrl;
-        mainVideo.play().catch(e => console.log('Native HLS Autoplay:', e));
       }
     } else {
-      // Standard Iframe / Embed Stream
+      // Iframe / YouTube / Dailymotion Embed
       if (mainVideo) {
         mainVideo.pause();
         mainVideo.style.display = 'none';
@@ -132,12 +142,23 @@ document.addEventListener('DOMContentLoaded', () => {
     playerFavBtn.innerHTML = `<i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>`;
     playerFavBtn.style.color = isFav ? 'var(--gold)' : 'var(--text-muted)';
 
-    // Scroll to player smoothly if on mobile
-    if (window.innerWidth < 768) {
+    // Scroll smoothly to player on mobile screens
+    if (isMobile) {
       document.getElementById('playerCard').scrollIntoView({ behavior: 'smooth' });
     }
 
     renderChannelsGrid(getFilteredChannels());
+  }
+
+  // Mobile Tap-To-Play Overlay Event Listener
+  if (mobilePlayOverlay) {
+    mobilePlayOverlay.addEventListener('click', () => {
+      mobilePlayOverlay.style.display = 'none';
+      if (mainVideo && mainVideo.style.display !== 'none') {
+        mainVideo.muted = false;
+        mainVideo.play();
+      }
+    });
   }
 
   // --- 3. FILTER AND RENDER CHANNELS ---
@@ -280,8 +301,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Setup Servers
     const servers = match.servers && match.servers.length > 0 ? match.servers : [
-      { name: 'سيرفر 1 (HD)', url: 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1' },
-      { name: 'سيرفر 2 (FHD)', url: 'https://www.youtube.com/embed/ww9P1LqjV2E?autoplay=1' }
+      { name: 'سيرفر 1 (HD)', url: 'https://live-hls-web-aje.akamaized.net/v1/master/053b922097368021ef37d806509f6e4a2432a688/aljazeera-arabic/index.m3u8' },
+      { name: 'سيرفر 2 (YouTube)', url: 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1' }
     ];
 
     serverSelector.innerHTML = servers.map((srv, idx) => `
@@ -290,7 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </button>
     `).join('');
 
-    // Set Initial Stream URL
     modalPlayerFrame.src = servers[0].url;
 
     serverSelector.querySelectorAll('.server-btn').forEach(btn => {
@@ -369,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
     activeRadio = radio;
     audioEl.src = radio.streamUrl;
     audioEl.play().catch(e => {
-      console.log('Audio autoplay blocked, requires user click:', e);
+      console.log('Audio autoplay blocked on mobile until tap:', e);
     });
     
     audioRadioName.textContent = radio.name;
