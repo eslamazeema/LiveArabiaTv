@@ -1,16 +1,21 @@
 /**
- * بث مباشر للقنوات الفضائية (arabialivetv.com) - Universal Stream Player, Navigation Arrows & Channel Switching Engine
+ * بث مباشر للقنوات الفضائية (arabialivetv.com) - Universal Stream Player Engine
+ * Supports Per-Channel & Per-Radio Deep-Linking and Social Sharing
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // AUTO-REFRESH CACHE VERSION TO FORCE WORKING STREAMS & DEEP-LINKING SUPPORT
-  const CURRENT_DATA_VERSION = 'altv_v10_arrows_switcher';
-  if (localStorage.getItem('altv_data_version') !== CURRENT_DATA_VERSION) {
+  // PRESERVE USER-EDITED DATA IN LOCALSTORAGE; INITIALIZE DEFAULTS IF EMPTY
+  if (!localStorage.getItem('altv_channels')) {
     localStorage.setItem('altv_channels', JSON.stringify(DEFAULT_CHANNELS));
+  }
+  if (!localStorage.getItem('altv_matches')) {
     localStorage.setItem('altv_matches', JSON.stringify(DEFAULT_MATCHES));
+  }
+  if (!localStorage.getItem('altv_sports_news')) {
     localStorage.setItem('altv_sports_news', JSON.stringify(DEFAULT_SPORTS_NEWS));
+  }
+  if (!localStorage.getItem('altv_radios')) {
     localStorage.setItem('altv_radios', JSON.stringify(DEFAULT_RADIOS));
-    localStorage.setItem('altv_data_version', CURRENT_DATA_VERSION);
   }
 
   // Initialize state from LocalStorage or channels_data.js defaults
@@ -31,11 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // DOM Elements
   const categoriesContainer = document.getElementById('categoriesContainer');
   const channelsGrid = document.getElementById('channelsGrid');
-  const channelsScrollRight = document.getElementById('channelsScrollRight');
-  const channelsScrollLeft = document.getElementById('channelsScrollLeft');
-  const prevChannelBtn = document.getElementById('prevChannelBtn');
-  const nextChannelBtn = document.getElementById('nextChannelBtn');
-
   const matchesList = document.getElementById('matchesList');
   const sportsNewsGrid = document.getElementById('sportsNewsGrid');
   const radioGrid = document.getElementById('radioGrid');
@@ -45,17 +45,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const mobilePlayOverlay = document.getElementById('mobilePlayOverlay');
   const tickerRealtimeContent = document.getElementById('tickerRealtimeContent');
 
-  // Share Modal Elements
-  const shareChannelBtn = document.getElementById('shareChannelBtn');
+  // Slider Arrows
+  const channelsScrollRight = document.getElementById('channelsScrollRight');
+  const channelsScrollLeft = document.getElementById('channelsScrollLeft');
+  const prevChannelBtn = document.getElementById('prevChannelBtn');
+  const nextChannelBtn = document.getElementById('nextChannelBtn');
+
+  // Social Share Modal Elements
   const shareModalBackdrop = document.getElementById('shareModalBackdrop');
   const closeShareModalBtn = document.getElementById('closeShareModalBtn');
-  const shareModalText = document.getElementById('shareModalText');
-  const shareLinkInput = document.getElementById('shareLinkInput');
-  const copyShareLinkBtn = document.getElementById('copyShareLinkBtn');
+  const shareChannelBtn = document.getElementById('shareChannelBtn');
   const shareWhatsapp = document.getElementById('shareWhatsapp');
   const shareFacebook = document.getElementById('shareFacebook');
   const shareTelegram = document.getElementById('shareTelegram');
   const shareTwitter = document.getElementById('shareTwitter');
+  const shareLinkInput = document.getElementById('shareLinkInput');
+  const copyShareLinkBtn = document.getElementById('copyShareLinkBtn');
 
   // Article Modal Elements
   const articleModalBackdrop = document.getElementById('articleModalBackdrop');
@@ -128,16 +133,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 3. UNIVERSAL STREAM PLAYER WITH DEEP-LINKING URL HASH UPDATER ---
+  // --- 3. UNIVERSAL STREAM PLAYER ---
   function playChannel(channel, shouldScroll = true) {
     if (!channel) return;
     activeChannel = channel;
     const streamUrl = channel.streamUrl || channel.fallbackUrl;
 
-    // UPDATE DEEP-LINKING URL HASH (e.g. arabialivetv.com/#ch-aljazeera-news)
-    if (window.history.replaceState) {
-      window.history.replaceState(null, null, `#${channel.id}`);
-    }
+    // Update URL hash for per-channel deep-linking
+    window.location.hash = channel.id;
 
     // Update player details
     playerChannelLogo.src = channel.logo;
@@ -206,110 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderChannelsGrid(getFilteredChannels());
   }
 
-  // --- 4. NEXT / PREVIOUS CHANNEL SWITCHER ---
-  function switchChannel(direction) {
-    const list = getFilteredChannels();
-    if (list.length === 0) return;
-
-    let currentIndex = list.findIndex(c => c.id === (activeChannel ? activeChannel.id : ''));
-    if (currentIndex === -1) currentIndex = 0;
-
-    let targetIndex = currentIndex + direction;
-    if (targetIndex >= list.length) targetIndex = 0;
-    if (targetIndex < 0) targetIndex = list.length - 1;
-
-    playChannel(list[targetIndex], true);
-  }
-
-  if (prevChannelBtn) {
-    prevChannelBtn.addEventListener('click', () => switchChannel(-1));
-  }
-
-  if (nextChannelBtn) {
-    nextChannelBtn.addEventListener('click', () => switchChannel(1));
-  }
-
-  // --- 5. SLIDER SCROLL ARROWS (RIGHT & LEFT) ---
-  if (channelsScrollRight && channelsGrid) {
-    channelsScrollRight.addEventListener('click', () => {
-      channelsGrid.scrollBy({ left: 340, behavior: 'smooth' });
-    });
-  }
-
-  if (channelsScrollLeft && channelsGrid) {
-    channelsScrollLeft.addEventListener('click', () => {
-      channelsGrid.scrollBy({ left: -340, behavior: 'smooth' });
-    });
-  }
-
-  // --- 6. DEEP-LINKING DETECTION ON BOOT ---
-  function getChannelFromUrlHash() {
-    const hash = window.location.hash.replace('#', '').trim();
-    if (hash) {
-      const match = channels.find(c => c.id === hash);
-      if (match) return match;
-    }
-    return null;
-  }
-
-  // --- 7. SOCIAL SHARE MECHANISM FOR CHANNELS & PAGES ---
-  function openShareModal() {
-    if (!activeChannel) return;
-    const directUrl = `${window.location.origin}${window.location.pathname}#${activeChannel.id}`;
-    const shareText = `شاهد البث المباشر لقناة ${activeChannel.name} مجاناً وبدون تقطيع عبر منصة بث مباشر للقنوات الفضائية: ${directUrl}`;
-
-    shareLinkInput.value = directUrl;
-    shareModalText.textContent = `انشر رابط البث المباشر لقناة "${activeChannel.name}" لأصدقائك:`;
-
-    // Social share links
-    shareWhatsapp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-    shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(directUrl)}`;
-    shareTelegram.href = `https://t.me/share/url?url=${encodeURIComponent(directUrl)}&text=${encodeURIComponent(`شاهد ${activeChannel.name} بث مباشر`)}`;
-    shareTwitter.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
-
-    // Try native share API first on mobile devices
-    if (navigator.share) {
-      navigator.share({
-        title: `بث مباشر: ${activeChannel.name}`,
-        text: `مشاهدة بث مباشر لقناة ${activeChannel.name}`,
-        url: directUrl
-      }).catch(() => {
-        shareModalBackdrop.classList.add('active');
-      });
-    } else {
-      shareModalBackdrop.classList.add('active');
-    }
-  }
-
-  if (shareChannelBtn) {
-    shareChannelBtn.addEventListener('click', openShareModal);
-  }
-
-  if (closeShareModalBtn) {
-    closeShareModalBtn.addEventListener('click', () => {
-      shareModalBackdrop.classList.remove('active');
-    });
-  }
-
-  if (shareModalBackdrop) {
-    shareModalBackdrop.addEventListener('click', (e) => {
-      if (e.target === shareModalBackdrop) {
-        shareModalBackdrop.classList.remove('active');
-      }
-    });
-  }
-
-  if (copyShareLinkBtn) {
-    copyShareLinkBtn.addEventListener('click', () => {
-      shareLinkInput.select();
-      document.execCommand('copy');
-      copyShareLinkBtn.innerHTML = '<i class="fa-solid fa-check"></i> تم النسخ!';
-      setTimeout(() => {
-        copyShareLinkBtn.innerHTML = '<i class="fa-regular fa-copy"></i> نسخ الرابط';
-      }, 2500);
-    });
-  }
-
   // Mobile Tap Overlay
   if (mobilePlayOverlay) {
     mobilePlayOverlay.addEventListener('click', () => {
@@ -321,9 +220,121 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 8. FILTER AND RENDER CHANNELS ---
+  // --- 4. CHANNEL SWITCHER BUTTONS (NEXT / PREVIOUS) ---
+  if (prevChannelBtn) {
+    prevChannelBtn.addEventListener('click', () => {
+      const activeChannelsList = getFilteredChannels();
+      if (!activeChannel || activeChannelsList.length === 0) return;
+      const currIdx = activeChannelsList.findIndex(c => c.id === activeChannel.id);
+      const prevIdx = (currIdx - 1 + activeChannelsList.length) % activeChannelsList.length;
+      playChannel(activeChannelsList[prevIdx], true);
+    });
+  }
+
+  if (nextChannelBtn) {
+    nextChannelBtn.addEventListener('click', () => {
+      const activeChannelsList = getFilteredChannels();
+      if (!activeChannel || activeChannelsList.length === 0) return;
+      const currIdx = activeChannelsList.findIndex(c => c.id === activeChannel.id);
+      const nextIdx = (currIdx + 1) % activeChannelsList.length;
+      playChannel(activeChannelsList[nextIdx], true);
+    });
+  }
+
+  // --- 5. SLIDER ARROWS FOR CHANNELS GRID ---
+  if (channelsScrollRight && channelsGrid) {
+    channelsScrollRight.addEventListener('click', () => {
+      channelsGrid.scrollBy({ left: 300, behavior: 'smooth' });
+    });
+  }
+
+  if (channelsScrollLeft && channelsGrid) {
+    channelsScrollLeft.addEventListener('click', () => {
+      channelsGrid.scrollBy({ left: -300, behavior: 'smooth' });
+    });
+  }
+
+  // --- 6. SOCIAL SHARE MODAL SYSTEM (TV CHANNELS & RADIOS) ---
+  function openChannelShareModal(channel) {
+    if (!shareModalBackdrop) return;
+    const shareTitle = document.querySelector('#shareModalBackdrop h3');
+    if (shareTitle) {
+      shareTitle.innerHTML = `<i class="fa-solid fa-share-nodes"></i> مشاركة البث المباشر: ${channel.name}`;
+    }
+    const shareModalText = document.getElementById('shareModalText');
+    if (shareModalText) {
+      shareModalText.textContent = `انشر رابط بث قناة "${channel.name}" مباشرة لأصدقائك في شبكات التواصل الاجتماعي:`;
+    }
+
+    const shareUrl = `${window.location.origin}${window.location.pathname}#${channel.id}`;
+    const shareText = `شاهد بث حي ومباشر لقناة "${channel.name}" بجودة عالية عبر منصة arabialivetv.com 📺:`;
+
+    if (shareWhatsapp) shareWhatsapp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+    if (shareFacebook) shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    if (shareTelegram) shareTelegram.href = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
+    if (shareTwitter) shareTwitter.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    if (shareLinkInput) shareLinkInput.value = shareUrl;
+
+    shareModalBackdrop.classList.add('active');
+  }
+
+  function openRadioShareModal(radio) {
+    if (!shareModalBackdrop) return;
+    const shareTitle = document.querySelector('#shareModalBackdrop h3');
+    if (shareTitle) {
+      shareTitle.innerHTML = `<i class="fa-solid fa-radio" style="color: var(--secondary);"></i> مشاركة بث إذاعة: ${radio.name}`;
+    }
+    const shareModalText = document.getElementById('shareModalText');
+    if (shareModalText) {
+      shareModalText.textContent = `انشر رابط بث إذاعة "${radio.name}" مباشرة لأصدقائك في شبكات التواصل الاجتماعي:`;
+    }
+
+    const shareUrl = `${window.location.origin}${window.location.pathname}#${radio.id}`;
+    const shareText = `استمع الآن إلى بث حي ومباشر لإذاعة "${radio.name}" بصوت نقي عبر منصة arabialivetv.com 🎙️📻:`;
+
+    if (shareWhatsapp) shareWhatsapp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+    if (shareFacebook) shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    if (shareTelegram) shareTelegram.href = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
+    if (shareTwitter) shareTwitter.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    if (shareLinkInput) shareLinkInput.value = shareUrl;
+
+    window.location.hash = radio.id;
+    shareModalBackdrop.classList.add('active');
+  }
+
+  if (shareChannelBtn) {
+    shareChannelBtn.addEventListener('click', () => {
+      if (activeChannel) openChannelShareModal(activeChannel);
+    });
+  }
+
+  if (closeShareModalBtn) {
+    closeShareModalBtn.addEventListener('click', () => {
+      shareModalBackdrop.classList.remove('active');
+    });
+  }
+
+  if (shareModalBackdrop) {
+    shareModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === shareModalBackdrop) shareModalBackdrop.classList.remove('active');
+    });
+  }
+
+  if (copyShareLinkBtn && shareLinkInput) {
+    copyShareLinkBtn.addEventListener('click', () => {
+      shareLinkInput.select();
+      document.execCommand('copy');
+      copyShareLinkBtn.innerHTML = '<i class="fa-solid fa-check"></i> تم النسخ!';
+      setTimeout(() => {
+        copyShareLinkBtn.innerHTML = '<i class="fa-regular fa-copy"></i> نسخ الرابط';
+      }, 2500);
+    });
+  }
+
+  // --- 7. FILTER AND RENDER CHANNELS ---
   function getFilteredChannels() {
-    let result = channels;
+    let activeChannelsList = JSON.parse(localStorage.getItem('altv_channels')) || channels;
+    let result = activeChannelsList;
 
     if (currentCategory === 'favs') {
       result = result.filter(c => favorites.includes(c.id));
@@ -388,7 +399,8 @@ document.addEventListener('DOMContentLoaded', () => {
       card.addEventListener('click', (e) => {
         if (e.target.closest('.fav-btn')) return;
         const chId = card.dataset.id;
-        const targetCh = channels.find(c => c.id === chId);
+        const activeChannelsList = JSON.parse(localStorage.getItem('altv_channels')) || channels;
+        const targetCh = activeChannelsList.find(c => c.id === chId);
         if (targetCh) playChannel(targetCh, true);
       });
     });
@@ -415,21 +427,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- 9. RENDER DAILY MATCH CENTER & LIVE STREAM MODAL ---
+  // --- 8. RENDER DAILY MATCH CENTER & LIVE STREAM MODAL ---
   function renderMatches() {
     if (!matchesList) return;
-    matchesList.innerHTML = matches.map(m => `
+    const activeMatches = JSON.parse(localStorage.getItem('altv_matches')) || matches;
+    matchesList.innerHTML = activeMatches.map(m => `
       <div class="match-item" data-match-id="${m.id}">
         <div class="match-league">
-          <span>${m.leagueFlag} ${m.league}</span>
+          <span>${m.leagueFlag || '🏆'} ${m.league}</span>
           <span class="match-status-tag ${m.status === 'live' ? 'status-live' : 'status-upcoming'}">
             ${m.status === 'live' ? '🔴 مباشر الآن' : `⏳ ${m.date} ${m.time}`}
           </span>
         </div>
         <div class="match-teams">
-          <span>${m.homeLogo} ${m.homeTeam}</span>
+          <span>${m.homeLogo || '⚽'} ${m.homeTeam}</span>
           <span class="match-score">${m.score}</span>
-          <span>${m.awayTeam} ${m.awayLogo}</span>
+          <span>${m.awayTeam} ${m.awayLogo || '⚽'}</span>
         </div>
         <div class="match-channel">
           <span><i class="fa-solid fa-tv"></i> ${m.channelName}</span>
@@ -443,7 +456,8 @@ document.addEventListener('DOMContentLoaded', () => {
     matchesList.querySelectorAll('.match-item').forEach(item => {
       item.addEventListener('click', () => {
         const mId = item.dataset.matchId;
-        const targetMatch = matches.find(m => m.id === mId);
+        const activeMatchesList = JSON.parse(localStorage.getItem('altv_matches')) || matches;
+        const targetMatch = activeMatchesList.find(m => m.id === mId);
         if (targetMatch) openMatchModal(targetMatch);
       });
     });
@@ -453,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!matchModalBackdrop) return;
 
     modalMatchTitle.innerHTML = `⚽ مشاهدة مباراة: ${match.homeTeam} vs ${match.awayTeam} بث مباشر`;
-    modalMatchMeta.textContent = `🏆 ${match.league} • 🎤 المعلق: ${match.commentator} • 📍 ${match.stadium || 'الملعب الرئيسي'}`;
+    modalMatchMeta.textContent = `🏆 ${match.league} • 🎤 المعلق: ${match.commentator || 'غير محدد'} • 📍 ${match.stadium || 'الملعب الرئيسي'}`;
 
     const servers = match.servers && match.servers.length > 0 ? match.servers : [
       { name: 'سيرفر 1 (HLS HD Direct)', url: 'https://live-hls-web-aje.akamaized.net/v1/master/053b922097368021ef37d806509f6e4a2432a688/aljazeera-arabic/index.m3u8' },
@@ -495,10 +509,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 10. RENDER REALTIME SPORTS NEWS GRID & FULL ARTICLE MODAL ---
+  // --- 9. RENDER REALTIME SPORTS NEWS GRID & FULL ARTICLE MODAL ---
   function renderSportsNews() {
     if (!sportsNewsGrid) return;
-    sportsNewsGrid.innerHTML = sportsNews.map(news => `
+    const activeNews = JSON.parse(localStorage.getItem('altv_sports_news')) || sportsNews;
+    sportsNewsGrid.innerHTML = activeNews.map(news => `
       <div class="sports-news-card" data-news-id="${news.id}" style="cursor: pointer;">
         <div class="news-img-wrapper">
           <img src="${news.image}" alt="${news.title}">
@@ -508,7 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <h3 class="news-title">${news.title}</h3>
           <p class="news-summary">${news.summary}</p>
           <div class="news-meta">
-            <span><i class="fa-regular fa-clock" style="color: var(--primary);"></i> ${news.timeAgo}</span>
+            <span><i class="fa-regular fa-clock" style="color: var(--primary);"></i> ${news.timeAgo || 'الآن'}</span>
             <span style="color: var(--gold); font-weight:700;">اقرأ الخبر كاملاً ←</span>
           </div>
         </div>
@@ -518,7 +533,8 @@ document.addEventListener('DOMContentLoaded', () => {
     sportsNewsGrid.querySelectorAll('.sports-news-card').forEach(card => {
       card.addEventListener('click', () => {
         const nId = card.dataset.newsId;
-        const targetNews = sportsNews.find(n => n.id === nId);
+        const activeNewsList = JSON.parse(localStorage.getItem('altv_sports_news')) || sportsNews;
+        const targetNews = activeNewsList.find(n => n.id === nId);
         if (targetNews) openArticleModal(targetNews);
       });
     });
@@ -563,26 +579,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 11. RENDER RADIO STATIONS ---
+  // --- 10. RENDER RADIO STATIONS WITH SOCIAL SHARE BUTTON ---
   function renderRadios() {
     if (!radioGrid) return;
-    radioGrid.innerHTML = radios.map(r => `
+    const activeRadios = JSON.parse(localStorage.getItem('altv_radios')) || radios;
+    radioGrid.innerHTML = activeRadios.map(r => `
       <div class="radio-card ${activeRadio && activeRadio.id === r.id ? 'playing' : ''}" data-id="${r.id}">
         <div class="radio-icon">
           <i class="fa-solid ${r.icon || 'fa-radio'}"></i>
         </div>
-        <div class="radio-info">
-          <h4>${r.name}</h4>
-          <p>${r.description}</p>
+        <div class="radio-info" style="flex: 1;">
+          <h4 style="font-size: 1.05rem; font-weight: 800; color: #fff;">${r.name}</h4>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">${r.description || 'بث صوّتي حي ومباشر'}</p>
         </div>
+        <button class="btn-icon share-radio-btn" data-radio-id="${r.id}" style="padding: 6px 14px; font-size: 0.8rem; border-radius: 50px; color: var(--gold); border-color: rgba(255,215,0,0.4);" title="مشاركة بث إذاعة الراديو">
+          <i class="fa-solid fa-share-nodes"></i> مشاركة
+        </button>
       </div>
     `).join('');
 
     radioGrid.querySelectorAll('.radio-card').forEach(card => {
-      card.addEventListener('click', () => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.share-radio-btn')) return;
         const rId = card.dataset.id;
-        const selectedRadio = radios.find(r => r.id === rId);
+        const activeRadiosList = JSON.parse(localStorage.getItem('altv_radios')) || radios;
+        const selectedRadio = activeRadiosList.find(r => r.id === rId);
         if (selectedRadio) playRadio(selectedRadio);
+      });
+    });
+
+    radioGrid.querySelectorAll('.share-radio-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const rId = btn.dataset.radioId;
+        const activeRadiosList = JSON.parse(localStorage.getItem('altv_radios')) || radios;
+        const targetRad = activeRadiosList.find(r => r.id === rId);
+        if (targetRad) openRadioShareModal(targetRad);
       });
     });
   }
@@ -614,7 +646,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 12. RENDER HIGHLIGHTS VOD ---
+  // --- 11. RENDER HIGHLIGHTS VOD ---
   function renderHighlights() {
     if (!highlightsGrid) return;
     highlightsGrid.innerHTML = highlights.map(h => `
@@ -681,11 +713,30 @@ document.addEventListener('DOMContentLoaded', () => {
   initRealtimeTicker();
   renderCategories();
 
-  // Check URL Hash for Direct Channel Deep-Link
-  const urlChannel = getChannelFromUrlHash();
-  activeChannel = urlChannel || channels.find(c => c.isFeatured) || channels[0];
+  const activeChannelsList = JSON.parse(localStorage.getItem('altv_channels')) || channels;
+  const activeRadiosList = JSON.parse(localStorage.getItem('altv_radios')) || radios;
 
-  playChannel(activeChannel, !!urlChannel); // Scroll if opened via direct deep link
+  // Auto-play from URL Hash (Radio or TV Channel)
+  if (window.location.hash) {
+    const hashId = window.location.hash.replace('#', '');
+    const targetChannel = activeChannelsList.find(c => c.id === hashId);
+    const targetRadio = activeRadiosList.find(r => r.id === hashId);
+
+    if (targetChannel) {
+      playChannel(targetChannel, false);
+    } else if (targetRadio) {
+      playRadio(targetRadio);
+      const radioSec = document.getElementById('radioSection');
+      if (radioSec) radioSec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      activeChannel = activeChannelsList.find(c => c.isFeatured) || activeChannelsList[0];
+      playChannel(activeChannel, false);
+    }
+  } else {
+    activeChannel = activeChannelsList.find(c => c.isFeatured) || activeChannelsList[0];
+    playChannel(activeChannel, false);
+  }
+
   renderMatches();
   renderSportsNews();
   renderRadios();
