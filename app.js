@@ -1,10 +1,10 @@
 /**
- * Arabia Live TV (arabialivetv.com) - Universal Stream Player & Cache Auto-Refresh Logic
+ * Arabia Live TV (arabialivetv.com) - Universal Stream Player & Smooth Scroll to Main Player
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   // AUTO-REFRESH CACHE VERSION TO FORCE WORKING HLS STREAMS ON ALL DEVICES
-  const CURRENT_DATA_VERSION = 'altv_v4_hls_streams_fixed';
+  const CURRENT_DATA_VERSION = 'altv_v5_hls_streams_fixed';
   if (localStorage.getItem('altv_data_version') !== CURRENT_DATA_VERSION) {
     localStorage.setItem('altv_channels', JSON.stringify(DEFAULT_CHANNELS));
     localStorage.setItem('altv_matches', JSON.stringify(DEFAULT_MATCHES));
@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Player Elements
   const mainIframe = document.getElementById('mainIframe');
   const mainVideo = document.getElementById('mainVideo');
+  const playerCard = document.getElementById('playerCard');
   const playerChannelLogo = document.getElementById('playerChannelLogo');
   const playerChannelName = document.getElementById('playerChannelName');
   const playerChannelDesc = document.getElementById('playerChannelDesc');
@@ -76,8 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const audioRadioName = document.getElementById('audioRadioName');
   const audioRadioDesc = document.getElementById('audioRadioDesc');
   const audioPlayPauseBtn = document.getElementById('audioPlayPauseBtn');
-
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   // --- 1. REALTIME NEWS TICKER ENGINE ---
   function initRealtimeTicker() {
@@ -112,8 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 3. UNIVERSAL STREAM PLAYER ---
-  function playChannel(channel) {
+  // --- 3. UNIVERSAL STREAM PLAYER WITH AUTOMATIC SCROLL TO PLAYER AT TOP ---
+  function playChannel(channel, shouldScroll = true) {
     if (!channel) return;
     activeChannel = channel;
     const streamUrl = channel.streamUrl || channel.fallbackUrl;
@@ -177,8 +176,9 @@ document.addEventListener('DOMContentLoaded', () => {
     playerFavBtn.innerHTML = `<i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>`;
     playerFavBtn.style.color = isFav ? 'var(--gold)' : 'var(--text-muted)';
 
-    if (isMobile) {
-      document.getElementById('playerCard').scrollIntoView({ behavior: 'smooth' });
+    // AUTOMATICALLY SCROLL TO TOP PLAYER SCREEN ON ALL DEVICES
+    if (shouldScroll && playerCard) {
+      playerCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     renderChannelsGrid(getFilteredChannels());
@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.closest('.fav-btn')) return;
         const chId = card.dataset.id;
         const targetCh = channels.find(c => c.id === chId);
-        if (targetCh) playChannel(targetCh);
+        if (targetCh) playChannel(targetCh, true);
       });
     });
 
@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('altv_favorites', JSON.stringify(favorites));
     filterAndRenderChannels();
     if (activeChannel && activeChannel.id === chId) {
-      playChannel(activeChannel);
+      playChannel(activeChannel, false);
     }
   }
 
@@ -510,7 +510,9 @@ document.addEventListener('DOMContentLoaded', () => {
     mainIframe.style.display = 'block';
     mainIframe.src = videoUrl;
     playerChannelName.textContent = 'ملخص فيديو مميز';
-    document.getElementById('playerCard').scrollIntoView({ behavior: 'smooth' });
+    if (playerCard) {
+      playerCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   // Search Listener
@@ -552,7 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial Boot
   initRealtimeTicker();
   renderCategories();
-  playChannel(activeChannel);
+  playChannel(activeChannel, false); // Boot up without forced scroll
   renderMatches();
   renderSportsNews();
   renderRadios();
