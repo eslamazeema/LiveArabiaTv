@@ -1,5 +1,5 @@
 /**
- * Arabia Live TV (arabialivetv.com) - Main Application Logic
+ * Arabia Live TV (arabialivetv.com) - Main Application Logic with Stream Fallbacks
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -266,7 +266,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Close modal when clicking backdrop outside content
   if (matchModalBackdrop) {
     matchModalBackdrop.addEventListener('click', (e) => {
       if (e.target === matchModalBackdrop) {
@@ -324,7 +323,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function playRadio(radio) {
     activeRadio = radio;
     audioEl.src = radio.streamUrl;
-    audioEl.play().catch(() => console.log('Audio autoplay prevented'));
+    audioEl.play().catch(() => {
+      console.log('Audio autoplay prevented, user interaction needed.');
+    });
     
     audioRadioName.textContent = radio.name;
     audioRadioDesc.textContent = radio.description;

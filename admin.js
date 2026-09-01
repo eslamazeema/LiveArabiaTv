@@ -1,14 +1,63 @@
 /**
- * Arabia Live TV (arabialivetv.com) - Admin Control Panel Logic
+ * Arabia Live TV (arabialivetv.com) - Authenticated Admin Control Panel Logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Credentials (Default: admin / admin123)
+  const ADMIN_USER = 'admin';
+  const ADMIN_PASS = 'admin123';
+
+  // DOM Auth Elements
+  const loginBackdrop = document.getElementById('loginBackdrop');
+  const adminMainContent = document.getElementById('adminMainContent');
+  const adminLoginForm = document.getElementById('adminLoginForm');
+  const loginErrorMsg = document.getElementById('loginErrorMsg');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  // Check Auth State
+  function checkAuth() {
+    const isAuth = sessionStorage.getItem('altv_admin_auth') === 'true';
+    if (isAuth) {
+      if (loginBackdrop) loginBackdrop.classList.remove('active');
+      if (adminMainContent) adminMainContent.style.display = 'block';
+    } else {
+      if (loginBackdrop) loginBackdrop.classList.add('active');
+      if (adminMainContent) adminMainContent.style.display = 'none';
+    }
+  }
+
+  // Handle Login
+  if (adminLoginForm) {
+    adminLoginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const u = document.getElementById('loginUsername').value.trim();
+      const p = document.getElementById('loginPassword').value.trim();
+
+      if (u === ADMIN_USER && p === ADMIN_PASS) {
+        sessionStorage.setItem('altv_admin_auth', 'true');
+        loginErrorMsg.style.display = 'none';
+        checkAuth();
+        renderAllTables();
+      } else {
+        loginErrorMsg.style.display = 'block';
+      }
+    });
+  }
+
+  // Handle Logout
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      sessionStorage.removeItem('altv_admin_auth');
+      checkAuth();
+    });
+  }
+
   // Load data or defaults
   let channels = JSON.parse(localStorage.getItem('altv_channels')) || DEFAULT_CHANNELS;
   let matches = JSON.parse(localStorage.getItem('altv_matches')) || DEFAULT_MATCHES;
   let sportsNews = JSON.parse(localStorage.getItem('altv_sports_news')) || DEFAULT_SPORTS_NEWS;
 
-  // DOM Elements
+  // DOM Data Elements
   const channelsTableBody = document.getElementById('channelsTableBody');
   const matchesTableBody = document.getElementById('matchesTableBody');
   const sportsNewsTableBody = document.getElementById('sportsNewsTableBody');
@@ -17,7 +66,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const addNewsForm = document.getElementById('addNewsForm');
   const resetDataBtn = document.getElementById('resetDataBtn');
 
-  // RENDER CHANNELS TABLE
+  // EDIT MODAL ELEMENTS
+  const editChannelModalBackdrop = document.getElementById('editChannelModalBackdrop');
+  const closeEditModalBtn = document.getElementById('closeEditModalBtn');
+  const editChannelForm = document.getElementById('editChannelForm');
+
+  // RENDER CHANNELS TABLE WITH EDIT & DELETE
   function renderChannelsTable() {
     if (!channelsTableBody) return;
     channelsTableBody.innerHTML = channels.map((ch) => `
@@ -29,10 +83,16 @@ document.addEventListener('DOMContentLoaded', () => {
         <td><span class="badge-quality">${ch.category}</span></td>
         <td>${ch.country}</td>
         <td>${ch.quality}</td>
+        <td><code style="font-size:0.7rem; color:var(--text-muted);">${(ch.streamUrl || '').substring(0, 30)}...</code></td>
         <td>
-          <button class="btn-icon" onclick="deleteChannel('${ch.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3);">
-            <i class="fa-solid fa-trash"></i> حذف
-          </button>
+          <div style="display:flex; gap:8px;">
+            <button class="btn-icon" onclick="editChannel('${ch.id}')" style="color: var(--primary); border-color: rgba(0,230,118,0.4);">
+              <i class="fa-solid fa-pen"></i> تعديل
+            </button>
+            <button class="btn-icon" onclick="deleteChannel('${ch.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3);">
+              <i class="fa-solid fa-trash"></i> حذف
+            </button>
+          </div>
         </td>
       </tr>
     `).join('');
@@ -81,6 +141,57 @@ document.addEventListener('DOMContentLoaded', () => {
     `).join('');
   }
 
+  // OPEN EDIT CHANNEL MODAL
+  window.editChannel = (id) => {
+    const ch = channels.find(c => c.id === id);
+    if (!ch) return;
+
+    document.getElementById('editChId').value = ch.id;
+    document.getElementById('editChName').value = ch.name;
+    document.getElementById('editChCategory').value = ch.category;
+    document.getElementById('editChCountry').value = ch.country || '';
+    document.getElementById('editChQuality').value = ch.quality || 'HD';
+    document.getElementById('editChStreamUrl').value = ch.streamUrl || '';
+    document.getElementById('editChLogo').value = ch.logo || '';
+    document.getElementById('editChDesc').value = ch.description || '';
+
+    editChannelModalBackdrop.classList.add('active');
+  };
+
+  if (closeEditModalBtn) {
+    closeEditModalBtn.addEventListener('click', () => {
+      editChannelModalBackdrop.classList.remove('active');
+    });
+  }
+
+  // SAVE EDITED CHANNEL
+  if (editChannelForm) {
+    editChannelForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editChId').value;
+      const idx = channels.findIndex(c => c.id === id);
+
+      if (idx !== -1) {
+        channels[idx] = {
+          ...channels[idx],
+          name: document.getElementById('editChName').value.trim(),
+          category: document.getElementById('editChCategory').value,
+          country: document.getElementById('editChCountry').value.trim(),
+          quality: document.getElementById('editChQuality').value,
+          streamUrl: document.getElementById('editChStreamUrl').value.trim(),
+          fallbackUrl: document.getElementById('editChStreamUrl').value.trim(),
+          logo: document.getElementById('editChLogo').value.trim(),
+          description: document.getElementById('editChDesc').value.trim()
+        };
+
+        localStorage.setItem('altv_channels', JSON.stringify(channels));
+        renderChannelsTable();
+        editChannelModalBackdrop.classList.remove('active');
+        alert('تم تعديل القناة وحفظ التحديثات بنجاح!');
+      }
+    });
+  }
+
   // ADD CHANNEL
   if (addChannelForm) {
     addChannelForm.addEventListener('submit', (e) => {
@@ -92,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         country: document.getElementById('chCountry').value.trim() || 'عربي',
         quality: document.getElementById('chQuality').value || 'HD',
         logo: document.getElementById('chLogo').value.trim() || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=150',
-        type: 'youtube',
+        type: 'iframe',
         streamUrl: document.getElementById('chStreamUrl').value.trim(),
         fallbackUrl: document.getElementById('chStreamUrl').value.trim(),
         description: document.getElementById('chDesc').value.trim() || 'بث مباشر عالي الجودة',
@@ -202,8 +313,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Initial Table Render
-  renderChannelsTable();
-  renderMatchesTable();
-  renderSportsNewsTable();
+  function renderAllTables() {
+    renderChannelsTable();
+    renderMatchesTable();
+    renderSportsNewsTable();
+  }
+
+  // Initial Auth & Render Check
+  checkAuth();
+  if (sessionStorage.getItem('altv_admin_auth') === 'true') {
+    renderAllTables();
+  }
 });
