@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة التحكم والإدارة المشفرة | Arabia Live TV</title>
-  <meta name="description" content="لوحة إدراة منصة Arabia Live TV المحمية لإدارة القنوات وإذاعات الراديو والبث المباشر.">
+  <title>لوحة التحكم والإدارة بـ الأقسام المستقلة | Arabia Live TV Control Panel</title>
+  <meta name="description" content="لوحة إدراة منصة Arabia Live TV المقسمة إلى أقسام مستقلة لإدارة القنوات، الراديو، الأخبار، والمباريات.">
   
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="./style.css">
@@ -15,13 +15,13 @@
 
   <!-- ==================== ADMIN LOGIN MODAL ==================== -->
   <div class="modal-backdrop active" id="loginBackdrop" style="z-index: 2000;">
-    <div class="form-card" style="width: 100%; max-width: 420px; background: #0c1220; border: 1px solid var(--border-glow); box-shadow: 0 0 40px rgba(0,230,118,0.2);">
+    <div class="form-card" style="width: 100%; max-width: 420px; background: #0c1220; border: 1px solid var(--primary); box-shadow: 0 0 40px rgba(255,82,0,0.25);">
       <div style="text-align: center; margin-bottom: 24px;">
         <div class="logo-icon" style="margin: 0 auto 12px; width: 56px; height: 56px; font-size: 1.8rem;">
           <i class="fa-solid fa-lock"></i>
         </div>
         <h2 style="font-size: 1.4rem; font-weight: 900; color: #fff;">تسجيل دخول الأدمن</h2>
-        <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">لوحة التحكم محمية ومخصصة لإدارة الموقع فقط</p>
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">لوحة التحكم محمية ومخصصة لإدارة المنصة فقط</p>
       </div>
 
       <form id="adminLoginForm">
@@ -59,12 +59,12 @@
       <div class="brand-logo">
         <div class="logo-icon"><i class="fa-solid fa-sliders"></i></div>
         <div class="brand-text">
-          <h1>لوحة التحكم والإدارة (Admin)</h1>
-          <span>Arabia Live TV Manager</span>
+          <h1>لوحة التحكم والإدارة المقسمة الأقسام</h1>
+          <span>Arabia Live TV Departments Control</span>
         </div>
       </div>
 
-      <div style="display: flex; gap: 12px; align-items: center;">
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
         <button class="btn-icon" id="logoutBtn" style="color: var(--gold); border-color: rgba(255,215,0,0.4);">
           <i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج
         </button>
@@ -81,7 +81,26 @@
 
     <main class="admin-container">
 
-      <!-- EDIT CHANNEL MODAL -->
+      <!-- DEPARTMENT FILTER / SELECTOR NAVIGATION BAR -->
+      <div class="dept-nav-bar" style="display: flex; gap: 12px; margin-bottom: 32px; overflow-x: auto; padding-bottom: 8px;">
+        <button class="btn-icon dept-btn active" data-dept="dept-channels" style="padding: 12px 24px; border-radius: 50px;">
+          <i class="fa-solid fa-tv" style="color: var(--primary);"></i> 1. قسم القنوات الفضائية
+        </button>
+        <button class="btn-icon dept-btn" data-dept="dept-radios" style="padding: 12px 24px; border-radius: 50px;">
+          <i class="fa-solid fa-radio" style="color: var(--secondary);"></i> 2. قسم محطات الراديو
+        </button>
+        <button class="btn-icon dept-btn" data-dept="dept-news" style="padding: 12px 24px; border-radius: 50px;">
+          <i class="fa-solid fa-newspaper" style="color: var(--gold);"></i> 3. قسم الأخبار الرياضية
+        </button>
+        <button class="btn-icon dept-btn" data-dept="dept-matches" style="padding: 12px 24px; border-radius: 50px;">
+          <i class="fa-solid fa-trophy" style="color: #00e676;"></i> 4. قسم جدول المباريات والبث المباشر
+        </button>
+        <button class="btn-icon dept-btn" data-dept="all" style="padding: 12px 24px; border-radius: 50px;">
+          <i class="fa-solid fa-border-all"></i> عرض جميع الأقسام
+        </button>
+      </div>
+
+      <!-- EDIT TV CHANNEL MODAL -->
       <div class="modal-backdrop" id="editChannelModalBackdrop" style="z-index: 1500;">
         <div class="form-card" style="width: 100%; max-width: 600px; background: #0c1220; border: 1px solid var(--primary);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
@@ -193,11 +212,76 @@
         </div>
       </div>
 
-      <!-- CHANNELS MANAGEMENT TABLE -->
-      <section style="margin-bottom: 40px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-          <h3 style="font-weight: 800;"><i class="fa-solid fa-tv" style="color: var(--primary);"></i> إدرارة وتعديل القنوات الفضائية</h3>
+
+      <!-- ==================== DEPARTMENT 1: TV CHANNELS DEPARTMENT ==================== -->
+      <div class="dept-section" id="dept-channels" style="margin-bottom: 50px;">
+        <div style="border-bottom: 2px solid var(--primary); padding-bottom: 12px; margin-bottom: 24px;">
+          <h2 style="font-size: 1.4rem; font-weight: 900; color: var(--primary);">
+            <i class="fa-solid fa-tv"></i> 1. قسم القنوات الفضائية
+          </h2>
+          <span style="color: var(--text-muted); font-size: 0.85rem;">إضافة وتعديل وحذف القنوات الفضائية ودعم روابط يوتيوب وكود iFrame بالكامل</span>
         </div>
+
+        <section class="form-card" style="margin-bottom: 24px;">
+          <h3 style="margin-bottom: 16px; color: var(--primary); font-weight: 800;">
+            <i class="fa-solid fa-plus-circle"></i> إضافة قناة بث مباشر جديدة
+          </h3>
+
+          <form id="addChannelForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+            <div class="form-group">
+              <label>اسم القناة</label>
+              <input type="text" id="chName" class="form-control" placeholder="مثال: ON Time Sports 2" required>
+            </div>
+
+            <div class="form-group">
+              <label>التصنيف</label>
+              <select id="chCategory" class="form-control" required>
+                <option value="sports">رياضة</option>
+                <option value="news">أخبار</option>
+                <option value="drama">دراما وترفيه</option>
+                <option value="islamic">قرآن وإسلاميات</option>
+                <option value="docu">وثائقية</option>
+                <option value="kids">أطفال</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>الدولة</label>
+              <input type="text" id="chCountry" class="form-control" placeholder="مثال: مصر، السعودية...">
+            </div>
+
+            <div class="form-group">
+              <label>الجودة</label>
+              <select id="chQuality" class="form-control">
+                <option value="Full HD">Full HD</option>
+                <option value="HD">HD</option>
+                <option value="4K Ultra">4K Ultra</option>
+                <option value="SD">SD</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>رابط البث أو كود הـ iFrame بالكامل (Embed URL / Full iFrame Code)</label>
+              <input type="text" id="chStreamUrl" class="form-control" placeholder="مثال: <iframe src='https://...' allowfullscreen></iframe> أو رابط مباشر" required>
+            </div>
+
+            <div class="form-group">
+              <label>رابط صورة الشعار (Logo URL)</label>
+              <input type="text" id="chLogo" class="form-control" placeholder="https://upload.wikimedia.org/...">
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>وصف القناة</label>
+              <input type="text" id="chDesc" class="form-control" placeholder="تغطية حية ومباشرة للأحداث الرياضية والبرامج...">
+            </div>
+
+            <div style="grid-column: 1 / -1; margin-top: 10px;">
+              <button type="submit" class="btn-icon btn-primary" style="padding: 12px 28px; width: 100%; justify-content: center; font-size: 1rem;">
+                <i class="fa-solid fa-floppy-disk"></i> حفظ القناة وإدراجها فوراً
+              </button>
+            </div>
+          </form>
+        </section>
 
         <div style="overflow-x: auto;">
           <table class="data-table">
@@ -216,75 +300,56 @@
             </tbody>
           </table>
         </div>
-      </section>
+      </div>
 
-      <!-- ADD NEW CHANNEL FORM -->
-      <section class="form-card" style="margin-bottom: 40px;">
-        <h3 style="margin-bottom: 16px; color: var(--primary); font-weight: 800;">
-          <i class="fa-solid fa-plus-circle"></i> إضافة قناة بث مباشر جديدة
-        </h3>
 
-        <form id="addChannelForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
-          <div class="form-group">
-            <label>اسم القناة</label>
-            <input type="text" id="chName" class="form-control" placeholder="مثال: ON Time Sports 2" required>
-          </div>
-
-          <div class="form-group">
-            <label>التصنيف</label>
-            <select id="chCategory" class="form-control" required>
-              <option value="sports">رياضة</option>
-              <option value="news">أخبار</option>
-              <option value="drama">دراما وترفيه</option>
-              <option value="islamic">قرآن وإسلاميات</option>
-              <option value="docu">وثائقية</option>
-              <option value="kids">أطفال</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>الدولة</label>
-            <input type="text" id="chCountry" class="form-control" placeholder="مثال: مصر، السعودية...">
-          </div>
-
-          <div class="form-group">
-            <label>الجودة</label>
-            <select id="chQuality" class="form-control">
-              <option value="Full HD">Full HD</option>
-              <option value="HD">HD</option>
-              <option value="4K Ultra">4K Ultra</option>
-              <option value="SD">SD</option>
-            </select>
-          </div>
-
-          <div class="form-group" style="grid-column: 1 / -1;">
-            <label>رابط البث أو كود הـ iFrame بالكامل (Embed URL / Full iFrame Code)</label>
-            <input type="text" id="chStreamUrl" class="form-control" placeholder="مثال: <iframe src='https://...' allowfullscreen></iframe> أو رابط مباشر" required>
-          </div>
-
-          <div class="form-group">
-            <label>رابط صورة الشعار (Logo URL)</label>
-            <input type="text" id="chLogo" class="form-control" placeholder="https://upload.wikimedia.org/...">
-          </div>
-
-          <div class="form-group" style="grid-column: 1 / -1;">
-            <label>وصف القناة</label>
-            <input type="text" id="chDesc" class="form-control" placeholder="تغطية حية ومباشرة للأحداث الرياضية والبرامج...">
-          </div>
-
-          <div style="grid-column: 1 / -1; margin-top: 10px;">
-            <button type="submit" class="btn-icon btn-primary" style="padding: 12px 28px; width: 100%; justify-content: center; font-size: 1rem;">
-              <i class="fa-solid fa-floppy-disk"></i> حفظ القناة وإدراجها فوراً
-            </button>
-          </div>
-        </form>
-      </section>
-
-      <!-- RADIOS MANAGEMENT TABLE -->
-      <section style="margin-bottom: 40px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-          <h3 style="font-weight: 800;"><i class="fa-solid fa-radio" style="color: var(--secondary);"></i> إدارة وتعديل محطات الراديو الصوتية</h3>
+      <!-- ==================== DEPARTMENT 2: RADIO STATIONS DEPARTMENT ==================== -->
+      <div class="dept-section" id="dept-radios" style="margin-bottom: 50px; display: none;">
+        <div style="border-bottom: 2px solid var(--secondary); padding-bottom: 12px; margin-bottom: 24px;">
+          <h2 style="font-size: 1.4rem; font-weight: 900; color: var(--secondary);">
+            <i class="fa-solid fa-radio"></i> 2. قسم محطات وإذاعات الراديو
+          </h2>
+          <span style="color: var(--text-muted); font-size: 0.85rem;">إضافة وتعديل وحذف إذاعات ومحطات الراديو الصوتية المباشرة (.mp3)</span>
         </div>
+
+        <section class="form-card" style="margin-bottom: 24px;">
+          <h3 style="margin-bottom: 16px; color: var(--secondary); font-weight: 800;">
+            <i class="fa-solid fa-plus-circle"></i> إضافة محطة راديو مباشرة جديدة
+          </h3>
+
+          <form id="addRadioForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+            <div class="form-group">
+              <label>اسم محطة الراديو</label>
+              <input type="text" id="radName" class="form-control" placeholder="مثال: إذاعة القرآن الكريم من القاهرة" required>
+            </div>
+
+            <div class="form-group">
+              <label>الدولة / المصدر</label>
+              <input type="text" id="radCountry" class="form-control" placeholder="مثال: مصر، السعودية...">
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>رابط البث الصوتي المباشر (.mp3 / Stream Audio URL)</label>
+              <input type="text" id="radStreamUrl" class="form-control" placeholder="https://stream.radiojar.com/..." required>
+            </div>
+
+            <div class="form-group">
+              <label>رمز الأيقونة (Icon Class)</label>
+              <input type="text" id="radIcon" class="form-control" placeholder="fa-mosque أو fa-radio أو fa-music">
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>وصف إذاعة الراديو</label>
+              <input type="text" id="radDesc" class="form-control" placeholder="تلاوات خاشعة وأحاديث شريفة برواية حفص عن عاصم على مدار 24 ساعة">
+            </div>
+
+            <div style="grid-column: 1 / -1; margin-top: 10px;">
+              <button type="submit" class="btn-icon btn-primary" style="padding: 12px 28px; width: 100%; justify-content: center; font-size: 1rem; background: linear-gradient(135deg, var(--secondary), #0288d1);">
+                <i class="fa-solid fa-headphones"></i> حفظ محطة الراديو وإدراجها في البث الصوتي
+              </button>
+            </div>
+          </form>
+        </section>
 
         <div style="overflow-x: auto;">
           <table class="data-table">
@@ -302,53 +367,141 @@
             </tbody>
           </table>
         </div>
-      </section>
+      </div>
 
-      <!-- ADD NEW RADIO FORM -->
-      <section class="form-card" style="margin-bottom: 40px;">
-        <h3 style="margin-bottom: 16px; color: var(--secondary); font-weight: 800;">
-          <i class="fa-solid fa-plus-circle"></i> إضافة محطة راديو مباشرة جديدة
-        </h3>
 
-        <form id="addRadioForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
-          <div class="form-group">
-            <label>اسم محطة الراديو</label>
-            <input type="text" id="radName" class="form-control" placeholder="مثال: إذاعة القرآن الكريم من القاهرة" required>
-          </div>
+      <!-- ==================== DEPARTMENT 3: SPORTS NEWS DEPARTMENT ==================== -->
+      <div class="dept-section" id="dept-news" style="margin-bottom: 50px; display: none;">
+        <div style="border-bottom: 2px solid var(--gold); padding-bottom: 12px; margin-bottom: 24px;">
+          <h2 style="font-size: 1.4rem; font-weight: 900; color: var(--gold);">
+            <i class="fa-solid fa-newspaper"></i> 3. قسم الأخبار الرياضية
+          </h2>
+          <span style="color: var(--text-muted); font-size: 0.85rem;">نشر وإدارة وتعديل وحذف الأخبار الرياضية الحصرية والمعاينات المصورة</span>
+        </div>
 
-          <div class="form-group">
-            <label>الدولة / المصدر</label>
-            <input type="text" id="radCountry" class="form-control" placeholder="مثال: مصر، السعودية...">
-          </div>
+        <section class="form-card" style="margin-bottom: 24px;">
+          <h3 style="margin-bottom: 16px; color: var(--gold); font-weight: 800;">
+            <i class="fa-solid fa-newspaper"></i> إضافة خبر رياضي جديد
+          </h3>
 
-          <div class="form-group" style="grid-column: 1 / -1;">
-            <label>رابط البث الصوتي المباشر (.mp3 / Stream Audio URL)</label>
-            <input type="text" id="radStreamUrl" class="form-control" placeholder="https://stream.radiojar.com/..." required>
-          </div>
+          <form id="addNewsForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>عنوان الخبر الرياضي</label>
+              <input type="text" id="newsTitle" class="form-control" placeholder="أدخل عنوان الخبر..." required>
+            </div>
 
-          <div class="form-group">
-            <label>رمز الأيقونة (Icon Class)</label>
-            <input type="text" id="radIcon" class="form-control" placeholder="fa-mosque أو fa-radio أو fa-music">
-          </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>ملخص الخبر</label>
+              <textarea id="newsSummary" class="form-control" rows="2" placeholder="أدخل تفاصيل وموجز الخبر..." required></textarea>
+            </div>
 
-          <div class="form-group" style="grid-column: 1 / -1;">
-            <label>وصف إذاعة الراديو</label>
-            <input type="text" id="radDesc" class="form-control" placeholder="تلاوات خاشعة وأحاديث شريفة برواية حفص عن عاصم على مدار 24 ساعة">
-          </div>
+            <div class="form-group">
+              <label>التصنيف الرياضي</label>
+              <input type="text" id="newsCategory" class="form-control" placeholder="مثال: كرة مصرية، دوري روشن...">
+            </div>
 
-          <div style="grid-column: 1 / -1; margin-top: 10px;">
-            <button type="submit" class="btn-icon btn-primary" style="padding: 12px 28px; width: 100%; justify-content: center; font-size: 1rem; background: linear-gradient(135deg, var(--secondary), #0288d1);">
-              <i class="fa-solid fa-headphones"></i> حفظ محطة الراديو وإدراجها في البث الصوتي
-            </button>
-          </div>
-        </form>
-      </section>
+            <div class="form-group">
+              <label>رابط صورة الخبر</label>
+              <input type="text" id="newsImage" class="form-control" placeholder="https://images.unsplash.com/...">
+            </div>
 
-      <!-- MATCHES TABLE -->
-      <section style="margin-bottom: 40px;">
-        <h3 style="margin-bottom: 16px; font-weight: 800;">
-          <i class="fa-solid fa-trophy" style="color: var(--gold);"></i> إدارة جدول المباريات والبث الحي
-        </h3>
+            <div style="grid-column: 1 / -1; margin-top: 10px;">
+              <button type="submit" class="btn-icon btn-primary" style="padding: 12px 28px; width: 100%; justify-content: center; font-size: 1rem; background: linear-gradient(135deg, var(--gold), #ffab00); color: #000;">
+                <i class="fa-solid fa-paper-plane"></i> نشر الخبر الرياضي فوراً
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <div style="overflow-x: auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>عنوان الخبر</th>
+                <th>التصنيف</th>
+                <th>التاريخ</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="sportsNewsTableBody">
+              <!-- Populated dynamically via admin.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- ==================== DEPARTMENT 4: MATCHES SCHEDULE & LIVE MATCHES DEPARTMENT ==================== -->
+      <div class="dept-section" id="dept-matches" style="margin-bottom: 50px; display: none;">
+        <div style="border-bottom: 2px solid #00e676; padding-bottom: 12px; margin-bottom: 24px;">
+          <h2 style="font-size: 1.4rem; font-weight: 900; color: #00e676;">
+            <i class="fa-solid fa-trophy"></i> 4. قسم جدول المباريات والبث المباشر للمباريات
+          </h2>
+          <span style="color: var(--text-muted); font-size: 0.85rem;">إضافة وتعديل وحذف المباريات اليومية، ضبط حالة البث المباشر، القنوات الناقلة والسيرفرات</span>
+        </div>
+
+        <section class="form-card" style="margin-bottom: 24px;">
+          <h3 style="margin-bottom: 16px; color: #00e676; font-weight: 800;">
+            <i class="fa-solid fa-futbol"></i> إضافة مباراة جديدة في جدول البث المباشر
+          </h3>
+
+          <form id="addMatchForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+            <div class="form-group">
+              <label>البطولة / الدوري</label>
+              <input type="text" id="mLeague" class="form-control" placeholder="مثال: دوري أبطال إفريقيا" required>
+            </div>
+
+            <div class="form-group">
+              <label>الفريق الأول (صاحب الأرض)</label>
+              <input type="text" id="mHomeTeam" class="form-control" placeholder="مثال: الأهلي" required>
+            </div>
+
+            <div class="form-group">
+              <label>الفريق الثاني (الضيف)</label>
+              <input type="text" id="mAwayTeam" class="form-control" placeholder="مثال: صن داونز" required>
+            </div>
+
+            <div class="form-group">
+              <label>اليوم</label>
+              <input type="text" id="mDate" class="form-control" placeholder="اليوم / غداً / 15 سبتمبر">
+            </div>
+
+            <div class="form-group">
+              <label>التوقيت</label>
+              <input type="text" id="mTime" class="form-control" placeholder="21:00" required>
+            </div>
+
+            <div class="form-group">
+              <label>حالة المباراة</label>
+              <select id="mStatus" class="form-control">
+                <option value="live">🔴 مباشر الآن</option>
+                <option value="upcoming">⏳ قريباً</option>
+                <option value="ended">🏁 انتهت</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>القناة الناقلة</label>
+              <input type="text" id="mChannelName" class="form-control" placeholder="أون تايم سبورتس 1" required>
+            </div>
+
+            <div class="form-group">
+              <label>اسم المعلق</label>
+              <input type="text" id="mCommentator" class="form-control" placeholder="عصام الشوالي">
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>رابط البث أو كود الـ iFrame المباشر للمباراة (سيرفر 1)</label>
+              <input type="text" id="mStreamUrl" class="form-control" placeholder="يمكنك لصق رابط مباشر أو كود <iframe src='...'></iframe> هنا">
+            </div>
+
+            <div style="grid-column: 1 / -1; margin-top: 10px;">
+              <button type="submit" class="btn-icon btn-primary" style="padding: 12px 28px; width: 100%; justify-content: center; font-size: 1rem; background: linear-gradient(135deg, #00e676, #00c853); color: #000;">
+                <i class="fa-solid fa-calendar-plus"></i> إدراج المباراة في جدول البث المباشر
+              </button>
+            </div>
+          </form>
+        </section>
 
         <div style="overflow-x: auto;">
           <table class="data-table">
@@ -367,129 +520,7 @@
             </tbody>
           </table>
         </div>
-      </section>
-
-      <!-- ADD NEW MATCH FORM -->
-      <section class="form-card" style="margin-bottom: 40px;">
-        <h3 style="margin-bottom: 16px; color: var(--gold); font-weight: 800;">
-          <i class="fa-solid fa-futbol"></i> إضافة مباراة في جدول العرض والبث المباشر
-        </h3>
-
-        <form id="addMatchForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-          <div class="form-group">
-            <label>البطولة / الدوري</label>
-            <input type="text" id="mLeague" class="form-control" placeholder="مثال: دوري أبطال إفريقيا" required>
-          </div>
-
-          <div class="form-group">
-            <label>الفريق الأول (صاحب الأرض)</label>
-            <input type="text" id="mHomeTeam" class="form-control" placeholder="مثال: الأهلي" required>
-          </div>
-
-          <div class="form-group">
-            <label>الفريق الثاني (الضيف)</label>
-            <input type="text" id="mAwayTeam" class="form-control" placeholder="مثال: صن داونز" required>
-          </div>
-
-          <div class="form-group">
-            <label>اليوم</label>
-            <input type="text" id="mDate" class="form-control" placeholder="اليوم / غداً / 15 سبتمبر">
-          </div>
-
-          <div class="form-group">
-            <label>التوقيت</label>
-            <input type="text" id="mTime" class="form-control" placeholder="21:00" required>
-          </div>
-
-          <div class="form-group">
-            <label>حالة المباراة</label>
-            <select id="mStatus" class="form-control">
-              <option value="live">🔴 مباشر الآن</option>
-              <option value="upcoming">⏳ قريباً</option>
-              <option value="ended">🏁 انتهت</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>القناة الناقلة</label>
-            <input type="text" id="mChannelName" class="form-control" placeholder="أون تايم سبورتس 1" required>
-          </div>
-
-          <div class="form-group">
-            <label>اسم المعلق</label>
-            <input type="text" id="mCommentator" class="form-control" placeholder="عصام الشوالي">
-          </div>
-
-          <div class="form-group" style="grid-column: 1 / -1;">
-            <label>رابط البث أو كود الـ iFrame المباشر للمباراة</label>
-            <input type="text" id="mStreamUrl" class="form-control" placeholder="يمكنك لصق رابط مباشر أو كود <iframe src='...'></iframe> هنا">
-          </div>
-
-          <div style="grid-column: 1 / -1; margin-top: 10px;">
-            <button type="submit" class="btn-icon btn-primary" style="padding: 12px 28px; width: 100%; justify-content: center; font-size: 1rem; background: linear-gradient(135deg, var(--gold), #ffab00); color: #000;">
-              <i class="fa-solid fa-calendar-plus"></i> إدراج المباراة في جدول البث المباشر
-            </button>
-          </div>
-        </form>
-      </section>
-
-      <!-- SPORTS NEWS TABLE -->
-      <section style="margin-bottom: 40px;">
-        <h3 style="margin-bottom: 16px; font-weight: 800;">
-          <i class="fa-solid fa-list" style="color: var(--secondary);"></i> الأخبار الرياضية المنشورة
-        </h3>
-
-        <div style="overflow-x: auto;">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>عنوان الخبر</th>
-                <th>التصنيف</th>
-                <th>التاريخ</th>
-                <th>إجراءات</th>
-              </tr>
-            </thead>
-            <tbody id="sportsNewsTableBody">
-              <!-- Populated dynamically via admin.js -->
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- ADD SPORTS NEWS FORM -->
-      <section class="form-card">
-        <h3 style="margin-bottom: 16px; color: var(--secondary); font-weight: 800;">
-          <i class="fa-solid fa-newspaper"></i> إضافة خبر رياضي جديد
-        </h3>
-
-        <form id="addNewsForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
-          <div class="form-group" style="grid-column: 1 / -1;">
-            <label>عنوان الخبر الرياضي</label>
-            <input type="text" id="newsTitle" class="form-control" placeholder="أدخل عنوان الخبر..." required>
-          </div>
-
-          <div class="form-group" style="grid-column: 1 / -1;">
-            <label>ملخص الخبر</label>
-            <textarea id="newsSummary" class="form-control" rows="2" placeholder="أدخل تفاصيل وموجز الخبر..." required></textarea>
-          </div>
-
-          <div class="form-group">
-            <label>التصنيف الرياضي</label>
-            <input type="text" id="newsCategory" class="form-control" placeholder="مثال: كرة مصرية، دوري روشن...">
-          </div>
-
-          <div class="form-group">
-            <label>رابط صورة الخبر</label>
-            <input type="text" id="newsImage" class="form-control" placeholder="https://images.unsplash.com/...">
-          </div>
-
-          <div style="grid-column: 1 / -1; margin-top: 10px;">
-            <button type="submit" class="btn-icon btn-primary" style="padding: 12px 28px; width: 100%; justify-content: center; font-size: 1rem; background: linear-gradient(135deg, var(--secondary), #0288d1);">
-              <i class="fa-solid fa-paper-plane"></i> نشر الخبر الرياضي فوراً
-            </button>
-          </div>
-        </form>
-      </section>
+      </div>
 
     </main>
   </div>

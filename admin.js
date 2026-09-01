@@ -1,5 +1,6 @@
 /**
- * Arabia Live TV (arabialivetv.com) - Authenticated Admin Control Panel Logic (Full TV, Match, News & Radio CRUD)
+ * Arabia Live TV (arabialivetv.com) - Department-Based Admin Control Panel Engine
+ * 100% Zero Database/Channel Data Alterations - Pure UI Department Partitioning
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -13,6 +14,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const adminLoginForm = document.getElementById('adminLoginForm');
   const loginErrorMsg = document.getElementById('loginErrorMsg');
   const logoutBtn = document.getElementById('logoutBtn');
+
+  // DEPARTMENT FILTER SWITCHER SYSTEM
+  const deptBtns = document.querySelectorAll('.dept-btn');
+  const deptSections = document.querySelectorAll('.dept-section');
+
+  if (deptBtns.length > 0) {
+    deptBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetDept = btn.dataset.dept;
+
+        deptBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        deptSections.forEach(sec => {
+          if (targetDept === 'all') {
+            sec.style.display = 'block';
+          } else {
+            sec.style.display = (sec.id === targetDept) ? 'block' : 'none';
+          }
+        });
+      });
+    });
+  }
 
   // Check Auth State
   function checkAuth() {
@@ -35,11 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (u === ADMIN_USER && p === ADMIN_PASS) {
         sessionStorage.setItem('altv_admin_auth', 'true');
-        loginErrorMsg.style.display = 'none';
+        if (loginErrorMsg) loginErrorMsg.style.display = 'none';
         checkAuth();
         renderAllTables();
       } else {
-        loginErrorMsg.style.display = 'block';
+        if (loginErrorMsg) loginErrorMsg.style.display = 'block';
       }
     });
   }
@@ -80,35 +104,34 @@ document.addEventListener('DOMContentLoaded', () => {
     return url;
   }
 
-  // Load data or defaults
+  // Load Data
   let channels = JSON.parse(localStorage.getItem('altv_channels')) || DEFAULT_CHANNELS;
   let matches = JSON.parse(localStorage.getItem('altv_matches')) || DEFAULT_MATCHES;
   let sportsNews = JSON.parse(localStorage.getItem('altv_sports_news')) || DEFAULT_SPORTS_NEWS;
   let radios = JSON.parse(localStorage.getItem('altv_radios')) || DEFAULT_RADIOS;
 
-  // DOM Data Elements
+  // DOM Elements
   const channelsTableBody = document.getElementById('channelsTableBody');
-  const matchesTableBody = document.getElementById('matchesTableBody');
-  const sportsNewsTableBody = document.getElementById('sportsNewsTableBody');
   const radiosTableBody = document.getElementById('radiosTableBody');
+  const sportsNewsTableBody = document.getElementById('sportsNewsTableBody');
+  const matchesTableBody = document.getElementById('matchesTableBody');
 
   const addChannelForm = document.getElementById('addChannelForm');
-  const addMatchForm = document.getElementById('addMatchForm');
-  const addNewsForm = document.getElementById('addNewsForm');
   const addRadioForm = document.getElementById('addRadioForm');
+  const addNewsForm = document.getElementById('addNewsForm');
+  const addMatchForm = document.getElementById('addMatchForm');
   const resetDataBtn = document.getElementById('resetDataBtn');
 
-  // EDIT MODAL ELEMENTS (TV CHANNEL)
+  // EDIT MODAL ELEMENTS
   const editChannelModalBackdrop = document.getElementById('editChannelModalBackdrop');
   const closeEditModalBtn = document.getElementById('closeEditModalBtn');
   const editChannelForm = document.getElementById('editChannelForm');
 
-  // EDIT MODAL ELEMENTS (RADIO)
   const editRadioModalBackdrop = document.getElementById('editRadioModalBackdrop');
   const closeEditRadioModalBtn = document.getElementById('closeEditRadioModalBtn');
   const editRadioForm = document.getElementById('editRadioForm');
 
-  // RENDER CHANNELS TABLE WITH EDIT & DELETE
+  // ==================== DEPARTMENT 1: TV CHANNELS ====================
   function renderChannelsTable() {
     if (!channelsTableBody) return;
     channelsTableBody.innerHTML = channels.map((ch) => `
@@ -120,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <td><span class="badge-quality">${ch.category}</span></td>
         <td>${ch.country}</td>
         <td>${ch.quality}</td>
-        <td><code style="font-size:0.7rem; color:var(--text-muted);">${(ch.streamUrl || '').substring(0, 30)}...</code></td>
+        <td><code style="font-size:0.7rem; color:var(--text-muted);">${(ch.streamUrl || '').substring(0, 32)}...</code></td>
         <td>
           <div style="display:flex; gap:8px;">
             <button class="btn-icon" onclick="editChannel('${ch.id}')" style="color: var(--primary); border-color: rgba(0,230,118,0.4);">
@@ -135,76 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `).join('');
   }
 
-  // RENDER MATCHES TABLE
-  function renderMatchesTable() {
-    if (!matchesTableBody) return;
-    matchesTableBody.innerHTML = matches.map((m) => `
-      <tr>
-        <td>${m.leagueFlag} ${m.league}</td>
-        <td><strong>${m.homeTeam}</strong> vs <strong>${m.awayTeam}</strong></td>
-        <td>${m.date} ${m.time}</td>
-        <td>
-          <span class="match-status-tag ${m.status === 'live' ? 'status-live' : 'status-upcoming'}">
-            ${m.status === 'live' ? 'مباشر' : 'قريباً'}
-          </span>
-        </td>
-        <td>${m.channelName}</td>
-        <td>
-          <button class="btn-icon" onclick="deleteMatch('${m.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3);">
-            <i class="fa-solid fa-trash"></i> حذف
-          </button>
-        </td>
-      </tr>
-    `).join('');
-  }
-
-  // RENDER SPORTS NEWS TABLE
-  function renderSportsNewsTable() {
-    if (!sportsNewsTableBody) return;
-    sportsNewsTableBody.innerHTML = sportsNews.map((news) => `
-      <tr>
-        <td>
-          <img src="${news.image}" style="width:44px; height:30px; border-radius:4px; object-fit:cover; vertical-align:middle; margin-left:8px;">
-          <strong>${news.title}</strong>
-        </td>
-        <td><span class="badge-quality">${news.category}</span></td>
-        <td>${news.timeAgo}</td>
-        <td>
-          <button class="btn-icon" onclick="deleteNews('${news.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3);">
-            <i class="fa-solid fa-trash"></i> حذف
-          </button>
-        </td>
-      </tr>
-    `).join('');
-  }
-
-  // RENDER RADIOS TABLE WITH EDIT & DELETE
-  function renderRadiosTable() {
-    if (!radiosTableBody) return;
-    radiosTableBody.innerHTML = radios.map((r) => `
-      <tr>
-        <td>
-          <i class="fa-solid ${r.icon || 'fa-radio'}" style="color: var(--secondary); margin-left:8px; font-size: 1.1rem;"></i>
-          <strong>${r.name}</strong>
-        </td>
-        <td>${r.country || 'عربي'}</td>
-        <td><code style="font-size:0.7rem; color:var(--text-muted);">${(r.streamUrl || '').substring(0, 35)}...</code></td>
-        <td>${r.description || 'بث صوتي مباشر'}</td>
-        <td>
-          <div style="display:flex; gap:8px;">
-            <button class="btn-icon" onclick="editRadio('${r.id}')" style="color: var(--secondary); border-color: rgba(0,176,255,0.4);">
-              <i class="fa-solid fa-pen"></i> تعديل
-            </button>
-            <button class="btn-icon" onclick="deleteRadio('${r.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3);">
-              <i class="fa-solid fa-trash"></i> حذف
-            </button>
-          </div>
-        </td>
-      </tr>
-    `).join('');
-  }
-
-  // OPEN EDIT CHANNEL MODAL
   window.editChannel = (id) => {
     const ch = channels.find(c => c.id === id);
     if (!ch) return;
@@ -218,16 +171,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('editChLogo').value = ch.logo || '';
     document.getElementById('editChDesc').value = ch.description || '';
 
-    editChannelModalBackdrop.classList.add('active');
+    if (editChannelModalBackdrop) editChannelModalBackdrop.classList.add('active');
   };
 
   if (closeEditModalBtn) {
-    closeEditModalBtn.addEventListener('click', () => {
-      editChannelModalBackdrop.classList.remove('active');
+    closeEditModalBtn.addEventListener('click', () => editChannelModalBackdrop.classList.remove('active'));
+  }
+  if (editChannelModalBackdrop) {
+    editChannelModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === editChannelModalBackdrop) editChannelModalBackdrop.classList.remove('active');
     });
   }
 
-  // SAVE EDITED CHANNEL
   if (editChannelForm) {
     editChannelForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -252,80 +207,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         localStorage.setItem('altv_channels', JSON.stringify(channels));
         renderChannelsTable();
-        editChannelModalBackdrop.classList.remove('active');
-        alert('تم تعديل القناة، استخراج رابط الإضمام iFrame وحفظ التحديثات بنجاح!');
+        if (editChannelModalBackdrop) editChannelModalBackdrop.classList.remove('active');
+        alert('تم تعديل القناة وحفظ التحديثات بنجاح!');
       }
     });
   }
 
-  // OPEN EDIT RADIO MODAL
-  window.editRadio = (id) => {
-    const r = radios.find(rad => rad.id === id);
-    if (!r) return;
-
-    document.getElementById('editRadId').value = r.id;
-    document.getElementById('editRadName').value = r.name;
-    document.getElementById('editRadCountry').value = r.country || '';
-    document.getElementById('editRadStreamUrl').value = r.streamUrl || '';
-    document.getElementById('editRadIcon').value = r.icon || 'fa-radio';
-    document.getElementById('editRadDesc').value = r.description || '';
-
-    editRadioModalBackdrop.classList.add('active');
-  };
-
-  if (closeEditRadioModalBtn) {
-    closeEditRadioModalBtn.addEventListener('click', () => {
-      editRadioModalBackdrop.classList.remove('active');
-    });
-  }
-
-  // SAVE EDITED RADIO
-  if (editRadioForm) {
-    editRadioForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const id = document.getElementById('editRadId').value;
-      const idx = radios.findIndex(r => r.id === id);
-
-      if (idx !== -1) {
-        radios[idx] = {
-          ...radios[idx],
-          name: document.getElementById('editRadName').value.trim(),
-          country: document.getElementById('editRadCountry').value.trim(),
-          streamUrl: document.getElementById('editRadStreamUrl').value.trim(),
-          icon: document.getElementById('editRadIcon').value.trim() || 'fa-radio',
-          description: document.getElementById('editRadDesc').value.trim()
-        };
-
-        localStorage.setItem('altv_radios', JSON.stringify(radios));
-        renderRadiosTable();
-        editRadioModalBackdrop.classList.remove('active');
-        alert('تم تعديل إحدى محطات الراديو وتحديث البث الصوتي بنجاح!');
-      }
-    });
-  }
-
-  // ADD RADIO
-  if (addRadioForm) {
-    addRadioForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const newRad = {
-        id: 'rad-' + Date.now(),
-        name: document.getElementById('radName').value.trim(),
-        country: document.getElementById('radCountry').value.trim() || 'عربي',
-        streamUrl: document.getElementById('radStreamUrl').value.trim(),
-        icon: document.getElementById('radIcon').value.trim() || 'fa-radio',
-        description: document.getElementById('radDesc').value.trim() || 'بث صوّتي حي ومباشر'
-      };
-
-      radios.unshift(newRad);
-      localStorage.setItem('altv_radios', JSON.stringify(radios));
-      renderRadiosTable();
-      addRadioForm.reset();
-      alert('تم إضافة محطة الراديو بنجاح إلى البث الصوتي!');
-    });
-  }
-
-  // ADD CHANNEL
   if (addChannelForm) {
     addChannelForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -351,11 +238,195 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('altv_channels', JSON.stringify(channels));
       renderChannelsTable();
       addChannelForm.reset();
-      alert('تم إضافة القناة واستخراج رابط الـ iFrame بنجاح!');
+      alert('تم إضافة القناة الفضائية بنجاح!');
     });
   }
 
-  // ADD MATCH
+  window.deleteChannel = (id) => {
+    if (confirm('هل أنت تأكد من رغبتك في حذف هذه القناة؟')) {
+      channels = channels.filter(c => c.id !== id);
+      localStorage.setItem('altv_channels', JSON.stringify(channels));
+      renderChannelsTable();
+    }
+  };
+
+
+  // ==================== DEPARTMENT 2: RADIO STATIONS ====================
+  function renderRadiosTable() {
+    if (!radiosTableBody) return;
+    radiosTableBody.innerHTML = radios.map((r) => `
+      <tr>
+        <td>
+          <i class="fa-solid ${r.icon || 'fa-radio'}" style="color: var(--secondary); margin-left:8px; font-size: 1.1rem;"></i>
+          <strong>${r.name}</strong>
+        </td>
+        <td>${r.country || 'عربي'}</td>
+        <td><code style="font-size:0.7rem; color:var(--text-muted);">${(r.streamUrl || '').substring(0, 35)}...</code></td>
+        <td>${r.description || 'بث صوتي مباشر'}</td>
+        <td>
+          <div style="display:flex; gap:8px;">
+            <button class="btn-icon" onclick="editRadio('${r.id}')" style="color: var(--secondary); border-color: rgba(0,176,255,0.4);">
+              <i class="fa-solid fa-pen"></i> تعديل
+            </button>
+            <button class="btn-icon" onclick="deleteRadio('${r.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3);">
+              <i class="fa-solid fa-trash"></i> حذف
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  window.editRadio = (id) => {
+    const r = radios.find(rad => rad.id === id);
+    if (!r) return;
+
+    document.getElementById('editRadId').value = r.id;
+    document.getElementById('editRadName').value = r.name;
+    document.getElementById('editRadCountry').value = r.country || '';
+    document.getElementById('editRadStreamUrl').value = r.streamUrl || '';
+    document.getElementById('editRadIcon').value = r.icon || 'fa-radio';
+    document.getElementById('editRadDesc').value = r.description || '';
+
+    if (editRadioModalBackdrop) editRadioModalBackdrop.classList.add('active');
+  };
+
+  if (closeEditRadioModalBtn) {
+    closeEditRadioModalBtn.addEventListener('click', () => editRadioModalBackdrop.classList.remove('active'));
+  }
+  if (editRadioModalBackdrop) {
+    editRadioModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === editRadioModalBackdrop) editRadioModalBackdrop.classList.remove('active');
+    });
+  }
+
+  if (editRadioForm) {
+    editRadioForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editRadId').value;
+      const idx = radios.findIndex(r => r.id === id);
+
+      if (idx !== -1) {
+        radios[idx] = {
+          ...radios[idx],
+          name: document.getElementById('editRadName').value.trim(),
+          country: document.getElementById('editRadCountry').value.trim(),
+          streamUrl: document.getElementById('editRadStreamUrl').value.trim(),
+          icon: document.getElementById('editRadIcon').value.trim() || 'fa-radio',
+          description: document.getElementById('editRadDesc').value.trim()
+        };
+
+        localStorage.setItem('altv_radios', JSON.stringify(radios));
+        renderRadiosTable();
+        if (editRadioModalBackdrop) editRadioModalBackdrop.classList.remove('active');
+        alert('تم تعديل محطة الراديو بنجاح!');
+      }
+    });
+  }
+
+  if (addRadioForm) {
+    addRadioForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newRad = {
+        id: 'rad-' + Date.now(),
+        name: document.getElementById('radName').value.trim(),
+        country: document.getElementById('radCountry').value.trim() || 'عربي',
+        streamUrl: document.getElementById('radStreamUrl').value.trim(),
+        icon: document.getElementById('radIcon').value.trim() || 'fa-radio',
+        description: document.getElementById('radDesc').value.trim() || 'بث صوّتي حي ومباشر'
+      };
+
+      radios.unshift(newRad);
+      localStorage.setItem('altv_radios', JSON.stringify(radios));
+      renderRadiosTable();
+      addRadioForm.reset();
+      alert('تم إضافة محطة الراديو بنجاح!');
+    });
+  }
+
+  window.deleteRadio = (id) => {
+    if (confirm('هل أنت تأكد من حذف محطة الراديو هذه؟')) {
+      radios = radios.filter(r => r.id !== id);
+      localStorage.setItem('altv_radios', JSON.stringify(radios));
+      renderRadiosTable();
+    }
+  };
+
+
+  // ==================== DEPARTMENT 3: SPORTS NEWS ====================
+  function renderSportsNewsTable() {
+    if (!sportsNewsTableBody) return;
+    sportsNewsTableBody.innerHTML = sportsNews.map((news) => `
+      <tr>
+        <td>
+          <img src="${news.image}" style="width:44px; height:30px; border-radius:4px; object-fit:cover; vertical-align:middle; margin-left:8px;">
+          <strong>${news.title}</strong>
+        </td>
+        <td><span class="badge-quality">${news.category}</span></td>
+        <td>${news.timeAgo || 'الآن'}</td>
+        <td>
+          <button class="btn-icon" onclick="deleteNews('${news.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3);">
+            <i class="fa-solid fa-trash"></i> حذف
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  if (addNewsForm) {
+    addNewsForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newArticle = {
+        id: 'news-' + Date.now(),
+        title: document.getElementById('newsTitle').value.trim(),
+        summary: document.getElementById('newsSummary').value.trim(),
+        content: `<p>${document.getElementById('newsSummary').value.trim()}</p>`,
+        category: document.getElementById('newsCategory').value.trim() || 'كرة قدم',
+        timeAgo: 'الآن',
+        image: document.getElementById('newsImage').value.trim() || 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=500',
+        author: 'التحرير الرياضي'
+      };
+
+      sportsNews.unshift(newArticle);
+      localStorage.setItem('altv_sports_news', JSON.stringify(sportsNews));
+      renderSportsNewsTable();
+      addNewsForm.reset();
+      alert('تم نشر الخبر الرياضي بنجاح!');
+    });
+  }
+
+  window.deleteNews = (id) => {
+    if (confirm('هل أنت تأكد من حذف هذا الخبر الرياضي؟')) {
+      sportsNews = sportsNews.filter(n => n.id !== id);
+      localStorage.setItem('altv_sports_news', JSON.stringify(sportsNews));
+      renderSportsNewsTable();
+    }
+  };
+
+
+  // ==================== DEPARTMENT 4: MATCHES SCHEDULE & LIVE MATCHES ====================
+  function renderMatchesTable() {
+    if (!matchesTableBody) return;
+    matchesTableBody.innerHTML = matches.map((m) => `
+      <tr>
+        <td>${m.leagueFlag || '🏆'} ${m.league}</td>
+        <td><strong>${m.homeTeam}</strong> vs <strong>${m.awayTeam}</strong></td>
+        <td>${m.date} ${m.time}</td>
+        <td>
+          <span class="match-status-tag ${m.status === 'live' ? 'status-live' : 'status-upcoming'}">
+            ${m.status === 'live' ? 'مباشر' : 'قريباً'}
+          </span>
+        </td>
+        <td>${m.channelName}</td>
+        <td>
+          <button class="btn-icon" onclick="deleteMatch('${m.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3);">
+            <i class="fa-solid fa-trash"></i> حذف المباراة
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
   if (addMatchForm) {
     addMatchForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -387,48 +458,9 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('altv_matches', JSON.stringify(matches));
       renderMatchesTable();
       addMatchForm.reset();
-      alert('تم إضافة المباراة بنجاح إلى جدول العرض والبث المباشر!');
+      alert('تم إضافة المباراة بنجاح إلى جدول البث!');
     });
   }
-
-  // ADD SPORTS NEWS
-  if (addNewsForm) {
-    addNewsForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const newArticle = {
-        id: 'news-' + Date.now(),
-        title: document.getElementById('newsTitle').value.trim(),
-        summary: document.getElementById('newsSummary').value.trim(),
-        category: document.getElementById('newsCategory').value.trim() || 'كرة قدم',
-        timeAgo: 'الآن',
-        image: document.getElementById('newsImage').value.trim() || 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=500',
-        author: 'التحرير الرياضي'
-      };
-
-      sportsNews.unshift(newArticle);
-      localStorage.setItem('altv_sports_news', JSON.stringify(sportsNews));
-      renderSportsNewsTable();
-      addNewsForm.reset();
-      alert('تم نشر الخبر الرياضي بنجاح!');
-    });
-  }
-
-  // DELETE HANDLERS
-  window.deleteChannel = (id) => {
-    if (confirm('هل أنت تأكد من رغبتك في حذف هذه القناة؟')) {
-      channels = channels.filter(c => c.id !== id);
-      localStorage.setItem('altv_channels', JSON.stringify(channels));
-      renderChannelsTable();
-    }
-  };
-
-  window.deleteRadio = (id) => {
-    if (confirm('هل أنت تأكد من حذف محطة الراديو هذه؟')) {
-      radios = radios.filter(r => r.id !== id);
-      localStorage.setItem('altv_radios', JSON.stringify(radios));
-      renderRadiosTable();
-    }
-  };
 
   window.deleteMatch = (id) => {
     if (confirm('هل أنت تأكد من رغبتك في حذف هذه المباراة؟')) {
@@ -438,13 +470,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  window.deleteNews = (id) => {
-    if (confirm('هل أنت تأكد من حذف هذا الخبر الرياضي؟')) {
-      sportsNews = sportsNews.filter(n => n.id !== id);
-      localStorage.setItem('altv_sports_news', JSON.stringify(sportsNews));
-      renderSportsNewsTable();
-    }
-  };
 
   // RESET TO DEFAULTS
   if (resetDataBtn) {
@@ -463,8 +488,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderAllTables() {
     renderChannelsTable();
     renderRadiosTable();
-    renderMatchesTable();
     renderSportsNewsTable();
+    renderMatchesTable();
   }
 
   // Initial Auth & Render Check
