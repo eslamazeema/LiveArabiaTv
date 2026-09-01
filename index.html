@@ -115,9 +115,18 @@
           </div>
 
           <div class="player-actions">
+            <!-- Next / Previous Channel Switching Buttons -->
+            <button class="btn-icon" id="prevChannelBtn" title="التحويل للقناة السابقة">
+              <i class="fa-solid fa-backward-step"></i> السابقة
+            </button>
+
+            <button class="btn-icon" id="nextChannelBtn" title="التحويل للقناة التالية">
+              التالية <i class="fa-solid fa-forward-step"></i>
+            </button>
+
             <!-- Share Channel Direct Button -->
             <button class="btn-icon" id="shareChannelBtn" style="color: var(--secondary); border-color: rgba(0,176,255,0.4);" title="مشاركة رابط البث المباشر لهذه القناة">
-              <i class="fa-solid fa-share-nodes"></i> مشاركة القناة
+              <i class="fa-solid fa-share-nodes"></i> مشاركة
             </button>
 
             <a id="externalStreamBtn" href="#" target="_blank" class="btn-icon" style="color: var(--gold); border-color: rgba(255,215,0,0.4);" title="فتح البث المباشر في نافذة خارجية">
@@ -156,15 +165,26 @@
         <!-- Populated via JS -->
       </div>
 
-      <!-- Live Channels Grid Section (REORDERED: CHANNELS FIRST BEFORE NEWS) -->
-      <section id="channelsSection" style="margin-bottom: 44px;">
+      <!-- Live Channels Grid Section with Left & Right Navigation Scroll Arrows -->
+      <section id="channelsSection" style="margin-bottom: 44px; position: relative;">
         <div class="section-title">
           <h2><i class="fa-solid fa-satellite-dish" style="color: var(--primary);"></i> القنوات الفضائية المباشرة</h2>
-          <span style="color: var(--text-muted); font-size: 0.85rem;">اختر القناة لمشاهدة البث وتداول رابطها المباشر</span>
+          <span style="color: var(--text-muted); font-size: 0.85rem;">استخدم الأسهم للتقليب والتحويل بين القنوات</span>
         </div>
 
-        <div class="channels-grid" id="channelsGrid">
-          <!-- Populated via JS -->
+        <!-- Slider Wrapper with Arrows -->
+        <div class="slider-container" style="position: relative;">
+          <button class="slider-arrow arrow-right" id="channelsScrollRight" title="تقليب القنوات لليمين">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+
+          <div class="channels-grid" id="channelsGrid">
+            <!-- Populated via JS -->
+          </div>
+
+          <button class="slider-arrow arrow-left" id="channelsScrollLeft" title="تقليب القنوات لليسار">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
         </div>
       </section>
 

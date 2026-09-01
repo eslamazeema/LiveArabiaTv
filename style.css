@@ -82,7 +82,6 @@ body {
   padding-top: 24px;
 }
 
-/* SHIFTED BACKGROUND POSITION UPWARDS BY 15% (center 35%) AS REQUESTED BY USER */
 .stars-banner-bg {
   position: absolute;
   inset: 0;
@@ -610,7 +609,7 @@ body {
   justify-content: space-between;
 }
 
-/* ==================== STARZPLAY CONTENT RAILS ==================== */
+/* ==================== STARZPLAY CONTENT RAILS & SLIDER ARROWS ==================== */
 .main-container {
   max-width: 1600px;
   margin: 0 auto 60px;
@@ -676,12 +675,57 @@ body {
   box-shadow: var(--shadow-orange);
 }
 
+/* SLIDER ARROWS */
+.slider-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 30;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  transition: var(--transition);
+}
+.slider-arrow:hover {
+  background: var(--primary);
+  color: #000;
+  box-shadow: var(--shadow-orange);
+  transform: translateY(-50%) scale(1.15);
+}
+.arrow-right {
+  right: -18px;
+}
+.arrow-left {
+  left: -18px;
+}
+
+@media (max-width: 768px) {
+  .arrow-right { right: -6px; }
+  .arrow-left { left: -6px; }
+}
+
 .channels-grid {
   display: flex;
   gap: 20px;
   overflow-x: auto;
   scroll-behavior: smooth;
   padding: 10px 4px 20px;
+  width: 100%;
 }
 .channels-grid::-webkit-scrollbar {
   display: none;

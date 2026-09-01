@@ -1,10 +1,10 @@
 /**
- * بث مباشر للقنوات الفضائية (arabialivetv.com) - Universal Stream Player & Deep-Linking / Social Sharing Engine
+ * بث مباشر للقنوات الفضائية (arabialivetv.com) - Universal Stream Player, Navigation Arrows & Channel Switching Engine
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   // AUTO-REFRESH CACHE VERSION TO FORCE WORKING STREAMS & DEEP-LINKING SUPPORT
-  const CURRENT_DATA_VERSION = 'altv_v9_deeplink_social_share';
+  const CURRENT_DATA_VERSION = 'altv_v10_arrows_switcher';
   if (localStorage.getItem('altv_data_version') !== CURRENT_DATA_VERSION) {
     localStorage.setItem('altv_channels', JSON.stringify(DEFAULT_CHANNELS));
     localStorage.setItem('altv_matches', JSON.stringify(DEFAULT_MATCHES));
@@ -31,6 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // DOM Elements
   const categoriesContainer = document.getElementById('categoriesContainer');
   const channelsGrid = document.getElementById('channelsGrid');
+  const channelsScrollRight = document.getElementById('channelsScrollRight');
+  const channelsScrollLeft = document.getElementById('channelsScrollLeft');
+  const prevChannelBtn = document.getElementById('prevChannelBtn');
+  const nextChannelBtn = document.getElementById('nextChannelBtn');
+
   const matchesList = document.getElementById('matchesList');
   const sportsNewsGrid = document.getElementById('sportsNewsGrid');
   const radioGrid = document.getElementById('radioGrid');
@@ -94,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function initRealtimeTicker() {
     if (!tickerRealtimeContent) return;
     const tickerItems = [
-      '🔴 بث مباشر: قمة الأهلي والزمالك في دوري الأبطال تُعرض الآن بجميع السيرفرات.',
+      '🔴 بث مباشر: مشاهدة قمة الأهلي والزمالك في دوري الأبطال تُعرض الآن بجميع السيرفرات.',
       '⚽ ديربي الرياض: متابعة مباراة الهلال والنصر مباشرة بجودة Full HD.',
       '🇪🇺 دوري أبطال أوروبا: ريال مدريد يستضيف مانشستر سيتي في البيرنابيو الليلة.',
       '🌙 المولد النبوي الشريف: تهنئة خاصة للأمة الإسلامية بمناسبة المولد النبوي الشريف.',
@@ -201,7 +206,43 @@ document.addEventListener('DOMContentLoaded', () => {
     renderChannelsGrid(getFilteredChannels());
   }
 
-  // --- 4. DEEP-LINKING DETECTION ON BOOT ---
+  // --- 4. NEXT / PREVIOUS CHANNEL SWITCHER ---
+  function switchChannel(direction) {
+    const list = getFilteredChannels();
+    if (list.length === 0) return;
+
+    let currentIndex = list.findIndex(c => c.id === (activeChannel ? activeChannel.id : ''));
+    if (currentIndex === -1) currentIndex = 0;
+
+    let targetIndex = currentIndex + direction;
+    if (targetIndex >= list.length) targetIndex = 0;
+    if (targetIndex < 0) targetIndex = list.length - 1;
+
+    playChannel(list[targetIndex], true);
+  }
+
+  if (prevChannelBtn) {
+    prevChannelBtn.addEventListener('click', () => switchChannel(-1));
+  }
+
+  if (nextChannelBtn) {
+    nextChannelBtn.addEventListener('click', () => switchChannel(1));
+  }
+
+  // --- 5. SLIDER SCROLL ARROWS (RIGHT & LEFT) ---
+  if (channelsScrollRight && channelsGrid) {
+    channelsScrollRight.addEventListener('click', () => {
+      channelsGrid.scrollBy({ left: 340, behavior: 'smooth' });
+    });
+  }
+
+  if (channelsScrollLeft && channelsGrid) {
+    channelsScrollLeft.addEventListener('click', () => {
+      channelsGrid.scrollBy({ left: -340, behavior: 'smooth' });
+    });
+  }
+
+  // --- 6. DEEP-LINKING DETECTION ON BOOT ---
   function getChannelFromUrlHash() {
     const hash = window.location.hash.replace('#', '').trim();
     if (hash) {
@@ -211,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return null;
   }
 
-  // --- 5. SOCIAL SHARE MECHANISM FOR CHANNELS & PAGES ---
+  // --- 7. SOCIAL SHARE MECHANISM FOR CHANNELS & PAGES ---
   function openShareModal() {
     if (!activeChannel) return;
     const directUrl = `${window.location.origin}${window.location.pathname}#${activeChannel.id}`;
@@ -280,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 6. FILTER AND RENDER CHANNELS ---
+  // --- 8. FILTER AND RENDER CHANNELS ---
   function getFilteredChannels() {
     let result = channels;
 
@@ -374,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- 7. RENDER DAILY MATCH CENTER & LIVE STREAM MODAL ---
+  // --- 9. RENDER DAILY MATCH CENTER & LIVE STREAM MODAL ---
   function renderMatches() {
     if (!matchesList) return;
     matchesList.innerHTML = matches.map(m => `
@@ -454,7 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 8. RENDER REALTIME SPORTS NEWS GRID & FULL ARTICLE MODAL ---
+  // --- 10. RENDER REALTIME SPORTS NEWS GRID & FULL ARTICLE MODAL ---
   function renderSportsNews() {
     if (!sportsNewsGrid) return;
     sportsNewsGrid.innerHTML = sportsNews.map(news => `
@@ -522,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 9. RENDER RADIO STATIONS ---
+  // --- 11. RENDER RADIO STATIONS ---
   function renderRadios() {
     if (!radioGrid) return;
     radioGrid.innerHTML = radios.map(r => `
@@ -573,7 +614,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 10. RENDER HIGHLIGHTS VOD ---
+  // --- 12. RENDER HIGHLIGHTS VOD ---
   function renderHighlights() {
     if (!highlightsGrid) return;
     highlightsGrid.innerHTML = highlights.map(h => `
