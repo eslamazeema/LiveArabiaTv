@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>لوحة التحكم والإدارة المشفرة | Arabia Live TV</title>
-  <meta name="description" content="لوحة إدراة منصة Arabia Live TV المحمية لإدارة القنوات والبث المباشر.">
+  <meta name="description" content="لوحة إدراة منصة Arabia Live TV المحمية لإدارة القنوات وإذاعات الراديو والبث المباشر.">
   
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="./style.css">
@@ -85,7 +85,7 @@
       <div class="modal-backdrop" id="editChannelModalBackdrop" style="z-index: 1500;">
         <div class="form-card" style="width: 100%; max-width: 600px; background: #0c1220; border: 1px solid var(--primary);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <h3 style="color: var(--primary); font-weight: 800;"><i class="fa-solid fa-pen-to-square"></i> تعديل بيانات القناة</h3>
+            <h3 style="color: var(--primary); font-weight: 800;"><i class="fa-solid fa-pen-to-square"></i> تعديل بيانات القناة التلفزيونية</h3>
             <button class="modal-close-btn" id="closeEditModalBtn"><i class="fa-solid fa-xmark"></i></button>
           </div>
 
@@ -148,6 +148,51 @@
         </div>
       </div>
 
+      <!-- EDIT RADIO MODAL -->
+      <div class="modal-backdrop" id="editRadioModalBackdrop" style="z-index: 1500;">
+        <div class="form-card" style="width: 100%; max-width: 580px; background: #0c1220; border: 1px solid var(--secondary);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 style="color: var(--secondary); font-weight: 800;"><i class="fa-solid fa-pen-to-square"></i> تعديل بيانات محطة الراديو</h3>
+            <button class="modal-close-btn" id="closeEditRadioModalBtn"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+
+          <form id="editRadioForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+            <input type="hidden" id="editRadId">
+
+            <div class="form-group">
+              <label>اسم محطة الراديو</label>
+              <input type="text" id="editRadName" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label>الدولة / المصدر</label>
+              <input type="text" id="editRadCountry" class="form-control">
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>رابط البث الصوتي المباشر (.mp3 / Stream URL)</label>
+              <input type="text" id="editRadStreamUrl" class="form-control" placeholder="https://.../stream.mp3" required>
+            </div>
+
+            <div class="form-group">
+              <label>أيقونة الراديو (FontAwesome Icon Class)</label>
+              <input type="text" id="editRadIcon" class="form-control" placeholder="fa-radio أو fa-mosque أو fa-music">
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>وصف المحطة</label>
+              <input type="text" id="editRadDesc" class="form-control" placeholder="وصف وتفاصيل إذاعة الراديو">
+            </div>
+
+            <div style="grid-column: 1 / -1; margin-top: 10px;">
+              <button type="submit" class="btn-icon btn-primary" style="width: 100%; justify-content: center; padding: 12px; background: linear-gradient(135deg, var(--secondary), #0288d1);">
+                <i class="fa-solid fa-check-double"></i> حفظ تعديلات محطة الراديو
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
       <!-- CHANNELS MANAGEMENT TABLE -->
       <section style="margin-bottom: 40px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
@@ -174,9 +219,9 @@
       </section>
 
       <!-- ADD NEW CHANNEL FORM -->
-      <section class="form-card">
+      <section class="form-card" style="margin-bottom: 40px;">
         <h3 style="margin-bottom: 16px; color: var(--primary); font-weight: 800;">
-          <i class="fa-solid fa-plus-circle"></i> إضافة قناة بث مباشر جديدة (دعم أودية iFrame الكاملة)
+          <i class="fa-solid fa-plus-circle"></i> إضافة قناة بث مباشر جديدة
         </h3>
 
         <form id="addChannelForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
@@ -235,6 +280,70 @@
         </form>
       </section>
 
+      <!-- RADIOS MANAGEMENT TABLE -->
+      <section style="margin-bottom: 40px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="font-weight: 800;"><i class="fa-solid fa-radio" style="color: var(--secondary);"></i> إدارة وتعديل محطات الراديو الصوتية</h3>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>محطة الراديو</th>
+                <th>الدولة</th>
+                <th>رابط البث الصوتي</th>
+                <th>الوصف</th>
+                <th>إجراءات الإدارة</th>
+              </tr>
+            </thead>
+            <tbody id="radiosTableBody">
+              <!-- Populated dynamically via admin.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ADD NEW RADIO FORM -->
+      <section class="form-card" style="margin-bottom: 40px;">
+        <h3 style="margin-bottom: 16px; color: var(--secondary); font-weight: 800;">
+          <i class="fa-solid fa-plus-circle"></i> إضافة محطة راديو مباشرة جديدة
+        </h3>
+
+        <form id="addRadioForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+          <div class="form-group">
+            <label>اسم محطة الراديو</label>
+            <input type="text" id="radName" class="form-control" placeholder="مثال: إذاعة القرآن الكريم من القاهرة" required>
+          </div>
+
+          <div class="form-group">
+            <label>الدولة / المصدر</label>
+            <input type="text" id="radCountry" class="form-control" placeholder="مثال: مصر، السعودية...">
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>رابط البث الصوتي المباشر (.mp3 / Stream Audio URL)</label>
+            <input type="text" id="radStreamUrl" class="form-control" placeholder="https://stream.radiojar.com/..." required>
+          </div>
+
+          <div class="form-group">
+            <label>رمز الأيقونة (Icon Class)</label>
+            <input type="text" id="radIcon" class="form-control" placeholder="fa-mosque أو fa-radio أو fa-music">
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label>وصف إذاعة الراديو</label>
+            <input type="text" id="radDesc" class="form-control" placeholder="تلاوات خاشعة وأحاديث شريفة برواية حفص عن عاصم على مدار 24 ساعة">
+          </div>
+
+          <div style="grid-column: 1 / -1; margin-top: 10px;">
+            <button type="submit" class="btn-icon btn-primary" style="padding: 12px 28px; width: 100%; justify-content: center; font-size: 1rem; background: linear-gradient(135deg, var(--secondary), #0288d1);">
+              <i class="fa-solid fa-headphones"></i> حفظ محطة الراديو وإدراجها في البث الصوتي
+            </button>
+          </div>
+        </form>
+      </section>
+
       <!-- MATCHES TABLE -->
       <section style="margin-bottom: 40px;">
         <h3 style="margin-bottom: 16px; font-weight: 800;">
@@ -261,7 +370,7 @@
       </section>
 
       <!-- ADD NEW MATCH FORM -->
-      <section class="form-card">
+      <section class="form-card" style="margin-bottom: 40px;">
         <h3 style="margin-bottom: 16px; color: var(--gold); font-weight: 800;">
           <i class="fa-solid fa-futbol"></i> إضافة مباراة في جدول العرض والبث المباشر
         </h3>
