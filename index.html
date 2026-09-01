@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="./style.css">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- HLS.js Library for HLS .m3u8 Live Streams Support -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
 
@@ -58,7 +60,7 @@
         </button>
 
         <a href="./admin.html" class="btn-icon btn-primary">
-          <i class="fa-solid fa-sliders"></i>
+          <i class="fa-solid fa-lock"></i>
           <span>لوحة التحكم</span>
         </a>
       </div>
@@ -76,6 +78,9 @@
         </div>
 
         <div class="player-wrapper">
+          <!-- HTML5 Video Player for HLS .m3u8 Streams -->
+          <video id="mainVideo" controls autoplay playsinline style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:#000;"></video>
+          <!-- Iframe Player for Embed Streams -->
           <iframe id="mainIframe" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
         </div>
 
@@ -89,6 +94,9 @@
           </div>
 
           <div class="player-actions">
+            <a id="externalStreamBtn" href="#" target="_blank" class="btn-icon" style="color: var(--gold); border-color: rgba(255,215,0,0.3);" title="فتح البث المباشر في نافذة خاصة">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> بث خارجي
+            </a>
             <span class="badge-quality" id="playerQualityBadge">HD</span>
             <span class="viewers-badge" id="playerViewers"><i class="fa-solid fa-user-group"></i> 24.5K</span>
             <button class="btn-icon" id="playerFavBtn" title="إضافة للمفضلة">

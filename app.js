@@ -1,5 +1,5 @@
 /**
- * Arabia Live TV (arabialivetv.com) - Main Application Logic with Stream Fallbacks
+ * Arabia Live TV (arabialivetv.com) - Universal Dual HLS + Embed Player Logic
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentCategory = 'all';
   let activeChannel = channels.find(c => c.isFeatured) || channels[0];
   let activeRadio = null;
+  let hlsInstance = null;
   const audioEl = new Audio();
 
   // DOM Elements
@@ -37,12 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Player Elements
   const mainIframe = document.getElementById('mainIframe');
+  const mainVideo = document.getElementById('mainVideo');
   const playerChannelLogo = document.getElementById('playerChannelLogo');
   const playerChannelName = document.getElementById('playerChannelName');
   const playerChannelDesc = document.getElementById('playerChannelDesc');
   const playerQualityBadge = document.getElementById('playerQualityBadge');
   const playerViewers = document.getElementById('playerViewers');
   const playerFavBtn = document.getElementById('playerFavBtn');
+  const externalStreamBtn = document.getElementById('externalStreamBtn');
 
   // Audio Bar Elements
   const audioPlayerBar = document.getElementById('audioPlayerBar');
@@ -69,18 +72,60 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 2. RENDER MAIN TV PLAYER ---
+  // --- 2. UNIVERSAL PLAYER (HLS .m3u8 + IFRAME EMBED) ---
   function playChannel(channel) {
     if (!channel) return;
     activeChannel = channel;
-    
-    // Set video stream
-    mainIframe.src = channel.streamUrl || channel.fallbackUrl;
+    const streamUrl = channel.streamUrl || channel.fallbackUrl;
+
+    // Update details
     playerChannelLogo.src = channel.logo;
     playerChannelName.textContent = channel.name;
     playerChannelDesc.textContent = channel.description || `${channel.country} • بث حي ومباشر`;
     playerQualityBadge.textContent = channel.quality || 'HD';
     playerViewers.textContent = `${(channel.viewersCount || 15400).toLocaleString('ar-EG')} مشاهد`;
+
+    if (externalStreamBtn) {
+      externalStreamBtn.href = streamUrl;
+    }
+
+    // Clean up previous HLS instance if any
+    if (hlsInstance) {
+      hlsInstance.destroy();
+      hlsInstance = null;
+    }
+
+    // Check if Stream URL is an HLS (.m3u8) file
+    const isHls = streamUrl.includes('.m3u8');
+
+    if (isHls && mainVideo) {
+      mainIframe.style.display = 'none';
+      mainIframe.src = '';
+      mainVideo.style.display = 'block';
+
+      if (window.Hls && Hls.isSupported()) {
+        hlsInstance = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true
+        });
+        hlsInstance.loadSource(streamUrl);
+        hlsInstance.attachMedia(mainVideo);
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+          mainVideo.play().catch(e => console.log('HLS Autoplay:', e));
+        });
+      } else if (mainVideo.canPlayType('application/vnd.apple.mpegurl')) {
+        mainVideo.src = streamUrl;
+        mainVideo.play().catch(e => console.log('Native HLS Autoplay:', e));
+      }
+    } else {
+      // Standard Iframe / Embed Stream
+      if (mainVideo) {
+        mainVideo.pause();
+        mainVideo.style.display = 'none';
+      }
+      mainIframe.style.display = 'block';
+      mainIframe.src = streamUrl;
+    }
 
     // Favorite status
     const isFav = favorites.includes(channel.id);
@@ -323,8 +368,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function playRadio(radio) {
     activeRadio = radio;
     audioEl.src = radio.streamUrl;
-    audioEl.play().catch(() => {
-      console.log('Audio autoplay prevented, user interaction needed.');
+    audioEl.play().catch(e => {
+      console.log('Audio autoplay blocked, requires user click:', e);
     });
     
     audioRadioName.textContent = radio.name;
@@ -365,6 +410,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.playHighlight = (videoUrl) => {
+    if (mainVideo) mainVideo.style.display = 'none';
+    mainIframe.style.display = 'block';
     mainIframe.src = videoUrl;
     playerChannelName.textContent = 'ملخص فيديو مميز';
     document.getElementById('playerCard').scrollIntoView({ behavior: 'smooth' });
@@ -397,10 +444,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const fullscreenBtn = document.getElementById('fullscreenBtn');
   if (fullscreenBtn) {
     fullscreenBtn.addEventListener('click', () => {
-      if (mainIframe.requestFullscreen) {
-        mainIframe.requestFullscreen();
-      } else if (mainIframe.webkitRequestFullscreen) {
-        mainIframe.webkitRequestFullscreen();
+      const activeEl = (mainVideo && mainVideo.style.display !== 'none') ? mainVideo : mainIframe;
+      if (activeEl.requestFullscreen) {
+        activeEl.requestFullscreen();
+      } else if (activeEl.webkitRequestFullscreen) {
+        activeEl.webkitRequestFullscreen();
       }
     });
   }
