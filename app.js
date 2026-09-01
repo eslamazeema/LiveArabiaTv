@@ -201,9 +201,9 @@ document.addEventListener('DOMContentLoaded', () => {
     playerFavBtn.innerHTML = `<i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>`;
     playerFavBtn.style.color = isFav ? 'var(--gold)' : 'var(--text-muted)';
 
-    // AUTOMATICALLY SCROLL TO TOP PLAYER SCREEN ON ALL DEVICES
+    // AUTOMATICALLY SCROLL TO TOP PLAYER SCREEN ON ALL DEVICES (CENTERED IN VIEWPORT)
     if (shouldScroll && playerCard) {
-      playerCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      playerCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     renderChannelsGrid(getFilteredChannels());
@@ -669,7 +669,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mainIframe.src = videoUrl;
     playerChannelName.textContent = 'ملخص فيديو مميز';
     if (playerCard) {
-      playerCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      playerCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
