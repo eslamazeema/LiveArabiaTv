@@ -139,8 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
     activeChannel = channel;
     const streamUrl = channel.streamUrl || channel.fallbackUrl;
 
-    // Update URL hash for per-channel deep-linking
-    window.location.hash = channel.id;
+    // Update URL hash for per-channel deep-linking without triggering native browser scroll jump
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState(null, null, `#${channel.id}`);
+    }
 
     // Update player details
     playerChannelLogo.src = channel.logo;
@@ -298,7 +300,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (shareTwitter) shareTwitter.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
     if (shareLinkInput) shareLinkInput.value = shareUrl;
 
-    window.location.hash = radio.id;
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState(null, null, `#${radio.id}`);
+    }
     shareModalBackdrop.classList.add('active');
   }
 
