@@ -125,13 +125,13 @@
             </div>
 
             <div class="form-group" style="grid-column: 1 / -1;">
-              <label>رابط البث أو الإضمام المباشر (Stream URL)</label>
-              <input type="url" id="editChStreamUrl" class="form-control" required>
+              <label>رابط البث أو كود الـ iFrame بالكامل (Stream / iFrame Embed Code)</label>
+              <input type="text" id="editChStreamUrl" class="form-control" placeholder="يمكنك لصق رابط مباشر أو كود <iframe src='...'></iframe> بالكامل هنا" required>
             </div>
 
             <div class="form-group" style="grid-column: 1 / -1;">
               <label>رابط اللوجو (Logo URL)</label>
-              <input type="url" id="editChLogo" class="form-control">
+              <input type="text" id="editChLogo" class="form-control" placeholder="https://upload.wikimedia.org/...">
             </div>
 
             <div class="form-group" style="grid-column: 1 / -1;">
@@ -141,7 +141,7 @@
 
             <div style="grid-column: 1 / -1; margin-top: 10px;">
               <button type="submit" class="btn-icon btn-primary" style="width: 100%; justify-content: center; padding: 12px;">
-                <i class="fa-solid fa-check-double"></i> حفظ التحديثات وتحديث البث فوراً
+                <i class="fa-solid fa-check-double"></i> حفظ التحديثات واستخراج كود البث فوراً
               </button>
             </div>
           </form>
@@ -176,7 +176,7 @@
       <!-- ADD NEW CHANNEL FORM -->
       <section class="form-card">
         <h3 style="margin-bottom: 16px; color: var(--primary); font-weight: 800;">
-          <i class="fa-solid fa-plus-circle"></i> إضافة قناة بث مباشر جديدة
+          <i class="fa-solid fa-plus-circle"></i> إضافة قناة بث مباشر جديدة (دعم أودية iFrame الكاملة)
         </h3>
 
         <form id="addChannelForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
@@ -213,13 +213,13 @@
           </div>
 
           <div class="form-group" style="grid-column: 1 / -1;">
-            <label>رابط البث أو الإضمام (Embed / Stream URL)</label>
-            <input type="url" id="chStreamUrl" class="form-control" placeholder="https://www.youtube.com/embed/..." required>
+            <label>رابط البث أو كود הـ iFrame بالكامل (Embed URL / Full iFrame Code)</label>
+            <input type="text" id="chStreamUrl" class="form-control" placeholder="مثال: <iframe src='https://...' allowfullscreen></iframe> أو رابط مباشر" required>
           </div>
 
           <div class="form-group">
             <label>رابط صورة الشعار (Logo URL)</label>
-            <input type="url" id="chLogo" class="form-control" placeholder="https://images.unsplash.com/...">
+            <input type="text" id="chLogo" class="form-control" placeholder="https://upload.wikimedia.org/...">
           </div>
 
           <div class="form-group" style="grid-column: 1 / -1;">
@@ -312,8 +312,8 @@
           </div>
 
           <div class="form-group" style="grid-column: 1 / -1;">
-            <label>رابط البث المباشر للمباراة (Embed / Live Stream URL)</label>
-            <input type="url" id="mStreamUrl" class="form-control" placeholder="https://www.youtube.com/embed/...">
+            <label>رابط البث أو كود الـ iFrame المباشر للمباراة</label>
+            <input type="text" id="mStreamUrl" class="form-control" placeholder="يمكنك لصق رابط مباشر أو كود <iframe src='...'></iframe> هنا">
           </div>
 
           <div style="grid-column: 1 / -1; margin-top: 10px;">
@@ -371,7 +371,7 @@
 
           <div class="form-group">
             <label>رابط صورة الخبر</label>
-            <input type="url" id="newsImage" class="form-control" placeholder="https://images.unsplash.com/...">
+            <input type="text" id="newsImage" class="form-control" placeholder="https://images.unsplash.com/...">
           </div>
 
           <div style="grid-column: 1 / -1; margin-top: 10px;">

@@ -52,18 +52,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // YouTube URL Converter Helper
+  // Smart iFrame Code & YouTube URL Converter Helper
   function formatStreamUrl(url) {
     if (!url) return '';
     url = url.trim();
+
+    // If user pasted full <iframe> tag: <iframe src="https://..." ...></iframe>
+    if (url.includes('<iframe') && url.includes('src=')) {
+      const match = url.match(/src=["']([^"']+)["']/i);
+      if (match && match[1]) {
+        url = match[1];
+      }
+    }
+
+    // YouTube watch link: https://www.youtube.com/watch?v=ID
     if (url.includes('youtube.com/watch?v=')) {
       const videoId = url.split('v=')[1].split('&')[0];
       return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
     }
+
+    // YouTube short link: https://youtu.be/ID
     if (url.includes('youtu.be/')) {
       const videoId = url.split('youtu.be/')[1].split('?')[0];
       return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
     }
+
     return url;
   }
 
@@ -205,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('altv_channels', JSON.stringify(channels));
         renderChannelsTable();
         editChannelModalBackdrop.classList.remove('active');
-        alert('تم تعديل القناة، تحويل رابط البث وحفظ اللوجو بنجاح!');
+        alert('تم تعديل القناة، استخراج رابط الإضمام iFrame وحفظ التحديثات بنجاح!');
       }
     });
   }
@@ -236,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('altv_channels', JSON.stringify(channels));
       renderChannelsTable();
       addChannelForm.reset();
-      alert('تم إضافة القناة ورابط البث واللوجو بنجاح!');
+      alert('تم إضافة القناة واستخراج رابط الـ iFrame بنجاح!');
     });
   }
 
