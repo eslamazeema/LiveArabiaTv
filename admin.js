@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Load Data
   let channels = JSON.parse(localStorage.getItem('altv_channels')) || DEFAULT_CHANNELS;
+
   let matches = JSON.parse(localStorage.getItem('altv_matches')) || DEFAULT_MATCHES;
   let sportsNews = JSON.parse(localStorage.getItem('altv_sports_news')) || DEFAULT_SPORTS_NEWS;
   let radios = JSON.parse(localStorage.getItem('altv_radios')) || DEFAULT_RADIOS;

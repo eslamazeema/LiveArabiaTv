@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!localStorage.getItem('altv_channels')) {
     localStorage.setItem('altv_channels', JSON.stringify(DEFAULT_CHANNELS));
   }
+  let channels = JSON.parse(localStorage.getItem('altv_channels')) || DEFAULT_CHANNELS;
+
   if (!localStorage.getItem('altv_matches')) {
     localStorage.setItem('altv_matches', JSON.stringify(DEFAULT_MATCHES));
   }
@@ -20,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize state from LocalStorage or channels_data.js defaults
   let categories = JSON.parse(localStorage.getItem('altv_categories')) || DEFAULT_CATEGORIES;
-  let channels = JSON.parse(localStorage.getItem('altv_channels')) || DEFAULT_CHANNELS;
   let matches = JSON.parse(localStorage.getItem('altv_matches')) || DEFAULT_MATCHES;
   let sportsNews = JSON.parse(localStorage.getItem('altv_sports_news')) || DEFAULT_SPORTS_NEWS;
   let radios = JSON.parse(localStorage.getItem('altv_radios')) || DEFAULT_RADIOS;
@@ -139,11 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
     activeChannel = channel;
     const streamUrl = channel.streamUrl || channel.fallbackUrl;
 
-    // Update URL hash for per-channel deep-linking without triggering native browser scroll jump
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState(null, null, `#${channel.id}`);
-    }
-
     // Update player details
     playerChannelLogo.src = channel.logo;
     playerChannelName.textContent = channel.name;
@@ -195,7 +191,18 @@ document.addEventListener('DOMContentLoaded', () => {
         mainVideo.style.display = 'none';
       }
       mainIframe.style.display = 'block';
-      mainIframe.src = streamUrl;
+
+      // Parse full <iframe src="..."> code if pasted as URL
+      let cleanUrl = streamUrl;
+      if (typeof streamUrl === 'string' && streamUrl.includes('<iframe')) {
+        const match = streamUrl.match(/src=["']([^"']+)["']/i);
+        if (match && match[1]) {
+          cleanUrl = match[1];
+        }
+      }
+      mainIframe.referrerPolicy = 'no-referrer';
+      mainIframe.setAttribute('referrerpolicy', 'no-referrer');
+      mainIframe.src = cleanUrl;
     }
 
     // Favorite status
@@ -299,10 +306,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (shareTelegram) shareTelegram.href = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
     if (shareTwitter) shareTwitter.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
     if (shareLinkInput) shareLinkInput.value = shareUrl;
-
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState(null, null, `#${radio.id}`);
-    }
     shareModalBackdrop.classList.add('active');
   }
 
@@ -364,6 +367,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderChannelsGrid(channelList) {
     if (!channelsGrid) return;
+    const channelsCountSubtitle = document.getElementById('channelsCountSubtitle');
+    if (channelsCountSubtitle) {
+      channelsCountSubtitle.textContent = `معروض (${channelList.length}) قناة من إجمالي (${channels.length}) قناة فضائية عربية ومباشرة`;
+    }
     if (channelList.length === 0) {
       channelsGrid.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
@@ -484,13 +491,21 @@ document.addEventListener('DOMContentLoaded', () => {
       </button>
     `).join('');
 
-    modalPlayerFrame.src = servers[0].url;
+    if (modalPlayerFrame) {
+      modalPlayerFrame.referrerPolicy = 'no-referrer';
+      modalPlayerFrame.setAttribute('referrerpolicy', 'no-referrer');
+      modalPlayerFrame.src = servers[0].url;
+    }
 
     serverSelector.querySelectorAll('.server-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         serverSelector.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        modalPlayerFrame.src = btn.dataset.url;
+        if (modalPlayerFrame) {
+          modalPlayerFrame.referrerPolicy = 'no-referrer';
+          modalPlayerFrame.setAttribute('referrerpolicy', 'no-referrer');
+          modalPlayerFrame.src = btn.dataset.url;
+        }
       });
     });
 
@@ -720,29 +735,207 @@ document.addEventListener('DOMContentLoaded', () => {
   const activeChannelsList = JSON.parse(localStorage.getItem('altv_channels')) || channels;
   const activeRadiosList = JSON.parse(localStorage.getItem('altv_radios')) || radios;
 
-  // Auto-play from URL Hash (Radio or TV Channel)
-  if (window.location.hash) {
-    const hashId = window.location.hash.replace('#', '');
-    const targetChannel = activeChannelsList.find(c => c.id === hashId);
-    const targetRadio = activeRadiosList.find(r => r.id === hashId);
-
-    if (targetChannel) {
-      playChannel(targetChannel, false);
-    } else if (targetRadio) {
-      playRadio(targetRadio);
-      const radioSec = document.getElementById('radioSection');
-      if (radioSec) radioSec.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } else {
-      activeChannel = activeChannelsList.find(c => c.isFeatured) || activeChannelsList[0];
-      playChannel(activeChannel, false);
+  // Always clean URL address bar to main domain root (removes /index.html and any #hash)
+  if (window.history && window.history.replaceState) {
+    let cleanPath = window.location.pathname;
+    if (cleanPath.endsWith('/index.html')) {
+      cleanPath = cleanPath.substring(0, cleanPath.length - 10) || '/';
     }
-  } else {
-    activeChannel = activeChannelsList.find(c => c.isFeatured) || activeChannelsList[0];
-    playChannel(activeChannel, false);
+    window.history.replaceState(null, null, cleanPath + window.location.search);
+  }
+
+  // Play initial channel cleanly
+  activeChannel = activeChannelsList.find(c => c.isFeatured) || activeChannelsList[0];
+  playChannel(activeChannel, false);
+
+  // ==================== CERTIFICATES GALLERY ENGINE ====================
+  function initCertificatesGallery() {
+    const certsCategoriesContainer = document.getElementById('certsCategoriesContainer');
+    const certsGrid = document.getElementById('certsGrid');
+    const certSearchInput = document.getElementById('certSearchInput');
+    const certSortSelect = document.getElementById('certSortSelect');
+    const certsCountNum = document.getElementById('certsCountNum');
+    
+    // Modal Elements
+    const certModalOverlay = document.getElementById('certModalOverlay');
+    const certModalCloseBtn = document.getElementById('certModalCloseBtn');
+    const certModalImg = document.getElementById('certModalImg');
+    const certModalIframe = document.getElementById('certModalIframe');
+    const certModalCategoryBadge = document.getElementById('certModalCategoryBadge');
+    const certModalDateText = document.getElementById('certModalDateText');
+    const certModalTitleAr = document.getElementById('certModalTitleAr');
+    const certModalTitleEn = document.getElementById('certModalTitleEn');
+    const certModalIssuer = document.getElementById('certModalIssuer');
+    const certModalDesc = document.getElementById('certModalDesc');
+    const certModalPdfBtn = document.getElementById('certModalPdfBtn');
+    const certModalImgBtn = document.getElementById('certModalImgBtn');
+
+    if (!certsGrid || typeof CERTIFICATES_DATA === 'undefined') return;
+
+    let selectedCertCategory = 'all';
+    let currentCertSortOrder = 'desc'; // 'desc' = Newest to Oldest (by Date)
+    let certSearchQuery = '';
+
+    // Render Category Pills
+    function renderCertCategories() {
+      if (!certsCategoriesContainer) return;
+      certsCategoriesContainer.innerHTML = CERTIFICATES_CATEGORIES.map(cat => `
+        <button class="certs-cat-btn ${selectedCertCategory === cat.id ? 'active' : ''}" data-cat-id="${cat.id}">
+          <i class="fa-solid ${cat.icon}"></i> ${cat.name}
+        </button>
+      `).join('');
+
+      certsCategoriesContainer.querySelectorAll('.certs-cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          selectedCertCategory = btn.dataset.catId;
+          renderCertCategories();
+          renderCertificates();
+        });
+      });
+    }
+
+    // Filter, Sort by Date, and Render Certificates
+    function renderCertificates() {
+      let filtered = [...CERTIFICATES_DATA];
+
+      // 1. Category Filter
+      if (selectedCertCategory !== 'all') {
+        filtered = filtered.filter(c => c.category === selectedCertCategory);
+      }
+
+      // 2. Search Query Filter
+      if (certSearchQuery) {
+        const q = certSearchQuery.toLowerCase();
+        filtered = filtered.filter(c => 
+          c.titleAr.toLowerCase().includes(q) || 
+          c.titleEn.toLowerCase().includes(q) || 
+          c.issuer.toLowerCase().includes(q) ||
+          c.date.includes(q)
+        );
+      }
+
+      // 3. Chronological Date Sorting (desc = newest first, asc = oldest first)
+      filtered.sort((a, b) => {
+        const dA = new Date(a.date);
+        const dB = new Date(b.date);
+        return currentCertSortOrder === 'desc' ? dB - dA : dA - dB;
+      });
+
+      if (certsCountNum) certsCountNum.textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        certsGrid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
+            <i class="fa-solid fa-award" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.4;"></i>
+            <h3>لا توجد شهادات مطابقة للبحث أو التصفية الحالية</h3>
+            <p>يرجى اختيار تخصص آخر أو مسح كلمة البحث.</p>
+          </div>
+        `;
+        return;
+      }
+
+      certsGrid.innerHTML = filtered.map(cert => `
+        <div class="cert-card" data-cert-id="${cert.id}">
+          <div class="cert-thumb-wrapper" onclick="openCertModal('${cert.id}')">
+            <img src="${cert.imageUrl || cert.pdfUrl}" alt="${cert.titleAr}" class="cert-thumb-img" onerror="this.src='./certs/images/G.png'">
+            <span class="cert-badge-overlay ${cert.badgeClass || ''}">${cert.categoryAr}</span>
+            <span class="cert-date-overlay"><i class="fa-solid fa-calendar-day"></i> ${cert.date}</span>
+          </div>
+
+          <div class="cert-body">
+            <h3 class="cert-title-ar">${cert.titleAr}</h3>
+            <h4 class="cert-title-en">${cert.titleEn}</h4>
+
+            <div class="cert-issuer-line">
+              <i class="fa-solid fa-building-columns" style="color: var(--secondary);"></i>
+              <span>${cert.issuer}</span>
+            </div>
+
+            <div class="cert-card-actions">
+              <button class="btn-icon btn-primary" onclick="openCertModal('${cert.id}')" style="flex:1; justify-content:center;">
+                <i class="fa-solid fa-eye"></i> معاينة الشهادة
+              </button>
+              ${cert.pdfUrl ? `
+                <a href="${cert.pdfUrl}" target="_blank" class="btn-icon" style="color: var(--accent); border-color: rgba(0,230,118,0.4);" title="تحميل/فتح ملف PDF الأصلي">
+                  <i class="fa-solid fa-file-pdf"></i>
+                </a>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Window global modal opener
+    window.openCertModal = function(certId) {
+      const cert = CERTIFICATES_DATA.find(c => c.id === certId);
+      if (!cert || !certModalOverlay) return;
+
+      certModalCategoryBadge.textContent = cert.categoryAr;
+      certModalDateText.textContent = cert.date;
+      certModalTitleAr.textContent = cert.titleAr;
+      certModalTitleEn.textContent = cert.titleEn;
+      certModalIssuer.textContent = cert.issuer;
+      certModalDesc.textContent = cert.description;
+
+      if (cert.imageUrl) {
+        certModalImg.src = cert.imageUrl;
+        certModalImg.style.display = 'block';
+        certModalIframe.style.display = 'none';
+        certModalImgBtn.href = cert.imageUrl;
+        certModalImgBtn.style.display = 'inline-flex';
+      } else {
+        certModalImg.style.display = 'none';
+        certModalImgBtn.style.display = 'none';
+      }
+
+      if (cert.pdfUrl) {
+        certModalPdfBtn.href = cert.pdfUrl;
+        certModalPdfBtn.style.display = 'inline-flex';
+        if (!cert.imageUrl) {
+          certModalIframe.src = cert.pdfUrl;
+          certModalIframe.style.display = 'block';
+        }
+      } else {
+        certModalPdfBtn.style.display = 'none';
+      }
+
+      certModalOverlay.style.display = 'flex';
+    };
+
+    if (certModalCloseBtn) {
+      certModalCloseBtn.addEventListener('click', () => {
+        certModalOverlay.style.display = 'none';
+      });
+    }
+
+    if (certModalOverlay) {
+      certModalOverlay.addEventListener('click', (e) => {
+        if (e.target === certModalOverlay) certModalOverlay.style.display = 'none';
+      });
+    }
+
+    if (certSearchInput) {
+      certSearchInput.addEventListener('input', (e) => {
+        certSearchQuery = e.target.value.trim();
+        renderCertificates();
+      });
+    }
+
+    if (certSortSelect) {
+      certSortSelect.addEventListener('change', (e) => {
+        currentCertSortOrder = e.target.value;
+        renderCertificates();
+      });
+    }
+
+    renderCertCategories();
+    renderCertificates();
   }
 
   renderMatches();
   renderSportsNews();
   renderRadios();
   renderHighlights();
+  initCertificatesGallery();
 });
