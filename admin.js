@@ -1,21 +1,56 @@
 /**
- * Arabia Live TV (arabialivetv.com) - Department-Based Admin Control Panel Engine
- * 100% Zero Database/Channel Data Alterations - Pure UI Department Partitioning
+ * Arabia Live TV (arabialivetv.com) - Admin Control Panel v2.0
+ *
+ * Rebuilt to use server-side REST API with JWT authentication.
+ * - All data changes go to SQLite via API (cross-browser, persistent)
+ * - JWT token stored in sessionStorage (expires in 24h)
+ * - No hardcoded passwords visible in client-side code
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Credentials (Default: admin / admin123)
-  const ADMIN_USER = 'admin';
-  const ADMIN_PASS = 'admin123';
+  const API_BASE = window.location.origin;
 
-  // DOM Auth Elements
+  // ========================== TOKEN MANAGEMENT ==========================
+  function getToken() {
+    return sessionStorage.getItem('altv_jwt_token');
+  }
+
+  function setToken(token) {
+    sessionStorage.setItem('altv_jwt_token', token);
+  }
+
+  function clearToken() {
+    sessionStorage.removeItem('altv_jwt_token');
+  }
+
+  async function apiCall(method, endpoint, body = null) {
+    const opts = {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getToken()}`
+      }
+    };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(`${API_BASE}${endpoint}`, opts);
+    const data = await res.json();
+    if (res.status === 401 || res.status === 403) {
+      // Token expired or invalid — force re-login
+      clearToken();
+      checkAuth();
+      return null;
+    }
+    return data;
+  }
+
+  // ========================== AUTH ELEMENTS ==========================
   const loginBackdrop = document.getElementById('loginBackdrop');
   const adminMainContent = document.getElementById('adminMainContent');
   const adminLoginForm = document.getElementById('adminLoginForm');
   const loginErrorMsg = document.getElementById('loginErrorMsg');
   const logoutBtn = document.getElementById('logoutBtn');
 
-  // DEPARTMENT FILTER SWITCHER SYSTEM
+  // ========================== DEPARTMENT SWITCHER ==========================
   const deptBtns = document.querySelectorAll('.dept-btn');
   const deptSections = document.querySelectorAll('.dept-section');
 
@@ -23,10 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
     deptBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const targetDept = btn.dataset.dept;
-
         deptBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-
         deptSections.forEach(sec => {
           if (targetDept === 'all') {
             sec.style.display = 'block';
@@ -38,32 +71,80 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Check Auth State
-  function checkAuth() {
-    const isAuth = sessionStorage.getItem('altv_admin_auth') === 'true';
-    if (isAuth) {
-      if (loginBackdrop) loginBackdrop.classList.remove('active');
-      if (adminMainContent) adminMainContent.style.display = 'block';
-    } else {
-      if (loginBackdrop) loginBackdrop.classList.add('active');
-      if (adminMainContent) adminMainContent.style.display = 'none';
+  // ========================== AUTH LOGIC ==========================
+  async function checkAuth() {
+    const token = getToken();
+    if (!token) {
+      showLogin();
+      return;
     }
+    // Verify token is still valid with server
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/verify`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        showAdmin();
+        renderAllTables();
+      } else {
+        clearToken();
+        showLogin();
+      }
+    } catch {
+      // Server might be down — check if token exists locally
+      if (token) showAdmin();
+      else showLogin();
+    }
+  }
+
+  function showLogin() {
+    if (loginBackdrop) loginBackdrop.classList.add('active');
+    if (adminMainContent) adminMainContent.style.display = 'none';
+  }
+
+  function showAdmin() {
+    if (loginBackdrop) loginBackdrop.classList.remove('active');
+    if (adminMainContent) adminMainContent.style.display = 'block';
   }
 
   // Handle Login
   if (adminLoginForm) {
-    adminLoginForm.addEventListener('submit', (e) => {
+    adminLoginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const u = document.getElementById('loginUsername').value.trim();
       const p = document.getElementById('loginPassword').value.trim();
 
-      if (u === ADMIN_USER && p === ADMIN_PASS) {
-        sessionStorage.setItem('altv_admin_auth', 'true');
-        if (loginErrorMsg) loginErrorMsg.style.display = 'none';
-        checkAuth();
-        renderAllTables();
-      } else {
-        if (loginErrorMsg) loginErrorMsg.style.display = 'block';
+      const submitBtn = adminLoginForm.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: u, password: p })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          setToken(data.token);
+          if (loginErrorMsg) loginErrorMsg.style.display = 'none';
+          showAdmin();
+          renderAllTables();
+        } else {
+          if (loginErrorMsg) {
+            loginErrorMsg.textContent = data.message || 'اسم المستخدم أو كلمة المرور غير صحيحة';
+            loginErrorMsg.style.display = 'block';
+          }
+        }
+      } catch (err) {
+        if (loginErrorMsg) {
+          loginErrorMsg.textContent = 'خطأ في الاتصال بالخادم. تأكد من تشغيل السيرفر.';
+          loginErrorMsg.style.display = 'block';
+        }
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
       }
     });
   }
@@ -71,47 +152,57 @@ document.addEventListener('DOMContentLoaded', () => {
   // Handle Logout
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-      sessionStorage.removeItem('altv_admin_auth');
-      checkAuth();
+      clearToken();
+      showLogin();
     });
   }
 
-  // Smart iFrame Code & YouTube URL Converter Helper
+  // ========================== STREAM URL FORMATTER ==========================
   function formatStreamUrl(url) {
     if (!url) return '';
     url = url.trim();
-
-    // If user pasted full <iframe> tag: <iframe src="https://..." ...></iframe>
     if (url.includes('<iframe') && url.includes('src=')) {
       const match = url.match(/src=["']([^"']+)["']/i);
-      if (match && match[1]) {
-        url = match[1];
-      }
+      if (match && match[1]) url = match[1];
     }
-
-    // YouTube watch link: https://www.youtube.com/watch?v=ID
     if (url.includes('youtube.com/watch?v=')) {
       const videoId = url.split('v=')[1].split('&')[0];
       return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
     }
-
-    // YouTube short link: https://youtu.be/ID
     if (url.includes('youtu.be/')) {
       const videoId = url.split('youtu.be/')[1].split('?')[0];
       return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
     }
-
     return url;
   }
 
-  // Load Data
-  let channels = JSON.parse(localStorage.getItem('altv_channels')) || DEFAULT_CHANNELS;
+  // ========================== IN-MEMORY DATA ==========================
+  let channels = [];
+  let radios = [];
+  let matches = [];
+  let sportsNews = [];
 
-  let matches = JSON.parse(localStorage.getItem('altv_matches')) || DEFAULT_MATCHES;
-  let sportsNews = JSON.parse(localStorage.getItem('altv_sports_news')) || DEFAULT_SPORTS_NEWS;
-  let radios = JSON.parse(localStorage.getItem('altv_radios')) || DEFAULT_RADIOS;
+  async function loadAllData() {
+    try {
+      const [chRes, radRes, matchRes, newsRes] = await Promise.all([
+        fetch(`${API_BASE}/api/channels`),
+        fetch(`${API_BASE}/api/radios`),
+        fetch(`${API_BASE}/api/matches`),
+        fetch(`${API_BASE}/api/news`)
+      ]);
+      const [chData, radData, matchData, newsData] = await Promise.all([
+        chRes.json(), radRes.json(), matchRes.json(), newsRes.json()
+      ]);
+      if (chData.success) channels = chData.data;
+      if (radData.success) radios = radData.data;
+      if (matchData.success) matches = matchData.data;
+      if (newsData.success) sportsNews = newsData.data;
+    } catch (err) {
+      console.error('Failed to load data:', err);
+    }
+  }
 
-  // DOM Elements
+  // ========================== DOM ELEMENTS ==========================
   const channelsTableBody = document.getElementById('channelsTableBody');
   const radiosTableBody = document.getElementById('radiosTableBody');
   const sportsNewsTableBody = document.getElementById('sportsNewsTableBody');
@@ -123,7 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const addMatchForm = document.getElementById('addMatchForm');
   const resetDataBtn = document.getElementById('resetDataBtn');
 
-  // EDIT MODAL ELEMENTS
   const editChannelModalBackdrop = document.getElementById('editChannelModalBackdrop');
   const closeEditModalBtn = document.getElementById('closeEditModalBtn');
   const editChannelForm = document.getElementById('editChannelForm');
@@ -132,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeEditRadioModalBtn = document.getElementById('closeEditRadioModalBtn');
   const editRadioForm = document.getElementById('editRadioForm');
 
-  // ==================== DEPARTMENT 1: TV CHANNELS ====================
+  // ========================== DEPARTMENT 1: TV CHANNELS ==========================
   function renderChannelsTable() {
     if (!channelsTableBody) return;
     channelsTableBody.innerHTML = channels.map((ch) => `
@@ -162,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.editChannel = (id) => {
     const ch = channels.find(c => c.id === id);
     if (!ch) return;
-
     document.getElementById('editChId').value = ch.id;
     document.getElementById('editChName').value = ch.name;
     document.getElementById('editChCategory').value = ch.category;
@@ -171,7 +260,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('editChStreamUrl').value = ch.streamUrl || '';
     document.getElementById('editChLogo').value = ch.logo || '';
     document.getElementById('editChDesc').value = ch.description || '';
-
     if (editChannelModalBackdrop) editChannelModalBackdrop.classList.add('active');
   };
 
@@ -185,74 +273,77 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (editChannelForm) {
-    editChannelForm.addEventListener('submit', (e) => {
+    editChannelForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const id = document.getElementById('editChId').value;
-      const idx = channels.findIndex(c => c.id === id);
+      const rawUrl = document.getElementById('editChStreamUrl').value.trim();
+      const formattedUrl = formatStreamUrl(rawUrl);
 
-      if (idx !== -1) {
-        const rawUrl = document.getElementById('editChStreamUrl').value.trim();
-        const formattedUrl = formatStreamUrl(rawUrl);
+      const result = await apiCall('PUT', `/api/channels/${id}`, {
+        name: document.getElementById('editChName').value.trim(),
+        category: document.getElementById('editChCategory').value,
+        country: document.getElementById('editChCountry').value.trim(),
+        quality: document.getElementById('editChQuality').value,
+        streamUrl: formattedUrl,
+        logo: document.getElementById('editChLogo').value.trim(),
+        description: document.getElementById('editChDesc').value.trim()
+      });
 
-        channels[idx] = {
-          ...channels[idx],
-          name: document.getElementById('editChName').value.trim(),
-          category: document.getElementById('editChCategory').value,
-          country: document.getElementById('editChCountry').value.trim(),
-          quality: document.getElementById('editChQuality').value,
-          streamUrl: formattedUrl,
-          fallbackUrl: formattedUrl,
-          logo: document.getElementById('editChLogo').value.trim(),
-          description: document.getElementById('editChDesc').value.trim()
-        };
-
-        localStorage.setItem('altv_channels', JSON.stringify(channels));
+      if (result && result.success) {
+        // Update local cache
+        const idx = channels.findIndex(c => c.id === id);
+        if (idx !== -1) channels[idx] = result.data;
         renderChannelsTable();
         if (editChannelModalBackdrop) editChannelModalBackdrop.classList.remove('active');
-        alert('تم تعديل القناة وحفظ التحديثات بنجاح!');
+        showToast('تم تعديل القناة وحفظ التحديثات بنجاح!', 'success');
+      } else {
+        showToast(result?.message || 'فشل التحديث', 'error');
       }
     });
   }
 
   if (addChannelForm) {
-    addChannelForm.addEventListener('submit', (e) => {
+    addChannelForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const rawUrl = document.getElementById('chStreamUrl').value.trim();
       const formattedUrl = formatStreamUrl(rawUrl);
 
-      const newCh = {
-        id: 'ch-' + Date.now(),
+      const result = await apiCall('POST', '/api/channels', {
         name: document.getElementById('chName').value.trim(),
         category: document.getElementById('chCategory').value,
         country: document.getElementById('chCountry').value.trim() || 'عربي',
         quality: document.getElementById('chQuality').value || 'HD',
         logo: document.getElementById('chLogo').value.trim() || 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Al_Jazeera_English_logo.svg/300px-Al_Jazeera_English_logo.svg.png',
-        type: formattedUrl.includes('.m3u8') ? 'hls' : 'iframe',
         streamUrl: formattedUrl,
-        fallbackUrl: formattedUrl,
         description: document.getElementById('chDesc').value.trim() || 'بث مباشر عالي الجودة',
         isFeatured: false,
         viewersCount: Math.floor(Math.random() * 20000) + 5000
-      };
+      });
 
-      channels.unshift(newCh);
-      localStorage.setItem('altv_channels', JSON.stringify(channels));
-      renderChannelsTable();
-      addChannelForm.reset();
-      alert('تم إضافة القناة الفضائية بنجاح!');
+      if (result && result.success) {
+        channels.unshift(result.data);
+        renderChannelsTable();
+        addChannelForm.reset();
+        showToast('تم إضافة القناة الفضائية بنجاح!', 'success');
+      } else {
+        showToast(result?.message || 'فشل الإضافة', 'error');
+      }
     });
   }
 
-  window.deleteChannel = (id) => {
-    if (confirm('هل أنت تأكد من رغبتك في حذف هذه القناة؟')) {
+  window.deleteChannel = async (id) => {
+    if (!confirm('هل أنت تأكد من رغبتك في حذف هذه القناة؟')) return;
+    const result = await apiCall('DELETE', `/api/channels/${id}`);
+    if (result && result.success) {
       channels = channels.filter(c => c.id !== id);
-      localStorage.setItem('altv_channels', JSON.stringify(channels));
       renderChannelsTable();
+      showToast('تم حذف القناة بنجاح', 'success');
+    } else {
+      showToast(result?.message || 'فشل الحذف', 'error');
     }
   };
 
-
-  // ==================== DEPARTMENT 2: RADIO STATIONS ====================
+  // ========================== DEPARTMENT 2: RADIO STATIONS ==========================
   function renderRadiosTable() {
     if (!radiosTableBody) return;
     radiosTableBody.innerHTML = radios.map((r) => `
@@ -281,14 +372,12 @@ document.addEventListener('DOMContentLoaded', () => {
   window.editRadio = (id) => {
     const r = radios.find(rad => rad.id === id);
     if (!r) return;
-
     document.getElementById('editRadId').value = r.id;
     document.getElementById('editRadName').value = r.name;
     document.getElementById('editRadCountry').value = r.country || '';
     document.getElementById('editRadStreamUrl').value = r.streamUrl || '';
     document.getElementById('editRadIcon').value = r.icon || 'fa-radio';
     document.getElementById('editRadDesc').value = r.description || '';
-
     if (editRadioModalBackdrop) editRadioModalBackdrop.classList.add('active');
   };
 
@@ -302,59 +391,62 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (editRadioForm) {
-    editRadioForm.addEventListener('submit', (e) => {
+    editRadioForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const id = document.getElementById('editRadId').value;
-      const idx = radios.findIndex(r => r.id === id);
-
-      if (idx !== -1) {
-        radios[idx] = {
-          ...radios[idx],
-          name: document.getElementById('editRadName').value.trim(),
-          country: document.getElementById('editRadCountry').value.trim(),
-          streamUrl: document.getElementById('editRadStreamUrl').value.trim(),
-          icon: document.getElementById('editRadIcon').value.trim() || 'fa-radio',
-          description: document.getElementById('editRadDesc').value.trim()
-        };
-
-        localStorage.setItem('altv_radios', JSON.stringify(radios));
+      const result = await apiCall('PUT', `/api/radios/${id}`, {
+        name: document.getElementById('editRadName').value.trim(),
+        country: document.getElementById('editRadCountry').value.trim(),
+        streamUrl: document.getElementById('editRadStreamUrl').value.trim(),
+        icon: document.getElementById('editRadIcon').value.trim() || 'fa-radio',
+        description: document.getElementById('editRadDesc').value.trim()
+      });
+      if (result && result.success) {
+        const idx = radios.findIndex(r => r.id === id);
+        if (idx !== -1) radios[idx] = result.data;
         renderRadiosTable();
         if (editRadioModalBackdrop) editRadioModalBackdrop.classList.remove('active');
-        alert('تم تعديل محطة الراديو بنجاح!');
+        showToast('تم تعديل محطة الراديو بنجاح!', 'success');
+      } else {
+        showToast(result?.message || 'فشل التحديث', 'error');
       }
     });
   }
 
   if (addRadioForm) {
-    addRadioForm.addEventListener('submit', (e) => {
+    addRadioForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const newRad = {
-        id: 'rad-' + Date.now(),
+      const result = await apiCall('POST', '/api/radios', {
         name: document.getElementById('radName').value.trim(),
         country: document.getElementById('radCountry').value.trim() || 'عربي',
         streamUrl: document.getElementById('radStreamUrl').value.trim(),
         icon: document.getElementById('radIcon').value.trim() || 'fa-radio',
         description: document.getElementById('radDesc').value.trim() || 'بث صوّتي حي ومباشر'
-      };
-
-      radios.unshift(newRad);
-      localStorage.setItem('altv_radios', JSON.stringify(radios));
-      renderRadiosTable();
-      addRadioForm.reset();
-      alert('تم إضافة محطة الراديو بنجاح!');
+      });
+      if (result && result.success) {
+        radios.unshift(result.data);
+        renderRadiosTable();
+        addRadioForm.reset();
+        showToast('تم إضافة محطة الراديو بنجاح!', 'success');
+      } else {
+        showToast(result?.message || 'فشل الإضافة', 'error');
+      }
     });
   }
 
-  window.deleteRadio = (id) => {
-    if (confirm('هل أنت تأكد من حذف محطة الراديو هذه؟')) {
+  window.deleteRadio = async (id) => {
+    if (!confirm('هل أنت تأكد من حذف محطة الراديو هذه؟')) return;
+    const result = await apiCall('DELETE', `/api/radios/${id}`);
+    if (result && result.success) {
       radios = radios.filter(r => r.id !== id);
-      localStorage.setItem('altv_radios', JSON.stringify(radios));
       renderRadiosTable();
+      showToast('تم حذف المحطة بنجاح', 'success');
+    } else {
+      showToast(result?.message || 'فشل الحذف', 'error');
     }
   };
 
-
-  // ==================== DEPARTMENT 3: SPORTS NEWS ====================
+  // ========================== DEPARTMENT 3: SPORTS NEWS ==========================
   function renderSportsNewsTable() {
     if (!sportsNewsTableBody) return;
     sportsNewsTableBody.innerHTML = sportsNews.map((news) => `
@@ -375,37 +467,41 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (addNewsForm) {
-    addNewsForm.addEventListener('submit', (e) => {
+    addNewsForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const newArticle = {
-        id: 'news-' + Date.now(),
+      const summary = document.getElementById('newsSummary').value.trim();
+      const result = await apiCall('POST', '/api/news', {
         title: document.getElementById('newsTitle').value.trim(),
-        summary: document.getElementById('newsSummary').value.trim(),
-        content: `<p>${document.getElementById('newsSummary').value.trim()}</p>`,
+        summary,
+        content: `<p>${summary}</p>`,
         category: document.getElementById('newsCategory').value.trim() || 'كرة قدم',
-        timeAgo: 'الآن',
         image: document.getElementById('newsImage').value.trim() || 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=500',
         author: 'التحرير الرياضي'
-      };
-
-      sportsNews.unshift(newArticle);
-      localStorage.setItem('altv_sports_news', JSON.stringify(sportsNews));
-      renderSportsNewsTable();
-      addNewsForm.reset();
-      alert('تم نشر الخبر الرياضي بنجاح!');
+      });
+      if (result && result.success) {
+        sportsNews.unshift(result.data);
+        renderSportsNewsTable();
+        addNewsForm.reset();
+        showToast('تم نشر الخبر الرياضي بنجاح!', 'success');
+      } else {
+        showToast(result?.message || 'فشل النشر', 'error');
+      }
     });
   }
 
-  window.deleteNews = (id) => {
-    if (confirm('هل أنت تأكد من حذف هذا الخبر الرياضي؟')) {
+  window.deleteNews = async (id) => {
+    if (!confirm('هل أنت تأكد من حذف هذا الخبر الرياضي؟')) return;
+    const result = await apiCall('DELETE', `/api/news/${id}`);
+    if (result && result.success) {
       sportsNews = sportsNews.filter(n => n.id !== id);
-      localStorage.setItem('altv_sports_news', JSON.stringify(sportsNews));
       renderSportsNewsTable();
+      showToast('تم حذف الخبر بنجاح', 'success');
+    } else {
+      showToast(result?.message || 'فشل الحذف', 'error');
     }
   };
 
-
-  // ==================== DEPARTMENT 4: MATCHES SCHEDULE & LIVE MATCHES ====================
+  // ========================== DEPARTMENT 4: MATCHES ==========================
   function renderMatchesTable() {
     if (!matchesTableBody) return;
     matchesTableBody.innerHTML = matches.map((m) => `
@@ -421,7 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <td>${m.channelName}</td>
         <td>
           <button class="btn-icon" onclick="deleteMatch('${m.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3);">
-            <i class="fa-solid fa-trash"></i> حذف المباراة
+            <i class="fa-solid fa-trash"></i> حذف
           </button>
         </td>
       </tr>
@@ -429,73 +525,114 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (addMatchForm) {
-    addMatchForm.addEventListener('submit', (e) => {
+    addMatchForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const rawUrl = document.getElementById('mStreamUrl').value.trim() || 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1';
       const formattedUrl = formatStreamUrl(rawUrl);
+      const status = document.getElementById('mStatus').value;
 
-      const newMatch = {
-        id: 'match-' + Date.now(),
+      const result = await apiCall('POST', '/api/matches', {
         league: document.getElementById('mLeague').value.trim(),
-        leagueFlag: '🏆',
         homeTeam: document.getElementById('mHomeTeam').value.trim(),
-        homeLogo: '⚽',
         awayTeam: document.getElementById('mAwayTeam').value.trim(),
-        awayLogo: '⚽',
         time: document.getElementById('mTime').value.trim(),
         date: document.getElementById('mDate').value.trim() || 'اليوم',
-        status: document.getElementById('mStatus').value,
+        status,
         channelName: document.getElementById('mChannelName').value.trim(),
         commentator: document.getElementById('mCommentator').value.trim() || 'غير محدد',
-        stadium: 'الملعب الرئيسي',
-        score: document.getElementById('mStatus').value === 'live' ? '0 - 0' : 'vs',
+        score: status === 'live' ? '0 - 0' : 'vs',
+        streamUrl: formattedUrl,
         servers: [
           { name: 'سيرفر 1 (Full HD)', url: formattedUrl },
           { name: 'سيرفر 2 (سريع بدون تقطيع)', url: 'https://www.youtube.com/embed/ww9P1LqjV2E?autoplay=1' }
         ]
-      };
+      });
 
-      matches.unshift(newMatch);
-      localStorage.setItem('altv_matches', JSON.stringify(matches));
-      renderMatchesTable();
-      addMatchForm.reset();
-      alert('تم إضافة المباراة بنجاح إلى جدول البث!');
-    });
-  }
-
-  window.deleteMatch = (id) => {
-    if (confirm('هل أنت تأكد من رغبتك في حذف هذه المباراة؟')) {
-      matches = matches.filter(m => m.id !== id);
-      localStorage.setItem('altv_matches', JSON.stringify(matches));
-      renderMatchesTable();
-    }
-  };
-
-
-  // RESET TO DEFAULTS
-  if (resetDataBtn) {
-    resetDataBtn.addEventListener('click', () => {
-      if (confirm('سيتم إعادة ضبط البيانات إلى الحالة الأصلية الإفتراضية. هل تريد الاستمرار؟')) {
-        localStorage.removeItem('altv_channels');
-        localStorage.removeItem('altv_matches');
-        localStorage.removeItem('altv_sports_news');
-        localStorage.removeItem('altv_radios');
-        localStorage.removeItem('altv_data_version');
-        location.reload();
+      if (result && result.success) {
+        matches.unshift(result.data);
+        renderMatchesTable();
+        addMatchForm.reset();
+        showToast('تم إضافة المباراة بنجاح إلى جدول البث!', 'success');
+      } else {
+        showToast(result?.message || 'فشل الإضافة', 'error');
       }
     });
   }
 
-  function renderAllTables() {
+  window.deleteMatch = async (id) => {
+    if (!confirm('هل أنت تأكد من رغبتك في حذف هذه المباراة؟')) return;
+    const result = await apiCall('DELETE', `/api/matches/${id}`);
+    if (result && result.success) {
+      matches = matches.filter(m => m.id !== id);
+      renderMatchesTable();
+      showToast('تم حذف المباراة بنجاح', 'success');
+    } else {
+      showToast(result?.message || 'فشل الحذف', 'error');
+    }
+  };
+
+  // ========================== RESET DATA ==========================
+  if (resetDataBtn) {
+    resetDataBtn.addEventListener('click', async () => {
+      if (confirm('سيتم إعادة ضبط جميع البيانات إلى الحالة الأصلية الافتراضية. هل تريد الاستمرار؟')) {
+        const result = await apiCall('POST', '/api/admin/reset');
+        if (result && result.success) {
+          showToast('تمت إعادة ضبط البيانات بنجاح — يرجى إعادة تحميل الصفحة', 'success');
+          setTimeout(() => location.reload(), 1500);
+        } else {
+          showToast(result?.message || 'فشل إعادة الضبط', 'error');
+        }
+      }
+    });
+  }
+
+  // ========================== CHANGE PASSWORD FORM ==========================
+  const changePasswordForm = document.getElementById('changePasswordForm');
+  if (changePasswordForm) {
+    changePasswordForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const result = await apiCall('POST', '/api/auth/change-password', {
+        currentPassword: document.getElementById('currentPassword').value,
+        newPassword: document.getElementById('newPassword').value
+      });
+      if (result && result.success) {
+        showToast(result.message, 'success');
+        changePasswordForm.reset();
+      } else {
+        showToast(result?.message || 'فشل تغيير كلمة المرور', 'error');
+      }
+    });
+  }
+
+  // ========================== TOAST NOTIFICATIONS ==========================
+  function showToast(message, type = 'success') {
+    const existing = document.querySelector('.altv-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'altv-toast';
+    toast.style.cssText = `
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+      background: ${type === 'success' ? 'linear-gradient(135deg, #00e676, #00b248)' : 'linear-gradient(135deg, #ff1744, #c62828)'};
+      color: #fff; padding: 14px 28px; border-radius: 50px; font-weight: 700;
+      font-size: 0.95rem; box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      z-index: 99999; animation: fadeInUp 0.3s ease;
+      display: flex; align-items: center; gap: 10px; direction: rtl;
+    `;
+    toast.innerHTML = `<i class="fa-solid fa-${type === 'success' ? 'circle-check' : 'circle-xmark'}"></i> ${message}`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  // ========================== RENDER ALL TABLES ==========================
+  async function renderAllTables() {
+    await loadAllData();
     renderChannelsTable();
     renderRadiosTable();
     renderSportsNewsTable();
     renderMatchesTable();
   }
 
-  // Initial Auth & Render Check
+  // ========================== INIT ==========================
   checkAuth();
-  if (sessionStorage.getItem('altv_admin_auth') === 'true') {
-    renderAllTables();
-  }
 });

@@ -1,3 +1,51 @@
+# Dependencies
 node_modules/
+
+# Environment & secrets
 .env
+*.env.local
+*.env.production
+
+# Logs
 *.log
+logs/
+
+# SQLite database files (Render provides persistent disk; don't commit the local DB)
+altv_database.db
+altv_database.db-shm
+altv_database.db-wal
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Large personal/media files (not part of the web app)
+*.pptx
+*.mp3
+*.wav
+*.ogg
+ffmpeg.exe
+ffmpeg_runner.exe
+concat_list.txt
+merge_whatsapp_audio.py
+generate_audio.py
+generate_audio.ps1
+generate_audio_slow.ps1
+extract_dates_win.py
+fix_experience_slides.py
+match_certs.py
+ocr.ps1
+ocr_results.json
+ocr_winrt.ps1
+rebuild_gallery.py
+run_ocr.ps1
+single_ocr.ps1
+
+# WhatsApp voice notes
+"WhatsApp Ptt*"
+
+# Windows / OS files
+Thumbs.db
+.DS_Store
+desktop.ini

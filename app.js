@@ -3,30 +3,72 @@
  * Supports Per-Channel & Per-Radio Deep-Linking and Social Sharing
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-  // PRESERVE USER-EDITED DATA IN LOCALSTORAGE; INITIALIZE DEFAULTS IF EMPTY
-  if (!localStorage.getItem('altv_channels')) {
-    localStorage.setItem('altv_channels', JSON.stringify(DEFAULT_CHANNELS));
-  }
-  let channels = JSON.parse(localStorage.getItem('altv_channels')) || DEFAULT_CHANNELS;
+document.addEventListener('DOMContentLoaded', async () => {
+  /**
+   * Arabia Live TV — Unified API Data Layer
+   * All data loaded from server-side SQLite database via REST API.
+   * Works identically across ALL browsers, devices, and tabs.
+   */
 
-  if (!localStorage.getItem('altv_matches')) {
-    localStorage.setItem('altv_matches', JSON.stringify(DEFAULT_MATCHES));
-  }
-  if (!localStorage.getItem('altv_sports_news')) {
-    localStorage.setItem('altv_sports_news', JSON.stringify(DEFAULT_SPORTS_NEWS));
-  }
-  if (!localStorage.getItem('altv_radios')) {
-    localStorage.setItem('altv_radios', JSON.stringify(DEFAULT_RADIOS));
-  }
+  // API base URL (auto-detected from current host)
+  const API_BASE = window.location.origin;
 
-  // Initialize state from LocalStorage or channels_data.js defaults
-  let categories = JSON.parse(localStorage.getItem('altv_categories')) || DEFAULT_CATEGORIES;
-  let matches = JSON.parse(localStorage.getItem('altv_matches')) || DEFAULT_MATCHES;
-  let sportsNews = JSON.parse(localStorage.getItem('altv_sports_news')) || DEFAULT_SPORTS_NEWS;
-  let radios = JSON.parse(localStorage.getItem('altv_radios')) || DEFAULT_RADIOS;
-  let highlights = JSON.parse(localStorage.getItem('altv_highlights')) || DEFAULT_HIGHLIGHTS;
+  // In-memory data cache (refreshed on load)
+  let channels = [];
+  let matches = [];
+  let sportsNews = [];
+  let radios = [];
+
+  // Certificates & highlights remain static (not DB-managed)
+  let highlights = (typeof DEFAULT_HIGHLIGHTS !== 'undefined') ? DEFAULT_HIGHLIGHTS : [];
+
+  // Favorites stored in localStorage (per-browser preference, not shared data)
   let favorites = JSON.parse(localStorage.getItem('altv_favorites')) || [];
+
+  // Categories remain static
+  let categories = (typeof DEFAULT_CATEGORIES !== 'undefined') ? DEFAULT_CATEGORIES : [
+    { id: 'all', name: 'الكل', icon: 'fa-globe' },
+    { id: 'sports', name: 'الرياضة والمباريات', icon: 'fa-futbol' },
+    { id: 'news', name: 'الأخبار العالمية', icon: 'fa-newspaper' },
+    { id: 'islamic', name: 'قرآن وإسلاميات', icon: 'fa-kaaba' },
+    { id: 'drama', name: 'دراما وترفيه', icon: 'fa-tv' },
+    { id: 'docu', name: 'وثائقية', icon: 'fa-compass' },
+    { id: 'kids', name: 'أطفال', icon: 'fa-child' }
+  ];
+
+  /**
+   * Fetch all data from the server API
+   */
+  async function fetchAllData() {
+    try {
+      const [chRes, matchRes, newsRes, radRes] = await Promise.all([
+        fetch(`${API_BASE}/api/channels`),
+        fetch(`${API_BASE}/api/matches`),
+        fetch(`${API_BASE}/api/news`),
+        fetch(`${API_BASE}/api/radios`)
+      ]);
+
+      const [chData, matchData, newsData, radData] = await Promise.all([
+        chRes.json(), matchRes.json(), newsRes.json(), radRes.json()
+      ]);
+
+      if (chData.success) channels = chData.data;
+      if (matchData.success) matches = matchData.data;
+      if (newsData.success) sportsNews = newsData.data;
+      if (radData.success) radios = radData.data;
+
+    } catch (err) {
+      console.warn('⚠️ API unavailable, falling back to default data:', err.message);
+      // Graceful fallback to built-in defaults if server is unreachable
+      if (typeof DEFAULT_CHANNELS !== 'undefined') channels = [...DEFAULT_CHANNELS];
+      if (typeof DEFAULT_MATCHES !== 'undefined') matches = [...DEFAULT_MATCHES];
+      if (typeof DEFAULT_SPORTS_NEWS !== 'undefined') sportsNews = [...DEFAULT_SPORTS_NEWS];
+      if (typeof DEFAULT_RADIOS !== 'undefined') radios = [...DEFAULT_RADIOS];
+    }
+  }
+
+  // Load all data from server before rendering
+  await fetchAllData();
 
   let currentCategory = 'all';
   let activeChannel = null;
@@ -340,8 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 7. FILTER AND RENDER CHANNELS ---
   function getFilteredChannels() {
-    let activeChannelsList = JSON.parse(localStorage.getItem('altv_channels')) || channels;
-    let result = activeChannelsList;
+    let result = [...channels];
 
     if (currentCategory === 'favs') {
       result = result.filter(c => favorites.includes(c.id));
@@ -410,8 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.addEventListener('click', (e) => {
         if (e.target.closest('.fav-btn')) return;
         const chId = card.dataset.id;
-        const activeChannelsList = JSON.parse(localStorage.getItem('altv_channels')) || channels;
-        const targetCh = activeChannelsList.find(c => c.id === chId);
+        const targetCh = channels.find(c => c.id === chId);
         if (targetCh) playChannel(targetCh, true);
       });
     });
@@ -431,6 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       favorites.push(chId);
     }
+    // Favorites are per-browser preference (intentional — each viewer has their own)
     localStorage.setItem('altv_favorites', JSON.stringify(favorites));
     filterAndRenderChannels();
     if (activeChannel && activeChannel.id === chId) {
@@ -441,8 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- 8. RENDER DAILY MATCH CENTER & LIVE STREAM MODAL ---
   function renderMatches() {
     if (!matchesList) return;
-    const activeMatches = JSON.parse(localStorage.getItem('altv_matches')) || matches;
-    matchesList.innerHTML = activeMatches.map(m => `
+    matchesList.innerHTML = matches.map(m => `
       <div class="match-item" data-match-id="${m.id}">
         <div class="match-league">
           <span>${m.leagueFlag || '🏆'} ${m.league}</span>
@@ -467,8 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
     matchesList.querySelectorAll('.match-item').forEach(item => {
       item.addEventListener('click', () => {
         const mId = item.dataset.matchId;
-        const activeMatchesList = JSON.parse(localStorage.getItem('altv_matches')) || matches;
-        const targetMatch = activeMatchesList.find(m => m.id === mId);
+        const targetMatch = matches.find(m => m.id === mId);
         if (targetMatch) openMatchModal(targetMatch);
       });
     });
@@ -531,8 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- 9. RENDER REALTIME SPORTS NEWS GRID & FULL ARTICLE MODAL ---
   function renderSportsNews() {
     if (!sportsNewsGrid) return;
-    const activeNews = JSON.parse(localStorage.getItem('altv_sports_news')) || sportsNews;
-    sportsNewsGrid.innerHTML = activeNews.map(news => `
+    sportsNewsGrid.innerHTML = sportsNews.map(news => `
       <div class="sports-news-card" data-news-id="${news.id}" style="cursor: pointer;">
         <div class="news-img-wrapper">
           <img src="${news.image}" alt="${news.title}">
@@ -552,8 +590,7 @@ document.addEventListener('DOMContentLoaded', () => {
     sportsNewsGrid.querySelectorAll('.sports-news-card').forEach(card => {
       card.addEventListener('click', () => {
         const nId = card.dataset.newsId;
-        const activeNewsList = JSON.parse(localStorage.getItem('altv_sports_news')) || sportsNews;
-        const targetNews = activeNewsList.find(n => n.id === nId);
+        const targetNews = sportsNews.find(n => n.id === nId);
         if (targetNews) openArticleModal(targetNews);
       });
     });
@@ -601,8 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- 10. RENDER RADIO STATIONS WITH SOCIAL SHARE BUTTON ---
   function renderRadios() {
     if (!radioGrid) return;
-    const activeRadios = JSON.parse(localStorage.getItem('altv_radios')) || radios;
-    radioGrid.innerHTML = activeRadios.map(r => `
+    radioGrid.innerHTML = radios.map(r => `
       <div class="radio-card ${activeRadio && activeRadio.id === r.id ? 'playing' : ''}" data-id="${r.id}">
         <div class="radio-icon">
           <i class="fa-solid ${r.icon || 'fa-radio'}"></i>
@@ -621,8 +657,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.addEventListener('click', (e) => {
         if (e.target.closest('.share-radio-btn')) return;
         const rId = card.dataset.id;
-        const activeRadiosList = JSON.parse(localStorage.getItem('altv_radios')) || radios;
-        const selectedRadio = activeRadiosList.find(r => r.id === rId);
+        const selectedRadio = radios.find(r => r.id === rId);
         if (selectedRadio) playRadio(selectedRadio);
       });
     });
@@ -631,8 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const rId = btn.dataset.radioId;
-        const activeRadiosList = JSON.parse(localStorage.getItem('altv_radios')) || radios;
-        const targetRad = activeRadiosList.find(r => r.id === rId);
+        const targetRad = radios.find(r => r.id === rId);
         if (targetRad) openRadioShareModal(targetRad);
       });
     });
@@ -732,9 +766,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initRealtimeTicker();
   renderCategories();
 
-  const activeChannelsList = JSON.parse(localStorage.getItem('altv_channels')) || channels;
-  const activeRadiosList = JSON.parse(localStorage.getItem('altv_radios')) || radios;
-
   // Always clean URL address bar to main domain root (removes /index.html and any #hash)
   if (window.history && window.history.replaceState) {
     let cleanPath = window.location.pathname;
@@ -744,8 +775,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.history.replaceState(null, null, cleanPath + window.location.search);
   }
 
-  // Play initial channel cleanly
-  activeChannel = activeChannelsList.find(c => c.isFeatured) || activeChannelsList[0];
+  // Play initial channel cleanly (data already loaded from API above)
+  activeChannel = channels.find(c => c.isFeatured) || channels[0];
   playChannel(activeChannel, false);
 
   // ==================== CERTIFICATES GALLERY ENGINE ====================
