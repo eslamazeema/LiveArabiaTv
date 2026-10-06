@@ -552,8 +552,8 @@ document.addEventListener('DOMContentLoaded', () => {
         score: status === 'live' ? '0 - 0' : 'vs',
         streamUrl: formattedUrl,
         servers: [
-          { name: 'سيرفر 1 (Full HD)', url: formattedUrl },
-          { name: 'سيرفر 2 (سريع بدون تقطيع)', url: 'https://www.youtube.com/embed/ww9P1LqjV2E?autoplay=1' }
+          { name: 'سيرفر 1 (Full HD Direct)', url: formattedUrl || 'https://shoof.alkass.net/live/ch1.m3u8' },
+          { name: 'سيرفر 2 (سريع بدون تقطيع)', url: 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' }
         ]
       });
 

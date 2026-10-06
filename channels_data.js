@@ -78,7 +78,7 @@ const DEFAULT_CHANNELS = [
     quality: 'Full HD',
     logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Al_Ekhbariya_logo.svg/300px-Al_Ekhbariya_logo.svg.png',
     type: 'hls',
-    streamUrl: 'https://cdn-globecast.akamaized.net/live/eds/al_ekhbariya/hls_roku/index.m3u8',
+    streamUrl: '  https://cdn-globecast.akamaized.net/live/eds/al_ekhbariya/hls_roku/index.m3u8',
     fallbackUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-al-ekhbaria/297b3ef1cd0633ad9cfba7473a686a06/index.m3u8',
     description: 'قناة الإخبارية السعودية الرسمية - متابعة حية ومباشرة للأحداث المحلية والعالمية.',
     isFeatured: false,
@@ -481,7 +481,7 @@ const DEFAULT_HIGHLIGHTS = [
     category: 'كرة إفريقية',
     views: '142K',
     thumbnail: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=500&auto=format&fit=crop&q=60',
-    videoUrl: 'https://www.youtube.com/embed/5_fQ_1nJpEE'
+    videoUrl: 'https://shoof.alkass.net/live/ch1.m3u8'
   },
   {
     id: 'high-2',
@@ -490,6 +490,6 @@ const DEFAULT_HIGHLIGHTS = [
     category: 'رياضة عالمية',
     views: '210K',
     thumbnail: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=500&auto=format&fit=crop&q=60',
-    videoUrl: 'https://www.youtube.com/embed/ww9P1LqjV2E'
+    videoUrl: 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8'
   }
 ];

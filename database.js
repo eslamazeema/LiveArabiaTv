@@ -308,6 +308,12 @@ function syncStreamsToDirectHls() {
     for (const m of DEFAULT_MATCHES) {
       updateMatch.run({ id: m.id, servers: JSON.stringify(m.servers || []) });
     }
+    // Clean up any remaining legacy channels with youtube or embed URLs
+    db.prepare(`
+      UPDATE channels 
+      SET stream_url = 'https://shoof.alkass.net/live/ch1.m3u8', fallback_url = 'https://shoof.alkass.net/live/ch1.m3u8', type = 'hls'
+      WHERE stream_url LIKE '%youtube%' OR stream_url LIKE '%embed%' OR type = 'iframe'
+    `).run();
   } else {
     const data = readJsonDb();
     if (data.channels) {
@@ -319,6 +325,13 @@ function syncStreamsToDirectHls() {
           data.channels[idx].type = c.type;
         } else {
           data.channels.push(c);
+        }
+      }
+      for (const ch of data.channels) {
+        if (!ch.streamUrl || ch.streamUrl.includes('youtube') || ch.streamUrl.includes('embed') || ch.type === 'iframe') {
+          ch.streamUrl = 'https://shoof.alkass.net/live/ch1.m3u8';
+          ch.fallbackUrl = 'https://shoof.alkass.net/live/ch1.m3u8';
+          ch.type = 'hls';
         }
       }
       if (data.matches) {

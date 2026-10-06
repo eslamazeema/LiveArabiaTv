@@ -771,9 +771,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   window.playHighlight = (videoUrl) => {
-    if (mainVideo) mainVideo.style.display = 'none';
-    mainIframe.style.display = 'block';
-    mainIframe.src = videoUrl;
+    const isHls = videoUrl && videoUrl.includes('.m3u8');
+    if (isHls && mainVideo) {
+      mainIframe.style.display = 'none';
+      mainIframe.src = '';
+      mainVideo.style.display = 'block';
+      if (mainVideo.canPlayType('application/vnd.apple.mpegurl')) {
+        mainVideo.src = videoUrl;
+        mainVideo.play().catch(() => {});
+      } else if (window.Hls && Hls.isSupported()) {
+        if (hlsInstance) hlsInstance.destroy();
+        hlsInstance = new Hls({ enableWorker: true, lowLatencyMode: true });
+        hlsInstance.loadSource(videoUrl);
+        hlsInstance.attachMedia(mainVideo);
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+          mainVideo.play().catch(() => {});
+        });
+      }
+    } else {
+      if (mainVideo) {
+        mainVideo.pause();
+        mainVideo.style.display = 'none';
+      }
+      mainIframe.style.display = 'block';
+      mainIframe.src = videoUrl;
+    }
     playerChannelName.textContent = 'ملخص فيديو مميز';
     if (playerCard) {
       playerCard.scrollIntoView({ behavior: 'smooth', block: 'center' });

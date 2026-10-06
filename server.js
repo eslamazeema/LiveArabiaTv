@@ -326,8 +326,8 @@ app.post('/api/matches', requireAuth, (req, res) => {
       stadium: (b.stadium || 'الملعب الرئيسي').trim(),
       score: b.status === 'live' ? (b.score || '0 - 0') : 'vs',
       servers: b.servers || [
-        { name: 'سيرفر 1 (Full HD)', url: streamUrl },
-        { name: 'سيرفر 2 (سريع بدون تقطيع)', url: 'https://www.youtube.com/embed/ww9P1LqjV2E?autoplay=1' }
+        { name: 'سيرفر 1 (Full HD Direct)', url: streamUrl || 'https://shoof.alkass.net/live/ch1.m3u8' },
+        { name: 'سيرفر 2 (سريع بدون تقطيع)', url: 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' }
       ]
     };
     if (!m.homeTeam || !m.awayTeam) {

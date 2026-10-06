@@ -1,8 +1,12 @@
 {
+  "ApplicationSoftware.jpeg": "ERR: Method invocation failed because [System.__ComObject] does not contain a method named 'GetAwaiter'.",
+  "Appreciation Certificate.jpg": "ERR: Method invocation failed because [System.__ComObject] does not contain a method named 'GetAwaiter'.",
   "BuildingGeoDataBases.png": "ERR: Method invocation failed because [System.__ComObject] does not contain a method named 'GetAwaiter'.",
   "Deploy_MaintainMultiuserGeodatabase.png": "ERR: Method invocation failed because [System.__ComObject] does not contain a method named 'GetAwaiter'.",
   "DistributingDataUsingGeodatabaseReplication.png": "ERR: Method invocation failed because [System.__ComObject] does not contain a method named 'GetAwaiter'.",
+  "E-Commerce.jpg": "ERR: Method invocation failed because [System.__ComObject] does not contain a method named 'GetAwaiter'.",
   "EditingDatawithArcGIS_Desktop.png": "ERR: Method invocation failed because [System.__ComObject] does not contain a method named 'GetAwaiter'.",
+  "English-Diploma.jpg": "ERR: Method invocation failed because [System.__ComObject] does not contain a method named 'GetAwaiter'.",
   "EssentialworkflowsInArcGIS.png": "ERR: Method invocation failed because [System.__ComObject] does not contain a method named 'GetAwaiter'.",
   "FieldDataCollection_ManagementUsingArcGIS.png": "ERR: Method invocation failed because [System.__ComObject] does not contain a method named 'GetAwaiter'.",
   "FortiADC_LoadBalancer.png": "ERR: Method invocation failed because [System.__ComObject] does not contain a method named 'GetAwaiter'.",
