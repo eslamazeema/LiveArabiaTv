@@ -1,7 +1,17 @@
-/**
- * بث مباشر للقنوات الفضائية (arabialivetv.com) - Universal Stream Player Engine
- * Supports Per-Channel & Per-Radio Deep-Linking and Social Sharing
- */
+// Immediately strip any #hashtag or /index.html upon script execution to keep address bar clean
+(function cleanUrlImmediately() {
+  try {
+    if (typeof window !== 'undefined' && window.history && window.history.replaceState) {
+      let cleanPath = window.location.pathname;
+      if (cleanPath.endsWith('/index.html')) {
+        cleanPath = cleanPath.slice(0, -10) || '/';
+      }
+      if (window.location.hash || window.location.pathname.endsWith('/index.html')) {
+        window.history.replaceState(null, '', cleanPath + window.location.search);
+      }
+    }
+  } catch (e) {}
+})();
 
 document.addEventListener('DOMContentLoaded', async () => {
   /**
@@ -317,7 +327,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       shareModalText.textContent = `انشر رابط بث قناة "${channel.name}" مباشرة لأصدقائك في شبكات التواصل الاجتماعي:`;
     }
 
-    const shareUrl = `${window.location.origin}${window.location.pathname}#${channel.id}`;
+    const shareUrl = `${window.location.origin}/`;
     const shareText = `شاهد بث حي ومباشر لقناة "${channel.name}" بجودة عالية عبر منصة arabialivetv.com 📺:`;
 
     if (shareWhatsapp) shareWhatsapp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
@@ -340,7 +350,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       shareModalText.textContent = `انشر رابط بث إذاعة "${radio.name}" مباشرة لأصدقائك في شبكات التواصل الاجتماعي:`;
     }
 
-    const shareUrl = `${window.location.origin}${window.location.pathname}#${radio.id}`;
+    const shareUrl = `${window.location.origin}/`;
     const shareText = `استمع الآن إلى بث حي ومباشر لإذاعة "${radio.name}" بصوت نقي عبر منصة arabialivetv.com 🎙️📻:`;
 
     if (shareWhatsapp) shareWhatsapp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
