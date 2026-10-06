@@ -63,9 +63,9 @@
           <span>المباريات والأخبار</span>
         </a>
 
-        <a href="#certsGallerySection" class="btn-icon btn-certs-hub" style="color: var(--accent); border-color: rgba(0, 230, 118, 0.4);">
-          <i class="fa-solid fa-award"></i>
-          <span>معرض الشهادات</span>
+        <a href="#radioSection" class="btn-icon" style="color: var(--secondary); border-color: rgba(0,176,255,0.4);">
+          <i class="fa-solid fa-radio"></i>
+          <span>إذاعات الراديو</span>
         </a>
 
         <button class="btn-icon" id="showFavsBtn">
@@ -109,8 +109,8 @@
 
           <!-- Mobile-Optimized HTML5 Video Player for HLS .m3u8 Streams -->
           <video id="mainVideo" controls playsinline webkit-playsinline style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:#000;"></video>
-          <!-- Iframe Player for Embed Streams -->
-          <iframe id="mainIframe" src="" referrerpolicy="no-referrer" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+          <!-- Iframe Player for Embed Streams (Sandboxed against popups & ad redirects) -->
+          <iframe id="mainIframe" src="" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" referrerpolicy="no-referrer" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
         </div>
 
         <div class="player-details">
@@ -337,9 +337,10 @@
         <!-- Server buttons injected via JS -->
       </div>
 
-      <!-- Player Iframe -->
+      <!-- Direct HTML5 HLS Video Player & Sandboxed Frame -->
       <div class="modal-player-wrapper">
-        <iframe id="modalPlayerFrame" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+        <video id="modalVideo" controls playsinline webkit-playsinline style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:#000;"></video>
+        <iframe id="modalPlayerFrame" src="" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" referrerpolicy="no-referrer" allowfullscreen allow="autoplay; encrypted-media"></iframe>
       </div>
 
       <div style="padding: 16px 24px; background: rgba(18, 26, 43, 0.95); display: flex; align-items: center; justify-content: space-between;">
@@ -372,95 +373,7 @@
     </div>
   </div>
 
-  <!-- ==================== CERTIFICATES & TRAINING COURSES GALLERY ==================== -->
-  <section class="certs-section" id="certsGallerySection">
-    <div class="section-header">
-      <div class="section-title">
-        <i class="fa-solid fa-award glow-icon" style="color: var(--accent);"></i>
-        <div>
-          <h2>معرض الشهادات والدورات التدريبية المعتمدة</h2>
-          <p>جميع الشهادات والدبلومات التخصصية مرتبة كرونولوجياً حسب تاريخ الحصول عليها</p>
-        </div>
-      </div>
 
-      <div class="certs-count-badge" id="certsTotalBadge">
-        <i class="fa-solid fa-certificate"></i> <span id="certsCountNum">27</span> شهادة معتمدة
-      </div>
-    </div>
-
-    <!-- Controls Bar: Categories Filter & Date Sorting Toggle -->
-    <div class="certs-controls-bar">
-      <!-- Category Filter Tabs -->
-      <div class="certs-categories" id="certsCategoriesContainer">
-        <!-- Rendered dynamically -->
-      </div>
-
-      <!-- Sorting & Quick Search Bar -->
-      <div class="certs-filter-actions">
-        <div class="certs-search-box">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="certSearchInput" placeholder="بحث باسم الشهادة أو الجهة المانحة...">
-        </div>
-
-        <!-- Date Sorting Order Selector Switcher -->
-        <div class="sort-selector-wrapper">
-          <label for="certSortSelect"><i class="fa-solid fa-arrow-down-short-wide"></i> ترتيب التاريخ:</label>
-          <select id="certSortSelect" class="sort-select-dropdown">
-            <option value="desc" selected>📅 من الأحدث إلى الأقدم (Newest First)</option>
-            <option value="asc">📅 من الأقدم إلى الأحدث (Oldest First)</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <!-- Certificates Grid Display -->
-    <div class="certs-grid" id="certsGrid">
-      <!-- Cards rendered dynamically from certs_data.js sorted by date -->
-    </div>
-  </section>
-
-  <!-- ==================== CERTIFICATE PREVIEW MODAL / LIGHTBOX ==================== -->
-  <div class="cert-modal-overlay" id="certModalOverlay" style="display: none;">
-    <div class="cert-modal-card">
-      <button class="cert-modal-close" id="certModalCloseBtn" title="إغلاق"><i class="fa-solid fa-xmark"></i></button>
-      
-      <div class="cert-modal-body">
-        <div class="cert-modal-preview">
-          <img id="certModalImg" src="" alt="Certificate Preview" style="display: none;">
-          <iframe id="certModalIframe" src="" style="display: none;"></iframe>
-        </div>
-
-        <div class="cert-modal-info">
-          <div class="cert-modal-header">
-            <span class="cert-badge" id="certModalCategoryBadge">التخصص</span>
-            <span class="cert-date-badge" id="certModalDateBadge"><i class="fa-solid fa-calendar-days"></i> <span id="certModalDateText">2025-02-06</span></span>
-          </div>
-
-          <h3 id="certModalTitleAr">عنوان الشهادة بالعربية</h3>
-          <h4 id="certModalTitleEn">Certificate Title in English</h4>
-          
-          <div class="cert-issuer-box">
-            <i class="fa-solid fa-building-columns"></i>
-            <div>
-              <span style="font-size: 0.8rem; color: var(--text-muted);">الجهة المانحة والمعتمدة:</span>
-              <strong id="certModalIssuer">Esri Certified Training</strong>
-            </div>
-          </div>
-
-          <p id="certModalDesc">تفاصيل ووصف الدورة والشهادة المهنية.</p>
-
-          <div class="cert-modal-actions">
-            <a id="certModalPdfBtn" href="#" target="_blank" class="btn-icon btn-primary" style="flex:1; justify-content:center;">
-              <i class="fa-solid fa-file-pdf"></i> فتح ملف PDF الأصلي
-            </a>
-            <a id="certModalImgBtn" href="#" target="_blank" class="btn-icon" style="color: var(--accent); border-color: rgba(0,230,118,0.4);">
-              <i class="fa-solid fa-up-right-and-down-left-from-center"></i> الصورة مكبرة
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- ==================== FOOTER ==================== -->
   <footer class="footer">
@@ -474,15 +387,15 @@
       </div>
 
       <p style="max-width: 600px; color: var(--text-muted); font-size: 0.9rem;">
-        منصة البث المباشر والدليل التلفزيوني الرياضي الأول ومعرض الشهادات والدورات المعتمدة.
+        منصة البث المباشر والدليل التلفزيوني الرياضي الأول. تابع أهم القنوات الفضائية، المباريات اليومية مباشر، والأخبار الرياضية العاجلة، واستمع لأشهر إذاعات الراديو العربية.
       </p>
 
       <ul class="footer-links">
         <li><a href="/">الرئيسية</a></li>
         <li><a href="#channelsSection">القنوات المباشرة</a></li>
         <li><a href="#sportsHubSection">أخبار الرياضة</a></li>
-        <li><a href="#certsGallerySection">معرض الشهادات</a></li>
         <li><a href="#radioSection">إذاعات الراديو</a></li>
+        <li><a href="#matchesCard">جدول المباريات</a></li>
       </ul>
 
       <div class="copyright">
@@ -492,8 +405,7 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="./channels_data.js?v=2.0"></script>
-  <script src="./certs_data.js?v=1.0"></script>
-  <script src="./app.js?v=2.0"></script>
+  <script src="./channels_data.js?v=2.1"></script>
+  <script src="./app.js?v=2.1"></script>
 </body>
 </html>

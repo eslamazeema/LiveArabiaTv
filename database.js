@@ -54,22 +54,35 @@ function writeJsonDb(data) {
   }
 }
 
-// ========================== DEFAULT SEED DATA ==========================
+// ========================== DEFAULT SEED DATA (100% DIRECT HLS - ZERO ADS) ==========================
 const DEFAULT_CHANNELS = [
-  { id: 'ch-aljazeera-news', name: 'الجزيرة الإخبارية', category: 'news', country: 'قطر', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/7/77/Al_Jazeera_English_logo.svg/300px-Al_Jazeera_English_logo.svg.png', type: 'hls', streamUrl: 'https://live-hls-web-aje.akamaized.net/v1/master/053b922097368021ef37d806509f6e4a2432a688/aljazeera-arabic/index.m3u8', fallbackUrl: 'https://www.youtube.com/embed/bNyUyrR0PHo', description: 'بث حي ومباشر لقناة الجزيرة الإخبارية - تغطية إخبارية مستمرة.', isFeatured: 1, viewersCount: 68200, sortOrder: 1 },
-  { id: 'ch-alarabiya', name: 'قناة العربية الفضائية', category: 'news', country: 'السعودية', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Al_Arabiya_Logo.svg/300px-Al_Arabiya_Logo.svg.png', type: 'hls', streamUrl: 'https://live.alarabiya.net/alarabiya/live/playlist.m3u8', fallbackUrl: 'https://www.youtube.com/embed/2M-x9s_lqX4', description: 'قناة العربية الإخبارية - أنباء وتحليلات وتغطيات حيّة من حول العالم.', isFeatured: 1, viewersCount: 61400, sortOrder: 2 },
-  { id: 'ch-skynews-ar', name: 'سكاي نيوز عربية', category: 'news', country: 'الإمارات', quality: 'HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Sky_News_Arabia_logo.svg/300px-Sky_News_Arabia_logo.svg.png', type: 'hls', streamUrl: 'https://stream.skynewsarabia.com/hls/skynews_hd.m3u8', fallbackUrl: 'https://www.youtube.com/embed/0_QW_lDk3B4', description: 'البث المباشر لقناة سكاي نيوز عربية بالسرعة والموضوعية.', isFeatured: 0, viewersCount: 45800, sortOrder: 3 },
-  { id: 'ch-france24-ar', name: 'فرانس 24 (باللغة العربية)', category: 'news', country: 'فرنسا', quality: 'HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/France_24_logo.svg/300px-France_24_logo.svg.png', type: 'hls', streamUrl: 'https://stream.france24.com/hls/ar/live/2038753/f24_ar.m3u8', fallbackUrl: 'https://www.france24.com/ar', description: 'الأخبار الدولية باللغة العربية على مدار 24 ساعة.', isFeatured: 0, viewersCount: 34200, sortOrder: 4 },
-  { id: 'ch-trt-arabi', name: 'TRT عربي', category: 'news', country: 'تركيا', quality: 'HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/TRT_Arabi_logo.png/300px-TRT_Arabi_logo.png', type: 'hls', streamUrl: 'https://tv-trtarabi.medya.trt.com.tr/master.m3u8', fallbackUrl: 'https://www.trtarabi.com', description: 'قناة TRT العربية الإخبارية والثقافية.', isFeatured: 0, viewersCount: 29100, sortOrder: 5 },
-  { id: 'ch-alghad', name: 'قناة الغد الإخبارية', category: 'news', country: 'مصر', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Al_Ghad_TV_Logo.png/300px-Al_Ghad_TV_Logo.png', type: 'hls', streamUrl: 'https://stream.skynewsarabia.com/hls/skynews_hd.m3u8', fallbackUrl: 'https://www.alghad.tv', description: 'قناة الغد - أول قناة إخبارية عربية تبث من القاهرة.', isFeatured: 0, viewersCount: 23500, sortOrder: 6 },
-  { id: 'ch-saudi-quran', name: 'قناة القرآن الكريم (مكة المكرمة)', category: 'islamic', country: 'السعودية', quality: '4K Ultra', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Saudi_Quran_TV_Logo.png/300px-Saudi_Quran_TV_Logo.png', type: 'hls', streamUrl: 'https://shls-quran-prod-dub.savanacdn.net/out/v1/678a1b5c394f4bf2b2ec9103e33c7f99/index.m3u8', fallbackUrl: 'https://www.youtube.com/embed/Y0W8V9m1wB4', description: 'بث حي ومباشر 24/7 من المسجد الحرام بمكة المكرمة مع تلاوة القرآن.', isFeatured: 1, viewersCount: 104000, sortOrder: 7 },
-  { id: 'ch-saudi-sunnah', name: 'قناة السنة النبوية (المدينة المنورة)', category: 'islamic', country: 'السعودية', quality: '4K Ultra', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Saudi_Sunnah_TV_Logo.png/300px-Saudi_Sunnah_TV_Logo.png', type: 'hls', streamUrl: 'https://shls-sunna-prod-dub.savanacdn.net/out/v1/fa6164f9b2fa41a998bb55efbf6f5f3e/index.m3u8', fallbackUrl: 'https://www.youtube.com/embed/J7wP1_q_sW0', description: 'بث حي ومباشر من المسجد النبوي الشريف بالمدينة المنورة.', isFeatured: 1, viewersCount: 89500, sortOrder: 8 },
-  { id: 'ch-ontime-1', name: 'أون تايم سبورتس 1 (ON Time Sports)', category: 'sports', country: 'مصر', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/ON_Time_Sports_logo.svg/300px-ON_Time_Sports_logo.svg.png', type: 'iframe', streamUrl: 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1', fallbackUrl: 'https://www.youtube.com/embed/5_fQ_1nJpEE', description: 'البث المباشر لقناة ON Time Sports 1 لمتابعة الدوري المصري والبطولات القارية.', isFeatured: 1, viewersCount: 72400, sortOrder: 9 },
-  { id: 'ch-bein-news', name: 'بي إن سبورتس الإخبارية (beIN SPORTS)', category: 'sports', country: 'قطر', quality: 'HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/BeIN_Sports_Logo.svg/300px-BeIN_Sports_Logo.svg.png', type: 'iframe', streamUrl: 'https://www.youtube.com/embed/ww9P1LqjV2E?autoplay=1', fallbackUrl: 'https://www.youtube.com/embed/ww9P1LqjV2E', description: 'الأخبار الرياضية والتغطيات المباشرة من beIN SPORTS.', isFeatured: 1, viewersCount: 58900, sortOrder: 10 },
-  { id: 'ch-ksa-sports', name: 'السعودية الرياضية 1 (KSA Sports)', category: 'sports', country: 'السعودية', quality: 'HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/KSA_Sports_logo.svg/300px-KSA_Sports_logo.svg.png', type: 'iframe', streamUrl: 'https://www.youtube.com/embed/2g811V88880?autoplay=1', fallbackUrl: 'https://www.youtube.com/embed/2g811V88880', description: 'ناقل دوري روشن السعودي للمحترفين والبطولات المحلية.', isFeatured: 0, viewersCount: 46200, sortOrder: 11 },
-  { id: 'ch-mbc-masr', name: 'MBC مصر', category: 'drama', country: 'مصر', quality: 'HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/MBC_Masr_logo.svg/300px-MBC_Masr_logo.svg.png', type: 'iframe', streamUrl: 'https://www.youtube.com/embed/Xqz4W04g90A?autoplay=1', fallbackUrl: 'https://www.youtube.com/embed/Xqz4W04g90A', description: 'قناة الترفيه الأولى والبرامج الحوارية والمسلسلات العربية.', isFeatured: 1, viewersCount: 54800, sortOrder: 12 },
-  { id: 'ch-rotana-cinema', name: 'روتانا سينما', category: 'drama', country: 'السعودية', quality: 'HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Rotana_Cinema_Logo.png/300px-Rotana_Cinema_Logo.png', type: 'iframe', streamUrl: 'https://www.youtube.com/embed/7X8m_v7S184?autoplay=1', fallbackUrl: 'https://www.youtube.com/embed/7X8m_v7S184', description: 'أفلام السينما العربية الحديثة والمعاصرة.', isFeatured: 1, viewersCount: 51200, sortOrder: 13 },
-  { id: 'ch-spacetoon', name: 'سبيستون (Spacetoon)', category: 'kids', country: 'الإمارات', quality: 'HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Spacetoon_logo.svg/300px-Spacetoon_logo.svg.png', type: 'iframe', streamUrl: 'https://www.youtube.com/embed/k8W9x1P9tT8?autoplay=1', fallbackUrl: 'https://www.youtube.com/embed/k8W9x1P9tT8', description: 'قناة شباب المستقبل - أنمي وبرامج كرتون مميزة.', isFeatured: 1, viewersCount: 45000, sortOrder: 14 }
+  // --- NEWS CHANNELS ---
+  { id: 'ch-aljazeera-news', name: 'الجزيرة الإخبارية', category: 'news', country: 'قطر', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/7/77/Al_Jazeera_English_logo.svg/300px-Al_Jazeera_English_logo.svg.png', type: 'hls', streamUrl: 'https://live-hls-web-aja-fa.thehlive.com/AJA/index.m3u8', fallbackUrl: 'https://live-hls-web-aja.getaj.net/AJA/index.m3u8', description: 'بث حي ومباشر لقناة الجزيرة الإخبارية - تغطية إخبارية مستمرة.', isFeatured: 1, viewersCount: 68200, sortOrder: 1 },
+  { id: 'ch-alarabiya', name: 'قناة العربية الفضائية', category: 'news', country: 'السعودية', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Al_Arabiya_Logo.svg/300px-Al_Arabiya_Logo.svg.png', type: 'hls', streamUrl: 'https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8', fallbackUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-alarabiya/7f90de73d777d04f3dada92f90d35c44/index.m3u8', description: 'قناة العربية الإخبارية - أنباء وتحليلات وتغطيات حيّة من حول العالم.', isFeatured: 1, viewersCount: 61400, sortOrder: 2 },
+  { id: 'ch-alhadath', name: 'قناة الحدث', category: 'news', country: 'السعودية', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Al_Hadath_Logo.png/300px-Al_Hadath_Logo.png', type: 'hls', streamUrl: 'https://av.alarabiya.net/alarabiapublish/alhadath.smil/playlist.m3u8', fallbackUrl: 'https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8', description: 'قناة الحدث - متابعة حية ومكثفة للأحداث العاجلة حول العالم.', isFeatured: 1, viewersCount: 54200, sortOrder: 3 },
+  { id: 'ch-skynews-ar', name: 'سكاي نيوز عربية', category: 'news', country: 'الإمارات', quality: 'HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Sky_News_Arabia_logo.svg/300px-Sky_News_Arabia_logo.svg.png', type: 'hls', streamUrl: 'https://live-stream.skynewsarabia.com/c-horizontal-channel/horizontal-stream/index.m3u8', fallbackUrl: 'https://stream.skynewsarabia.com/ott/ott.m3u8', description: 'البث المباشر لقناة سكاي نيوز عربية بالسرعة والموضوعية.', isFeatured: 0, viewersCount: 45800, sortOrder: 4 },
+  { id: 'ch-alekhbariya', name: 'قناة الإخبارية السعودية', category: 'news', country: 'السعودية', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Al_Ekhbariya_logo.svg/300px-Al_Ekhbariya_logo.svg.png', type: 'hls', streamUrl: 'https://cdn-globecast.akamaized.net/live/eds/al_ekhbariya/hls_roku/index.m3u8', fallbackUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-al-ekhbaria/297b3ef1cd0633ad9cfba7473a686a06/index.m3u8', description: 'قناة الإخبارية السعودية الرسمية - متابعة حية ومباشرة للأحداث المحلية والعالمية.', isFeatured: 0, viewersCount: 38200, sortOrder: 5 },
+  { id: 'ch-asharq-news', name: 'الشرق للأخبار (Bloomberg)', category: 'news', country: 'السعودية', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Asharq_News_Logo.svg/300px-Asharq_News_Logo.svg.png', type: 'hls', streamUrl: 'https://live-news.asharq.com/asharq.m3u8', fallbackUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-asharq/10ae30c64e21402c8116a7fb1e5aa789/index.m3u8', description: 'قناة الشرق الإخبارية بالتعاون مع بلومبرغ للأخبار والتحليلات الاقتصادية والسياسية.', isFeatured: 0, viewersCount: 33100, sortOrder: 6 },
+  { id: 'ch-trt-arabi', name: 'TRT عربي', category: 'news', country: 'تركيا', quality: 'HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/TRT_Arabi_logo.png/300px-TRT_Arabi_logo.png', type: 'hls', streamUrl: 'https://tv-trtarabi.medya.trt.com.tr/master.m3u8', fallbackUrl: 'https://tv-trtarabi.medya.trt.com.tr/master.m3u8', description: 'قناة TRT العربية الإخبارية والثقافية.', isFeatured: 0, viewersCount: 29100, sortOrder: 7 },
+  { id: 'ch-cnbc-arabiya', name: 'CNBC عربية', category: 'news', country: 'الإمارات', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/CNBC_Arabia_logo.svg/300px-CNBC_Arabia_logo.svg.png', type: 'hls', streamUrl: 'https://cnbc-live.akamaized.net/cnbc/master.m3u8', fallbackUrl: 'https://cnbc-live.akamaized.net/cnbc/master.m3u8', description: 'القناة الاقتصادية الأولى في العالم العربي - أسواق المال والأعمال.', isFeatured: 0, viewersCount: 24700, sortOrder: 8 },
+
+  // --- ISLAMIC CHANNELS ---
+  { id: 'ch-saudi-quran', name: 'قناة القرآن الكريم (مكة المكرمة)', category: 'islamic', country: 'السعودية', quality: '4K Ultra', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Saudi_Quran_TV_Logo.png/300px-Saudi_Quran_TV_Logo.png', type: 'hls', streamUrl: 'https://cdn-globecast.akamaized.net/live/eds/saudi_quran/hls_roku/index.m3u8', fallbackUrl: 'https://cdn-globecast.akamaized.net/live/eds/saudi_quran/hls_roku/index.m3u8', description: 'بث حي ومباشر 24/7 من المسجد الحرام بمكة المكرمة مع تلاوة القرآن.', isFeatured: 1, viewersCount: 104000, sortOrder: 9 },
+  { id: 'ch-saudi-sunnah', name: 'قناة السنة النبوية (المدينة المنورة)', category: 'islamic', country: 'السعودية', quality: '4K Ultra', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Saudi_Sunnah_TV_Logo.png/300px-Saudi_Sunnah_TV_Logo.png', type: 'hls', streamUrl: 'https://cdn-globecast.akamaized.net/live/eds/saudi_sunnah/hls_roku/index.m3u8', fallbackUrl: 'https://cdn-globecast.akamaized.net/live/eds/saudi_sunnah/hls_roku/index.m3u8', description: 'بث حي ومباشر من المسجد النبوي الشريف بالمدينة المنورة.', isFeatured: 1, viewersCount: 89500, sortOrder: 10 },
+  { id: 'ch-qatar-quran', name: 'تلفزيون قطر للقرآن الكريم', category: 'islamic', country: 'قطر', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Saudi_Quran_TV_Logo.png/300px-Saudi_Quran_TV_Logo.png', type: 'hls', streamUrl: 'https://qatartv.akamaized.net/hls/live/20000612/qtvquran/master.m3u8', fallbackUrl: 'https://qatartv.akamaized.net/hls/live/20000612/qtvquran/master.m3u8', description: 'تلاوات خاشعة وبرامج إسلامية وتفسير القرآن الكريم على مدار 24 ساعة.', isFeatured: 0, viewersCount: 42100, sortOrder: 11 },
+
+  // --- SPORTS CHANNELS (DIRECT HLS - ZERO ADS) ---
+  { id: 'ch-alkass-1', name: 'قنوات الكأس 1 الرياضية (Al Kass)', category: 'sports', country: 'قطر', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Al_Kass_Sports_Channels_logo.png/300px-Al_Kass_Sports_Channels_logo.png', type: 'hls', streamUrl: 'https://shoof.alkass.net/live/ch1.m3u8', fallbackUrl: 'https://shoof.alkass.net/live/ch1.m3u8', description: 'البث المباشر لقناة الكأس 1 الرياضية لنقل البطولات والمباريات العربية مباشرة.', isFeatured: 1, viewersCount: 78500, sortOrder: 12 },
+  { id: 'ch-ktv-sport', name: 'الكويت الرياضية (KTV Sport HD)', category: 'sports', country: 'الكويت', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/KSA_Sports_logo.svg/300px-KSA_Sports_logo.svg.png', type: 'hls', streamUrl: 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8', fallbackUrl: 'https://kwtsplta.cdn.mangomolo.com/spl/smil:spl.stream.smil/chunklist.m3u8', description: 'القناة الرياضية الكويتية الرسمية لنقل المباريات والدوريات الخليجية والعربية.', isFeatured: 1, viewersCount: 65200, sortOrder: 13 },
+  { id: 'ch-ktv-sport-plus', name: 'الكويت سبورت بلس (Sport Plus)', category: 'sports', country: 'الكويت', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/KSA_Sports_logo.svg/300px-KSA_Sports_logo.svg.png', type: 'hls', streamUrl: 'https://kwtsplta.cdn.mangomolo.com/spl/smil:spl.stream.smil/chunklist.m3u8', fallbackUrl: 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8', description: 'البث الإضافي لمباريات واستوديوهات الكويت الرياضية المباشرة.', isFeatured: 0, viewersCount: 51000, sortOrder: 14 },
+  { id: 'ch-oman-sports', name: 'عُمان الرياضية (Oman Sport)', category: 'sports', country: 'عُمان', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/KSA_Sports_logo.svg/300px-KSA_Sports_logo.svg.png', type: 'hls', streamUrl: 'https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8', fallbackUrl: 'https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8', description: 'قناة عُمان الرياضية - تغطيات حية ومباشرة للمسابقات والبطولات العربية.', isFeatured: 0, viewersCount: 46800, sortOrder: 15 },
+  { id: 'ch-jordan-sport', name: 'الأردن الرياضية (Jordan Sport)', category: 'sports', country: 'الأردن', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/KSA_Sports_logo.svg/300px-KSA_Sports_logo.svg.png', type: 'hls', streamUrl: 'https://jrtv-live.ercdn.net/jordansporthd/jordansporthd.m3u8', fallbackUrl: 'https://jrtv-live.ercdn.net/jordansporthd/jordansporthd.m3u8', description: 'القناة الرياضية الأردنية الرسمية - بث مباشر للمباريات والمنافسات الرياضية.', isFeatured: 0, viewersCount: 43200, sortOrder: 16 },
+
+  // --- DRAMA & ENTERTAINMENT ---
+  { id: 'ch-mbc-1', name: 'MBC 1', category: 'drama', country: 'السعودية', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/MBC_Masr_logo.svg/300px-MBC_Masr_logo.svg.png', type: 'hls', streamUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-1/15cf99af5de54063fdabfefe66adc075/index.m3u8', fallbackUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-1/15cf99af5de54063fdabfefe66adc075/index.m3u8', description: 'قناة الأسرة العربية الأولى - مسلسلات، برامج ترفيهية، وأخبار منوعة.', isFeatured: 1, viewersCount: 62400, sortOrder: 17 },
+  { id: 'ch-mbc-masr', name: 'MBC مصر', category: 'drama', country: 'مصر', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/MBC_Masr_logo.svg/300px-MBC_Masr_logo.svg.png', type: 'hls', streamUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-masr/956eac069c78a35d47245db6cdbb1575/index.m3u8', fallbackUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-masr/956eac069c78a35d47245db6cdbb1575/index.m3u8', description: 'قناة الترفيه الأولى والبرامج الحوارية والمسلسلات العربية والكوميدية مباشرة.', isFeatured: 1, viewersCount: 58900, sortOrder: 18 },
+  { id: 'ch-mbc-drama', name: 'MBC دراما', category: 'drama', country: 'السعودية', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/MBC_Masr_logo.svg/300px-MBC_Masr_logo.svg.png', type: 'hls', streamUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-drama/2c28a458e2f3253e678b07ac7d13fe71/index.m3u8', fallbackUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-drama/2c28a458e2f3253e678b07ac7d13fe71/index.m3u8', description: 'باقة من أروع المسلسلات الدرامية العربية والخليجية والمصرية على مدار الساعة.', isFeatured: 0, viewersCount: 53100, sortOrder: 19 },
+  { id: 'ch-sharjah-tv', name: 'قناة الشارقة الفضائية', category: 'drama', country: 'الإمارات', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Sky_News_Arabia_logo.svg/300px-Sky_News_Arabia_logo.svg.png', type: 'hls', streamUrl: 'https://live.kwikmotion.com/smc1live/smc1tv.smil/playlist.m3u8', fallbackUrl: 'https://live.kwikmotion.com/smc1live/smc1tv.smil/playlist.m3u8', description: 'قناة الشارقة - برامج ثقافية واجتماعية ودرامية هادفة تناسب كل أفراد الأسرة.', isFeatured: 0, viewersCount: 37500, sortOrder: 20 }
 ];
 
 const DEFAULT_RADIOS = [
@@ -81,9 +94,75 @@ const DEFAULT_RADIOS = [
 ];
 
 const DEFAULT_MATCHES = [
-  { id: 'match-1', league: 'دوري أبطال إفريقيا', leagueFlag: '🏆', homeTeam: 'الأهلي المصري', homeLogo: '🔴', awayTeam: 'الزمالك', awayLogo: '⚪', time: '21:00', date: 'اليوم', status: 'live', channelName: 'أون تايم سبورتس 1', channelId: 'ch-ontime-1', commentator: 'مدحت شلبي', stadium: 'ستاد القاهرة الدولي', score: '1 - 0', servers: [{ name: 'سيرفر 1 (Full HD Direct)', url: 'https://live-hls-web-aje.akamaized.net/v1/master/053b922097368021ef37d806509f6e4a2432a688/aljazeera-arabic/index.m3u8' }, { name: 'سيرفر 2', url: 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1' }], sortOrder: 1 },
-  { id: 'match-2', league: 'دوري روشن السعودي', leagueFlag: '🇸🇦', homeTeam: 'الهلال', homeLogo: '🔵', awayTeam: 'النصر', awayLogo: '🟡', time: '20:30', date: 'اليوم', status: 'live', channelName: 'السعودية الرياضية 1', channelId: 'ch-ksa-sports', commentator: 'فهد العتيبي', stadium: 'ملعب المملكة أرينا', score: '2 - 2', servers: [{ name: 'سيرفر 1 (SSC HD)', url: 'https://www.youtube.com/embed/2g811V88880?autoplay=1' }, { name: 'سيرفر 2', url: 'https://live.alarabiya.net/alarabiya/live/playlist.m3u8' }], sortOrder: 2 },
-  { id: 'match-3', league: 'دوري أبطال أوروبا', leagueFlag: '🇪🇺', homeTeam: 'ريال مدريد', homeLogo: '⚪', awayTeam: 'مانشستر سيتي', awayLogo: '🩵', time: '22:00', date: 'اليوم', status: 'live', channelName: 'بي إن سبورتس 1', channelId: 'ch-bein-news', commentator: 'حفيظ دراجي', stadium: 'سانتياغو برنابيو', score: '1 - 1', servers: [{ name: 'سيرفر 1 (beIN Premium)', url: 'https://stream.skynewsarabia.com/hls/skynews_hd.m3u8' }, { name: 'سيرفر 2', url: 'https://www.youtube.com/embed/ww9P1LqjV2E?autoplay=1' }], sortOrder: 3 }
+  {
+    id: 'match-1',
+    league: 'دوري أبطال إفريقيا',
+    leagueFlag: '🏆',
+    homeTeam: 'الأهلي المصري',
+    homeLogo: '🔴',
+    awayTeam: 'الزمالك',
+    awayLogo: '⚪',
+    time: '21:00',
+    date: 'اليوم',
+    status: 'live',
+    channelName: 'الكأس 1 الرياضية HD',
+    channelId: 'ch-alkass-1',
+    commentator: 'مدحت شلبي',
+    stadium: 'ستاد القاهرة الدولي',
+    score: '1 - 0',
+    servers: [
+      { name: 'سيرفر 1 (الكأس HD مباشر - بدون إعلانات)', url: 'https://shoof.alkass.net/live/ch1.m3u8' },
+      { name: 'سيرفر 2 (الكويت سبورت HD مباشر)', url: 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' },
+      { name: 'سيرفر 3 (عُمان سبورت HD مباشر)', url: 'https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8' }
+    ],
+    sortOrder: 1
+  },
+  {
+    id: 'match-2',
+    league: 'دوري روشن السعودي',
+    leagueFlag: '🇸🇦',
+    homeTeam: 'الهلال',
+    homeLogo: '🔵',
+    awayTeam: 'النصر',
+    awayLogo: '🟡',
+    time: '20:30',
+    date: 'اليوم',
+    status: 'live',
+    channelName: 'الكويت الرياضية HD',
+    channelId: 'ch-ktv-sport',
+    commentator: 'فهد العتيبي',
+    stadium: 'ملعب المملكة أرينا',
+    score: '2 - 2',
+    servers: [
+      { name: 'سيرفر 1 (الكويت سبورت HD مباشر)', url: 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' },
+      { name: 'سيرفر 2 (الكويت سبورت بلس HD)', url: 'https://kwtsplta.cdn.mangomolo.com/spl/smil:spl.stream.smil/chunklist.m3u8' },
+      { name: 'سيرفر 3 (الكأس 1 HD مباشر)', url: 'https://shoof.alkass.net/live/ch1.m3u8' }
+    ],
+    sortOrder: 2
+  },
+  {
+    id: 'match-3',
+    league: 'دوري أبطال أوروبا',
+    leagueFlag: '🇪🇺',
+    homeTeam: 'ريال مدريد',
+    homeLogo: '⚪',
+    awayTeam: 'مانشستر سيتي',
+    awayLogo: '🩵',
+    time: '22:00',
+    date: 'اليوم',
+    status: 'live',
+    channelName: 'الأردن الرياضية HD',
+    channelId: 'ch-jordan-sport',
+    commentator: 'حفيظ دراجي',
+    stadium: 'سانتياغو برنابيو',
+    score: '1 - 1',
+    servers: [
+      { name: 'سيرفر 1 (الأردن سبورت HD مباشر)', url: 'https://jrtv-live.ercdn.net/jordansporthd/jordansporthd.m3u8' },
+      { name: 'سيرفر 2 (عُمان سبورت HD مباشر)', url: 'https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8' },
+      { name: 'سيرفر 3 (الكأس HD مباشر)', url: 'https://shoof.alkass.net/live/ch1.m3u8' }
+    ],
+    sortOrder: 3
+  }
 ];
 
 const DEFAULT_NEWS = [
@@ -160,6 +239,7 @@ function initDatabase() {
       updated = true;
     }
     if (updated) writeJsonDb(data);
+    syncStreamsToDirectHls();
   }
 }
 
@@ -202,6 +282,53 @@ function seedDefaultData() {
         (@id, @title, @summary, @content, @category, @timeAgo, @image, @author, @gallery, @sortOrder)
     `);
     for (const n of DEFAULT_NEWS) insert.run({ ...n, gallery: JSON.stringify(n.gallery || []) });
+  }
+
+  // Auto-sync existing channels to direct HLS streams (removes any old YouTube / iframe ad links)
+  syncStreamsToDirectHls();
+}
+
+function syncStreamsToDirectHls() {
+  if (useSqlite) {
+    const updateChannel = db.prepare(`
+      UPDATE channels SET stream_url = @streamUrl, fallback_url = @fallbackUrl, type = @type, name = @name, category = @category
+      WHERE id = @id
+    `);
+    const insertChannel = db.prepare(`
+      INSERT OR IGNORE INTO channels 
+        (id, name, category, country, quality, logo, type, stream_url, fallback_url, description, is_featured, viewers_count, sort_order)
+      VALUES 
+        (@id, @name, @category, @country, @quality, @logo, @type, @streamUrl, @fallbackUrl, @description, @isFeatured, @viewersCount, @sortOrder)
+    `);
+    for (const c of DEFAULT_CHANNELS) {
+      insertChannel.run(c);
+      updateChannel.run({ id: c.id, streamUrl: c.streamUrl, fallbackUrl: c.fallbackUrl, type: c.type, name: c.name, category: c.category });
+    }
+    const updateMatch = db.prepare(`UPDATE matches SET servers = @servers WHERE id = @id`);
+    for (const m of DEFAULT_MATCHES) {
+      updateMatch.run({ id: m.id, servers: JSON.stringify(m.servers || []) });
+    }
+  } else {
+    const data = readJsonDb();
+    if (data.channels) {
+      for (const c of DEFAULT_CHANNELS) {
+        const idx = data.channels.findIndex(x => x.id === c.id);
+        if (idx !== -1) {
+          data.channels[idx].streamUrl = c.streamUrl;
+          data.channels[idx].fallbackUrl = c.fallbackUrl;
+          data.channels[idx].type = c.type;
+        } else {
+          data.channels.push(c);
+        }
+      }
+      if (data.matches) {
+        for (const m of DEFAULT_MATCHES) {
+          const idx = data.matches.findIndex(x => x.id === m.id);
+          if (idx !== -1) data.matches[idx].servers = m.servers;
+        }
+      }
+      writeJsonDb(data);
+    }
   }
 }
 

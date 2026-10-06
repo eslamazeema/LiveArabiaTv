@@ -133,7 +133,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const modalMatchTitle = document.getElementById('modalMatchTitle');
   const modalMatchMeta = document.getElementById('modalMatchMeta');
   const modalPlayerFrame = document.getElementById('modalPlayerFrame');
+  const modalVideo = document.getElementById('modalVideo');
   const serverSelector = document.getElementById('serverSelector');
+  let matchHls = null;
 
   // Player Elements
   const mainIframe = document.getElementById('mainIframe');
@@ -523,6 +525,59 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  function playMatchServerUrl(url) {
+    if (matchHls) {
+      matchHls.destroy();
+      matchHls = null;
+    }
+    const isHls = url && url.includes('.m3u8');
+    if (isHls && modalVideo) {
+      if (modalPlayerFrame) {
+        modalPlayerFrame.style.display = 'none';
+        modalPlayerFrame.src = '';
+      }
+      modalVideo.style.display = 'block';
+      if (modalVideo.canPlayType('application/vnd.apple.mpegurl')) {
+        modalVideo.src = url;
+        modalVideo.play().catch(() => {});
+      } else if (window.Hls && Hls.isSupported()) {
+        matchHls = new Hls({ enableWorker: true, lowLatencyMode: true });
+        matchHls.loadSource(url);
+        matchHls.attachMedia(modalVideo);
+        matchHls.on(Hls.Events.MANIFEST_PARSED, () => {
+          modalVideo.play().catch(() => {});
+        });
+      }
+    } else {
+      if (modalVideo) {
+        modalVideo.pause();
+        modalVideo.style.display = 'none';
+        modalVideo.src = '';
+      }
+      if (modalPlayerFrame) {
+        modalPlayerFrame.style.display = 'block';
+        modalPlayerFrame.referrerPolicy = 'no-referrer';
+        modalPlayerFrame.src = url;
+      }
+    }
+  }
+
+  function closeMatchModal() {
+    if (matchModalBackdrop) matchModalBackdrop.classList.remove('active');
+    if (matchHls) {
+      matchHls.destroy();
+      matchHls = null;
+    }
+    if (modalVideo) {
+      modalVideo.pause();
+      modalVideo.src = '';
+      modalVideo.style.display = 'none';
+    }
+    if (modalPlayerFrame) {
+      modalPlayerFrame.src = '';
+    }
+  }
+
   function openMatchModal(match) {
     if (!matchModalBackdrop) return;
 
@@ -530,8 +585,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     modalMatchMeta.textContent = `🏆 ${match.league} • 🎤 المعلق: ${match.commentator || 'غير محدد'} • 📍 ${match.stadium || 'الملعب الرئيسي'}`;
 
     const servers = match.servers && match.servers.length > 0 ? match.servers : [
-      { name: 'سيرفر 1 (HLS HD Direct)', url: 'https://live-hls-web-aje.akamaized.net/v1/master/053b922097368021ef37d806509f6e4a2432a688/aljazeera-arabic/index.m3u8' },
-      { name: 'سيرفر 2 (YouTube Stream)', url: 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1' }
+      { name: 'سيرفر 1 (الكأس HD مباشر)', url: 'https://shoof.alkass.net/live/ch1.m3u8' },
+      { name: 'سيرفر 2 (الكويت سبورت HD مباشر)', url: 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' }
     ];
 
     serverSelector.innerHTML = servers.map((srv, idx) => `
@@ -540,21 +595,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       </button>
     `).join('');
 
-    if (modalPlayerFrame) {
-      modalPlayerFrame.referrerPolicy = 'no-referrer';
-      modalPlayerFrame.setAttribute('referrerpolicy', 'no-referrer');
-      modalPlayerFrame.src = servers[0].url;
-    }
+    // Play default server
+    playMatchServerUrl(servers[0].url);
 
     serverSelector.querySelectorAll('.server-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         serverSelector.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        if (modalPlayerFrame) {
-          modalPlayerFrame.referrerPolicy = 'no-referrer';
-          modalPlayerFrame.setAttribute('referrerpolicy', 'no-referrer');
-          modalPlayerFrame.src = btn.dataset.url;
-        }
+        playMatchServerUrl(btn.dataset.url);
       });
     });
 
@@ -562,17 +610,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   if (closeModalBtn) {
-    closeModalBtn.addEventListener('click', () => {
-      matchModalBackdrop.classList.remove('active');
-      modalPlayerFrame.src = '';
-    });
+    closeModalBtn.addEventListener('click', closeMatchModal);
   }
 
   if (matchModalBackdrop) {
     matchModalBackdrop.addEventListener('click', (e) => {
       if (e.target === matchModalBackdrop) {
-        matchModalBackdrop.classList.remove('active');
-        modalPlayerFrame.src = '';
+        closeMatchModal();
       }
     });
   }
