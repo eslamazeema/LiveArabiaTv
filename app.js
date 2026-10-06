@@ -254,8 +254,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           cleanUrl = match[1];
         }
       }
-      mainIframe.referrerPolicy = 'no-referrer';
-      mainIframe.setAttribute('referrerpolicy', 'no-referrer');
+      mainIframe.referrerPolicy = 'origin';
+      mainIframe.setAttribute('referrerpolicy', 'origin');
       mainIframe.src = cleanUrl;
     }
 

@@ -82,7 +82,12 @@ const DEFAULT_CHANNELS = [
   { id: 'ch-mbc-1', name: 'MBC 1', category: 'drama', country: 'السعودية', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/MBC_Masr_logo.svg/300px-MBC_Masr_logo.svg.png', type: 'hls', streamUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-1/15cf99af5de54063fdabfefe66adc075/index.m3u8', fallbackUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-1/15cf99af5de54063fdabfefe66adc075/index.m3u8', description: 'قناة الأسرة العربية الأولى - مسلسلات، برامج ترفيهية، وأخبار منوعة.', isFeatured: 1, viewersCount: 62400, sortOrder: 17 },
   { id: 'ch-mbc-masr', name: 'MBC مصر', category: 'drama', country: 'مصر', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/MBC_Masr_logo.svg/300px-MBC_Masr_logo.svg.png', type: 'hls', streamUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-masr/956eac069c78a35d47245db6cdbb1575/index.m3u8', fallbackUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-masr/956eac069c78a35d47245db6cdbb1575/index.m3u8', description: 'قناة الترفيه الأولى والبرامج الحوارية والمسلسلات العربية والكوميدية مباشرة.', isFeatured: 1, viewersCount: 58900, sortOrder: 18 },
   { id: 'ch-mbc-drama', name: 'MBC دراما', category: 'drama', country: 'السعودية', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/MBC_Masr_logo.svg/300px-MBC_Masr_logo.svg.png', type: 'hls', streamUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-drama/2c28a458e2f3253e678b07ac7d13fe71/index.m3u8', fallbackUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-drama/2c28a458e2f3253e678b07ac7d13fe71/index.m3u8', description: 'باقة من أروع المسلسلات الدرامية العربية والخليجية والمصرية على مدار الساعة.', isFeatured: 0, viewersCount: 53100, sortOrder: 19 },
-  { id: 'ch-sharjah-tv', name: 'قناة الشارقة الفضائية', category: 'drama', country: 'الإمارات', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Sky_News_Arabia_logo.svg/300px-Sky_News_Arabia_logo.svg.png', type: 'hls', streamUrl: 'https://live.kwikmotion.com/smc1live/smc1tv.smil/playlist.m3u8', fallbackUrl: 'https://live.kwikmotion.com/smc1live/smc1tv.smil/playlist.m3u8', description: 'قناة الشارقة - برامج ثقافية واجتماعية ودرامية هادفة تناسب كل أفراد الأسرة.', isFeatured: 0, viewersCount: 37500, sortOrder: 20 }
+  { id: 'ch-sharjah-tv', name: 'قناة الشارقة الفضائية', category: 'drama', country: 'الإمارات', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Sky_News_Arabia_logo.svg/300px-Sky_News_Arabia_logo.svg.png', type: 'hls', streamUrl: 'https://live.kwikmotion.com/smc1live/smc1tv.smil/playlist.m3u8', fallbackUrl: 'https://live.kwikmotion.com/smc1live/smc1tv.smil/playlist.m3u8', description: 'قناة الشارقة - برامج ثقافية واجتماعية ودرامية هادفة تناسب كل أفراد الأسرة.', isFeatured: 0, viewersCount: 37500, sortOrder: 20 },
+
+  // --- DOCUMENTARY CHANNELS (قنوات وثائقية) ---
+  { id: 'ch-natgeo-ad', name: 'ناشيونال جيوغرافيك أبوظبي (Nat Geo)', category: 'docu', country: 'الإمارات', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Natgeologo.svg/300px-Natgeologo.svg.png', type: 'embed', streamUrl: 'https://www.elahmad.ru/tv/embed.php?id=natgeo_1', fallbackUrl: 'https://www.elahmad.ru/tv/radiant.php?id=natgeo_1', description: 'البث المباشر لقناة ناشيونال جيوغرافيك أبوظبي - أقوى الأفلام الوثائقية واستكشاف الطبيعة والعلوم مدبلجة بالعربية.', isFeatured: 1, viewersCount: 74200, sortOrder: 21 },
+  { id: 'ch-asharq-docu', name: 'الشرق الوثائقية HD', category: 'docu', country: 'السعودية', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Asharq_News_Logo.svg/300px-Asharq_News_Logo.svg.png', type: 'hls', streamUrl: 'https://svs.itworkscdn.net/asharqdocumentarylive/asharqdocumentary.smil/playlist.m3u8', fallbackUrl: 'https://svs.itworkscdn.net/asharqdocumentarylive/asharqdocumentary.smil/playlist_dvr.m3u8', description: 'قناة الشرق الوثائقية الرسمية - تحقيقات وأفلام وثائقية وسلاسل معرفية عالمية بدون إعلانات.', isFeatured: 1, viewersCount: 56100, sortOrder: 22 },
+  { id: 'ch-aljazeera-docu', name: 'الجزيرة الوثائقية HD', category: 'docu', country: 'قطر', quality: 'Full HD', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/7/77/Al_Jazeera_English_logo.svg/300px-Al_Jazeera_English_logo.svg.png', type: 'hls', streamUrl: 'https://live-hls-web-ajd-fa.thehlive.com/AJD/index.m3u8', fallbackUrl: 'https://live-hls-web-ajd-fa.thehlive.com/AJD/index.m3u8', description: 'قناة الجزيرة الوثائقية - قصص وأفلام وثائقية تغوص في التاريخ والعلوم والمجتمع.', isFeatured: 0, viewersCount: 49300, sortOrder: 23 }
 ];
 
 const DEFAULT_RADIOS = [
@@ -308,11 +313,11 @@ function syncStreamsToDirectHls() {
     for (const m of DEFAULT_MATCHES) {
       updateMatch.run({ id: m.id, servers: JSON.stringify(m.servers || []) });
     }
-    // Clean up any remaining legacy channels with youtube or embed URLs
+    // Clean up any remaining legacy channels with youtube or broken embeds (excluding official natgeo embed)
     db.prepare(`
       UPDATE channels 
       SET stream_url = 'https://shoof.alkass.net/live/ch1.m3u8', fallback_url = 'https://shoof.alkass.net/live/ch1.m3u8', type = 'hls'
-      WHERE stream_url LIKE '%youtube%' OR stream_url LIKE '%embed%' OR type = 'iframe'
+      WHERE id != 'ch-natgeo-ad' AND (stream_url LIKE '%youtube%' OR type = 'iframe')
     `).run();
   } else {
     const data = readJsonDb();
@@ -328,7 +333,7 @@ function syncStreamsToDirectHls() {
         }
       }
       for (const ch of data.channels) {
-        if (!ch.streamUrl || ch.streamUrl.includes('youtube') || ch.streamUrl.includes('embed') || ch.type === 'iframe') {
+        if (ch.id !== 'ch-natgeo-ad' && (!ch.streamUrl || ch.streamUrl.includes('youtube') || ch.type === 'iframe')) {
           ch.streamUrl = 'https://shoof.alkass.net/live/ch1.m3u8';
           ch.fallbackUrl = 'https://shoof.alkass.net/live/ch1.m3u8';
           ch.type = 'hls';

@@ -299,6 +299,50 @@ const DEFAULT_CHANNELS = [
     description: 'قناة الشارقة - برامج ثقافية واجتماعية ودرامية هادفة تناسب كل أفراد الأسرة.',
     isFeatured: false,
     viewersCount: 37500
+  },
+
+  // --- DOCUMENTARY CHANNELS (قنوات وثائقية) ---
+  {
+    id: 'ch-natgeo-ad',
+    name: 'ناشيونال جيوغرافيك أبوظبي (Nat Geo)',
+    category: 'docu',
+    country: 'الإمارات',
+    quality: 'Full HD',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Natgeologo.svg/300px-Natgeologo.svg.png',
+    type: 'embed',
+    streamUrl: 'https://www.elahmad.ru/tv/embed.php?id=natgeo_1',
+    fallbackUrl: 'https://www.elahmad.ru/tv/radiant.php?id=natgeo_1',
+    description: 'البث المباشر لقناة ناشيونال جيوغرافيك أبوظبي - أقوى الأفلام الوثائقية واستكشاف الطبيعة والعلوم مدبلجة بالعربية.',
+    isFeatured: true,
+    viewersCount: 74200
+  },
+  {
+    id: 'ch-asharq-docu',
+    name: 'الشرق الوثائقية HD',
+    category: 'docu',
+    country: 'السعودية',
+    quality: 'Full HD',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Asharq_News_Logo.svg/300px-Asharq_News_Logo.svg.png',
+    type: 'hls',
+    streamUrl: 'https://svs.itworkscdn.net/asharqdocumentarylive/asharqdocumentary.smil/playlist.m3u8',
+    fallbackUrl: 'https://svs.itworkscdn.net/asharqdocumentarylive/asharqdocumentary.smil/playlist_dvr.m3u8',
+    description: 'قناة الشرق الوثائقية الرسمية - تحقيقات وأفلام وثائقية وسلاسل معرفية عالمية بدون إعلانات.',
+    isFeatured: true,
+    viewersCount: 56100
+  },
+  {
+    id: 'ch-aljazeera-docu',
+    name: 'الجزيرة الوثائقية HD',
+    category: 'docu',
+    country: 'قطر',
+    quality: 'Full HD',
+    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/7/77/Al_Jazeera_English_logo.svg/300px-Al_Jazeera_English_logo.svg.png',
+    type: 'hls',
+    streamUrl: 'https://live-hls-web-ajd-fa.thehlive.com/AJD/index.m3u8',
+    fallbackUrl: 'https://live-hls-web-ajd-fa.thehlive.com/AJD/index.m3u8',
+    description: 'قناة الجزيرة الوثائقية - قصص وأفلام وثائقية تغوص في التاريخ والعلوم والمجتمع.',
+    isFeatured: false,
+    viewersCount: 49300
   }
 ];
 
