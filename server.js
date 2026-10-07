@@ -424,6 +424,113 @@ app.delete('/api/news/:id', requireAuth, (req, res) => {
   }
 });
 
+// ========================== LIVE HLS STREAM PROXY (NAT GEO ABU DHABI) ==========================
+const https = require('https');
+
+let natgeoCachedBase = null;
+let natgeoCacheTime = 0;
+
+function fetchHttps(url, headers = {}) {
+  return new Promise((resolve, reject) => {
+    https.get(url, { headers }, (res) => {
+      let data = [];
+      res.on('data', chunk => data.push(chunk));
+      res.on('end', () => resolve({ status: res.statusCode, headers: res.headers, body: Buffer.concat(data) }));
+    }).on('error', reject);
+  });
+}
+
+function postHttps(url, postBody, headers = {}) {
+  return new Promise((resolve, reject) => {
+    const parsed = new URL(url);
+    const req = https.request({
+      hostname: parsed.hostname,
+      port: 443,
+      path: parsed.pathname,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(postBody),
+        ...headers
+      }
+    }, (res) => {
+      let data = [];
+      res.on('data', chunk => data.push(chunk));
+      res.on('end', () => resolve({ status: res.statusCode, body: Buffer.concat(data).toString('utf8') }));
+    });
+    req.on('error', reject);
+    req.write(postBody);
+    req.end();
+  });
+}
+
+async function getNatGeoBaseUrl() {
+  if (natgeoCachedBase && (Date.now() - natgeoCacheTime < 10 * 60 * 1000)) {
+    return natgeoCachedBase;
+  }
+  const pageRes = await fetchHttps('https://www.elahmad.ru/tv/radiant.php?id=natgeo_1', {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+  });
+  const html = pageRes.body.toString('utf8');
+  const csrfMatch = html.match(/name="csrf-token" content="([^"]+)"/);
+  if (!csrfMatch) throw new Error('CSRF not found');
+  const csrf = csrfMatch[1];
+  let cookies = '';
+  if (pageRes.headers['set-cookie']) {
+    cookies = pageRes.headers['set-cookie'].map(c => c.split(';')[0]).join('; ');
+  }
+
+  const postBody = `id=natgeo_1&csrf_token=${encodeURIComponent(csrf)}`;
+  const apiRes = await postHttps('https://www.elahmad.ru/tv/result/embed_result_elahmad_82.php', postBody, {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+    'Referer': 'https://www.elahmad.ru/tv/radiant.php?id=natgeo_1',
+    'Origin': 'https://www.elahmad.ru',
+    'Cookie': cookies
+  });
+
+  const json = JSON.parse(apiRes.body);
+  const cipher = Buffer.from(json.link_4, 'base64');
+  const key = Buffer.from(json.key, 'hex');
+  const iv = Buffer.from(json.iv, 'hex');
+
+  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+  let decrypted = decipher.update(cipher, null, 'utf8');
+  decrypted += decipher.final('utf8');
+
+  natgeoCachedBase = decrypted.replace('/index.html', '');
+  natgeoCacheTime = Date.now();
+  return natgeoCachedBase;
+}
+
+// GET /api/stream/natgeo.m3u8 — Direct .m3u8 stream converted from elahmad embed
+app.get('/api/stream/natgeo.m3u8', async (req, res) => {
+  try {
+    const baseUrl = await getNatGeoBaseUrl();
+    const plRes = await fetchHttps(`${baseUrl}/v0/playlist.html`, {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+      'Referer': 'https://www.elahmad.ru/tv/radiant.php?id=natgeo_1'
+    });
+
+    const rawM3u8 = plRes.body.toString('utf8');
+    const rewritten = rawM3u8.split('\n').map(line => {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith('#')) {
+        const cleanChunk = trimmed.replace('k9x_', '');
+        return `${baseUrl}/v0/${cleanChunk}`;
+      }
+      return line;
+    }).join('\n');
+
+    res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.send(rewritten);
+  } catch (err) {
+    console.error('Error serving natgeo.m3u8:', err.message);
+    res.status(502).send('#EXTM3U\n#EXT-X-ERROR: ' + err.message);
+  }
+});
+
 // ========================== HEALTH CHECK ==========================
 app.get('/api/health', (req, res) => {
   const stats = {

@@ -4,6 +4,7 @@
 
 const DEFAULT_CATEGORIES = [
   { id: 'all', name: 'الكل', icon: 'fa-globe' },
+  { id: 'movies', name: 'أفلام وسينما', icon: 'fa-film' },
   { id: 'sports', name: 'الرياضة والمباريات', icon: 'fa-futbol' },
   { id: 'news', name: 'الأخبار العالمية', icon: 'fa-newspaper' },
   { id: 'islamic', name: 'قرآن وإسلاميات', icon: 'fa-kaaba' },
@@ -309,9 +310,9 @@ const DEFAULT_CHANNELS = [
     country: 'الإمارات',
     quality: 'Full HD',
     logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Natgeologo.svg/300px-Natgeologo.svg.png',
-    type: 'embed',
-    streamUrl: 'https://www.elahmad.ru/tv/embed.php?id=natgeo_1',
-    fallbackUrl: 'https://www.elahmad.ru/tv/radiant.php?id=natgeo_1',
+    type: 'hls',
+    streamUrl: '/api/stream/natgeo.m3u8',
+    fallbackUrl: '/api/stream/natgeo.m3u8',
     description: 'البث المباشر لقناة ناشيونال جيوغرافيك أبوظبي - أقوى الأفلام الوثائقية واستكشاف الطبيعة والعلوم مدبلجة بالعربية.',
     isFeatured: true,
     viewersCount: 74200
@@ -343,6 +344,120 @@ const DEFAULT_CHANNELS = [
     description: 'قناة الجزيرة الوثائقية - قصص وأفلام وثائقية تغوص في التاريخ والعلوم والمجتمع.',
     isFeatured: false,
     viewersCount: 49300
+  },
+
+  // --- ARABIC MOVIES & CINEMA (قنوات الأفلام والسينما العربية) ---
+  {
+    id: 'ch-rotana-cinema-egy',
+    name: 'روتانا سينما مصر (Rotana Cinema)',
+    category: 'movies',
+    country: 'مصر',
+    quality: 'Full HD',
+    logo: '/assets/logos/rotana-cinema-egy.svg',
+    type: 'hls',
+    streamUrl: 'https://rotana.hibridcdn.net/rotananet/cinemamasr_net-7Y83PP5adWixDF93/playlist.m3u8',
+    fallbackUrl: 'https://rotana.hibridcdn.net/rotananet/cinemamasr_net-7Y83PP5adWixDF93/playlist.m3u8',
+    description: 'قناة روتانا سينما مصر - مش حتقدر تغمض عينيك، أحدث وأقوى الأفلام والإنتاجات المصرية والعربية.',
+    isFeatured: true,
+    viewersCount: 88500
+  },
+  {
+    id: 'ch-rotana-cinema-ksa',
+    name: 'روتانا سينما السعودية (Rotana Cinema KSA)',
+    category: 'movies',
+    country: 'السعودية',
+    quality: 'Full HD',
+    logo: '/assets/logos/rotana-cinema-ksa.svg',
+    type: 'hls',
+    streamUrl: 'https://rotana.hibridcdn.net/rotananet/cinema_net-7Y83PP5adWixDF93/playlist.m3u8',
+    fallbackUrl: 'https://rotana.hibridcdn.net/rotananet/cinema_net-7Y83PP5adWixDF93/playlist.m3u8',
+    description: 'البث المباشر لقناة روتانا سينما - روائع الفن والسينما الخليجية والعربية وأفلام العرض الأول.',
+    isFeatured: true,
+    viewersCount: 81200
+  },
+  {
+    id: 'ch-rotana-classic',
+    name: 'روتانا كلاسيك (Rotana Classic)',
+    category: 'movies',
+    country: 'مصر',
+    quality: 'Full HD',
+    logo: '/assets/logos/rotana-classic.svg',
+    type: 'hls',
+    streamUrl: 'https://rotana.hibridcdn.net/rotananet/classical_net-7Y83PP5adWixDF93/playlist.m3u8',
+    fallbackUrl: 'https://rotana.hibridcdn.net/rotananet/classical_net-7Y83PP5adWixDF93/playlist.m3u8',
+    description: 'روتانا كلاسيك - كنوز السينما العربية وروائع الأبيض والأسود لكبار عمالقة ونجوم الفن الجميل.',
+    isFeatured: true,
+    viewersCount: 76400
+  },
+  {
+    id: 'ch-rotana-comedy',
+    name: 'روتانا كوميدي (Rotana Comedy)',
+    category: 'movies',
+    country: 'السعودية',
+    quality: 'Full HD',
+    logo: '/assets/logos/rotana-comedy.svg',
+    type: 'hls',
+    streamUrl: 'https://rotana.hibridcdn.net/rotananet/comedy_net-7Y83PP5adWixDF93/playlist.m3u8',
+    fallbackUrl: 'https://rotana.hibridcdn.net/rotananet/comedy_net-7Y83PP5adWixDF93/playlist.m3u8',
+    description: 'روتانا كوميدي - جرعة متواصلة من الضحك والبهجة، أقوى الأفلام والمسرحيات الكوميدية.',
+    isFeatured: false,
+    viewersCount: 69500
+  },
+  {
+    id: 'ch-aflam-fast',
+    name: 'أفلام عربية (Aflam HD)',
+    category: 'movies',
+    country: 'عربي',
+    quality: 'Full HD',
+    logo: '/assets/logos/aflam-fast.svg',
+    type: 'hls',
+    streamUrl: 'https://shd-amg-fast.edgenextcdn.net/tx001/playlist.m3u8',
+    fallbackUrl: 'https://shd-amg-fast.edgenextcdn.net/tx001/playlist.m3u8',
+    description: 'بث مباشر 24 ساعة لأمتع وأحدث الأفلام العربية والدرامية بجودة 1080p نقية بدون توقف.',
+    isFeatured: true,
+    viewersCount: 64100
+  },
+  {
+    id: 'ch-movies-action',
+    name: 'أفلام أكشن (Movies Action HD)',
+    category: 'movies',
+    country: 'عربي',
+    quality: 'Full HD',
+    logo: '/assets/logos/movies-action.svg',
+    type: 'hls',
+    streamUrl: 'https://shd-amg-fast.edgenextcdn.net/tx011/playlist.m3u8',
+    fallbackUrl: 'https://shd-amg-fast.edgenextcdn.net/tx011/playlist.m3u8',
+    description: 'قناة أفلام الحركة والقتال والمطاردات المثيرة مترجمة للعربية بجودة عالية 1080p.',
+    isFeatured: false,
+    viewersCount: 61800
+  },
+  {
+    id: 'ch-movies-thriller',
+    name: 'أفلام تشويق وإثارة (Thriller HD)',
+    category: 'movies',
+    country: 'عربي',
+    quality: 'Full HD',
+    logo: '/assets/logos/movies-thriller.svg',
+    type: 'hls',
+    streamUrl: 'https://shd-amg-fast.edgenextcdn.net/tx012/playlist.m3u8',
+    fallbackUrl: 'https://shd-amg-fast.edgenextcdn.net/tx012/playlist.m3u8',
+    description: 'أقوى أفلام الرعب والغموض والألغاز والتشويق النفسي على مدار الساعة.',
+    isFeatured: false,
+    viewersCount: 57300
+  },
+  {
+    id: 'ch-thikrayat',
+    name: 'قناة ذكريات (أفلام وسهرات كلاسيكية)',
+    category: 'movies',
+    country: 'السعودية',
+    quality: 'Full HD',
+    logo: '/assets/logos/thikrayat.svg',
+    type: 'hls',
+    streamUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-thikrayat/8cfa8fe0c96275735745b89c683b27e3/index.m3u8',
+    fallbackUrl: 'https://shd-gcp-live.edgenextcdn.net/live/bitmovin-thikrayat/8cfa8fe0c96275735745b89c683b27e3/index.m3u8',
+    description: 'سهرات تلفزيونية ونوادر الأعمال الدرامية والسينمائية الكلاسيكية من أرشيف التلفزيون العربي.',
+    isFeatured: false,
+    viewersCount: 52900
   }
 ];
 

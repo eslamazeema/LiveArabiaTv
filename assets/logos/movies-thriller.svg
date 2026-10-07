@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="grad_movie" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#37474F"/>
+      <stop offset="100%" stop-color="#102027"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" rx="60" fill="url(#grad_movie)"/>
+  <circle cx="200" cy="140" r="75" fill="rgba(255,255,255,0.15)"/>
+  <text x="200" y="160" font-family="'Segoe UI', Tahoma, sans-serif" font-size="52" text-anchor="middle">⚡</text>
+  <text x="200" y="270" font-family="'Segoe UI', Tahoma, Arial, sans-serif" font-size="34" font-weight="900" fill="#ffffff" text-anchor="middle">تشويق وإثارة</text>
+  <text x="200" y="315" font-family="'Segoe UI', Tahoma, Arial, sans-serif" font-size="16" font-weight="700" fill="rgba(255,255,255,0.8)" letter-spacing="2" text-anchor="middle">THRILLER MOVIES HD</text>
+</svg>
