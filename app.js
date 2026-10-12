@@ -147,7 +147,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const playerQualityBadge = document.getElementById('playerQualityBadge');
   const playerViewers = document.getElementById('playerViewers');
   const playerFavBtn = document.getElementById('playerFavBtn');
-  const externalStreamBtn = document.getElementById('externalStreamBtn');
 
   // Audio Bar Elements
   const audioPlayerBar = document.getElementById('audioPlayerBar');
@@ -200,10 +199,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     playerChannelDesc.textContent = channel.description || `${channel.country} • بث حي ومباشر`;
     playerQualityBadge.textContent = channel.quality || 'HD';
     playerViewers.textContent = `${(channel.viewersCount || 15400).toLocaleString('ar-EG')} مشاهد`;
-
-    if (externalStreamBtn) {
-      externalStreamBtn.href = streamUrl;
-    }
 
     if (mobilePlayOverlay) mobilePlayOverlay.style.display = 'none';
 
