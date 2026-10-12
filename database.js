@@ -376,10 +376,14 @@ function syncStreamsToDirectHls() {
 // ========================== CHANNELS CRUD ==========================
 function getAllChannels() {
   if (useSqlite) {
-    return db.prepare('SELECT * FROM channels ORDER BY sort_order ASC, created_at DESC').all().map(mapChannel);
+    return db.prepare('SELECT * FROM channels ORDER BY is_default DESC, sort_order ASC, created_at DESC').all().map(mapChannel);
   }
   const data = readJsonDb();
-  return (data.channels || []).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+  return (data.channels || []).sort((a, b) => {
+    if (a.isDefault && !b.isDefault) return -1;
+    if (!a.isDefault && b.isDefault) return 1;
+    return (a.sortOrder || 0) - (b.sortOrder || 0);
+  });
 }
 
 function getChannelById(id) {

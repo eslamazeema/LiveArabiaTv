@@ -187,7 +187,73 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // --- 3. UNIVERSAL STREAM PLAYER ---
+  // --- 3. UNIVERSAL STREAM PLAYER WITH GUARANTEED AUTOPLAY ---
+  function showUnmuteOverlay() {
+    if (document.getElementById('altvUnmuteBtn')) return;
+    const btn = document.createElement('button');
+    btn.id = 'altvUnmuteBtn';
+    btn.className = 'altv-unmute-btn';
+    btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> <span>انقر لتشغيل الصوت 🔊</span>';
+    btn.title = 'انقر لإلغاء كتم الصوت وسماع البث المباشر';
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      if (mainVideo) {
+        mainVideo.muted = false;
+      }
+      removeUnmuteOverlay();
+    };
+    const wrapper = document.querySelector('.player-wrapper');
+    if (wrapper) wrapper.appendChild(btn);
+
+    // Auto unmute on first click anywhere in the page
+    const oneTimeUnmute = () => {
+      if (mainVideo) mainVideo.muted = false;
+      removeUnmuteOverlay();
+      document.removeEventListener('click', oneTimeUnmute);
+    };
+    setTimeout(() => {
+      document.addEventListener('click', oneTimeUnmute, { once: true });
+    }, 400);
+  }
+
+  function removeUnmuteOverlay() {
+    const btn = document.getElementById('altvUnmuteBtn');
+    if (btn) btn.remove();
+  }
+
+  function attemptAutoplay(videoElement, isUserGesture = false) {
+    if (!videoElement) return;
+    if (isUserGesture) {
+      videoElement.muted = false;
+      const playPromise = videoElement.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          removeUnmuteOverlay();
+          if (mobilePlayOverlay) mobilePlayOverlay.style.display = 'none';
+        }).catch(() => {
+          videoElement.muted = true;
+          videoElement.defaultMuted = true;
+          videoElement.play().then(() => showUnmuteOverlay()).catch(() => {});
+        });
+      }
+    } else {
+      // Guaranteed instant start on initial page load:
+      // Browsers permit muted autoplay 100% of the time
+      videoElement.muted = true;
+      videoElement.defaultMuted = true;
+      const playPromise = videoElement.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          if (mobilePlayOverlay) mobilePlayOverlay.style.display = 'none';
+          showUnmuteOverlay();
+        }).catch((err) => {
+          console.warn('Initial autoplay error:', err);
+          if (mobilePlayOverlay) mobilePlayOverlay.style.display = 'flex';
+        });
+      }
+    }
+  }
+
   function playChannel(channel, shouldScroll = true) {
     if (!channel) return;
     activeChannel = channel;
@@ -201,6 +267,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     playerViewers.textContent = `${(channel.viewersCount || 15400).toLocaleString('ar-EG')} مشاهد`;
 
     if (mobilePlayOverlay) mobilePlayOverlay.style.display = 'none';
+    removeUnmuteOverlay();
 
     // Clean up previous HLS instance
     if (hlsInstance) {
@@ -217,9 +284,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       if (mainVideo.canPlayType('application/vnd.apple.mpegurl')) {
         mainVideo.src = streamUrl;
-        mainVideo.play().catch(() => {
-          if (mobilePlayOverlay) mobilePlayOverlay.style.display = 'flex';
-        });
+        attemptAutoplay(mainVideo, shouldScroll);
       } else if (window.Hls && Hls.isSupported()) {
         hlsInstance = new Hls({
           enableWorker: true,
@@ -229,9 +294,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         hlsInstance.loadSource(streamUrl);
         hlsInstance.attachMedia(mainVideo);
         hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
-          mainVideo.play().catch(() => {
-            if (mobilePlayOverlay) mobilePlayOverlay.style.display = 'flex';
-          });
+          attemptAutoplay(mainVideo, shouldScroll);
         });
       }
     } else {
@@ -271,6 +334,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (mobilePlayOverlay) {
     mobilePlayOverlay.addEventListener('click', () => {
       mobilePlayOverlay.style.display = 'none';
+      removeUnmuteOverlay();
       if (mainVideo && mainVideo.style.display !== 'none') {
         mainVideo.muted = false;
         mainVideo.play();
@@ -435,6 +499,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       return `
         <div class="channel-card ${isPlaying ? 'active-playing' : ''}" data-id="${ch.id}">
+          ${ch.isDefault ? `<span class="default-channel-badge"><i class="fa-solid fa-star"></i> الافتراضية</span>` : ''}
           <button class="fav-btn ${isFav ? 'is-fav' : ''}" data-fav-id="${ch.id}" title="إضافة للمفضلة">
             <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
           </button>
