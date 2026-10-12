@@ -147,7 +147,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const playerQualityBadge = document.getElementById('playerQualityBadge');
   const playerViewers = document.getElementById('playerViewers');
   const playerFavBtn = document.getElementById('playerFavBtn');
-  const externalStreamBtn = document.getElementById('externalStreamBtn');
 
   // Audio Bar Elements
   const audioPlayerBar = document.getElementById('audioPlayerBar');
@@ -200,10 +199,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     playerChannelDesc.textContent = channel.description || `${channel.country} • بث حي ومباشر`;
     playerQualityBadge.textContent = channel.quality || 'HD';
     playerViewers.textContent = `${(channel.viewersCount || 15400).toLocaleString('ar-EG')} مشاهد`;
-
-    if (externalStreamBtn) {
-      externalStreamBtn.href = streamUrl;
-    }
 
     if (mobilePlayOverlay) mobilePlayOverlay.style.display = 'none';
 
@@ -851,8 +846,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.history.replaceState(null, null, cleanPath + window.location.search);
   }
 
-  // Play initial channel cleanly (data already loaded from API above)
-  activeChannel = channels.find(c => c.isFeatured) || channels[0];
+  // Play default channel selected by admin (or first channel)
+  activeChannel = channels.find(c => c.isDefault) || channels.find(c => c.isFeatured) || channels[0];
   playChannel(activeChannel, false);
 
   // ==================== CERTIFICATES GALLERY ENGINE ====================

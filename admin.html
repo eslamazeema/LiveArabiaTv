@@ -286,15 +286,42 @@
           </form>
         </section>
 
+        <!-- Default Channel Banner & Reorder Controls -->
+        <div class="channels-reorder-banner" style="background: linear-gradient(135deg, rgba(255,82,0,0.12), rgba(14,18,30,0.85)); border: 1px solid var(--primary-glow); border-radius: var(--radius-md); padding: 18px 22px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(255,82,0,0.2); border: 1.5px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.35rem; color: var(--gold); box-shadow: 0 0 20px rgba(255,82,0,0.3);">
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <div>
+              <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px;">القناة الافتراضية للبث المباشر (تبدأ تلقائياً عند زيارة الموقع):</div>
+              <div style="font-size: 1.15rem; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 10px;">
+                <span id="currentDefaultChannelBadge" style="color: var(--gold); background: rgba(255,215,0,0.15); border: 1px solid rgba(255,215,0,0.4); padding: 3px 14px; border-radius: 20px; font-size: 0.95rem;">جاري التحميل...</span>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <button id="saveOrderBtn" class="btn-icon btn-primary" onclick="saveChannelOrder()" style="padding: 10px 22px; font-size: 0.92rem;">
+              <i class="fa-solid fa-arrow-down-short-wide"></i> حفظ ترتيب القنوات الجديد
+            </button>
+          </div>
+        </div>
+
+        <div style="background: rgba(0, 176, 255, 0.08); border: 1px solid rgba(0, 176, 255, 0.25); border-radius: var(--radius-sm); padding: 12px 18px; margin-bottom: 20px; font-size: 0.86rem; color: #cbd5e1; display: flex; align-items: center; gap: 12px;">
+          <i class="fa-solid fa-circle-info" style="color: var(--secondary); font-size: 1.2rem;"></i>
+          <span>💡 <strong>تحكم كامل في الترتيب والبث:</strong> يمكنك تغيير ترتيب القنوات باستخدام أزرار (🔼 🔽) أو السحب والإفلات مباشرة، كما يمكنك بنقرة واحدة على زر (⭐ جعلها افتراضية) تحديد القناة التي تفتح فوراً عند دخول أي زائر.</span>
+        </div>
+
         <div style="overflow-x: auto;">
-          <table class="data-table">
+          <table class="data-table" id="channelsOrderTable">
             <thead>
               <tr>
-                <th>القناة</th>
+                <th style="width: 75px; text-align: center;"># الترتيب</th>
+                <th>القناة الفضائية</th>
                 <th>التصنيف</th>
                 <th>الدولة</th>
                 <th>الجودة</th>
-                <th>رابط البث</th>
+                <th style="text-align: center;">القناة الافتراضية</th>
+                <th style="text-align: center;">تغيير الترتيب</th>
                 <th>إجراءات الإدارة</th>
               </tr>
             </thead>

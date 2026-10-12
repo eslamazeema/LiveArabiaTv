@@ -201,7 +201,7 @@ function initDatabase() {
         country TEXT DEFAULT 'عربي', quality TEXT DEFAULT 'HD', logo TEXT DEFAULT '',
         type TEXT DEFAULT 'hls', stream_url TEXT NOT NULL DEFAULT '', fallback_url TEXT DEFAULT '',
         description TEXT DEFAULT '', is_featured INTEGER DEFAULT 0, viewers_count INTEGER DEFAULT 10000,
-        sort_order INTEGER DEFAULT 0, created_at TEXT DEFAULT (datetime('now')), updated_at TEXT DEFAULT (datetime('now'))
+        sort_order INTEGER DEFAULT 0, is_default INTEGER DEFAULT 0, created_at TEXT DEFAULT (datetime('now')), updated_at TEXT DEFAULT (datetime('now'))
       );
       CREATE TABLE IF NOT EXISTS radios (
         id TEXT PRIMARY KEY, name TEXT NOT NULL, country TEXT DEFAULT 'عربي',
@@ -227,6 +227,15 @@ function initDatabase() {
         password_hash TEXT NOT NULL, created_at TEXT DEFAULT (datetime('now'))
       );
     `);
+    try {
+      db.exec('ALTER TABLE channels ADD COLUMN is_default INTEGER DEFAULT 0;');
+    } catch (e) {}
+    try {
+      const defCheck = db.prepare('SELECT COUNT(*) as cnt FROM channels WHERE is_default = 1').get();
+      if (defCheck && defCheck.cnt === 0) {
+        db.prepare('UPDATE channels SET is_default = 1 WHERE sort_order = 1 OR id = (SELECT id FROM channels ORDER BY sort_order ASC LIMIT 1)').run();
+      }
+    } catch (e) {}
     seedDefaultData();
   } else {
     // File JSON init
@@ -386,13 +395,21 @@ function createChannel(ch) {
   const id = ch.id || 'ch-' + Date.now();
   if (useSqlite) {
     db.prepare(`
-      INSERT INTO channels (id, name, category, country, quality, logo, type, stream_url, fallback_url, description, is_featured, viewers_count, sort_order)
-      VALUES (@id, @name, @category, @country, @quality, @logo, @type, @streamUrl, @fallbackUrl, @description, @isFeatured, @viewersCount, @sortOrder)
-    `).run({ id, ...ch, streamUrl: ch.streamUrl || '', fallbackUrl: ch.fallbackUrl || '', isFeatured: ch.isFeatured ? 1 : 0, viewersCount: ch.viewersCount || 10000, sortOrder: ch.sortOrder || 0 });
+      INSERT INTO channels (id, name, category, country, quality, logo, type, stream_url, fallback_url, description, is_featured, viewers_count, sort_order, is_default)
+      VALUES (@id, @name, @category, @country, @quality, @logo, @type, @streamUrl, @fallbackUrl, @description, @isFeatured, @viewersCount, @sortOrder, @isDefault)
+    `).run({
+      id, ...ch,
+      streamUrl: ch.streamUrl || '',
+      fallbackUrl: ch.fallbackUrl || '',
+      isFeatured: ch.isFeatured ? 1 : 0,
+      viewersCount: ch.viewersCount || 10000,
+      sortOrder: ch.sortOrder || 0,
+      isDefault: ch.isDefault ? 1 : 0
+    });
     return getChannelById(id);
   }
   const data = readJsonDb();
-  const newCh = { id, ...ch, isFeatured: !!ch.isFeatured, viewersCount: ch.viewersCount || 10000, sortOrder: ch.sortOrder || 0 };
+  const newCh = { id, ...ch, isFeatured: !!ch.isFeatured, viewersCount: ch.viewersCount || 10000, sortOrder: ch.sortOrder || 0, isDefault: !!ch.isDefault };
   data.channels.push(newCh);
   writeJsonDb(data);
   return newCh;
@@ -404,15 +421,24 @@ function updateChannel(id, ch) {
       UPDATE channels SET
         name = @name, category = @category, country = @country, quality = @quality,
         logo = @logo, type = @type, stream_url = @streamUrl, fallback_url = @fallbackUrl,
-        description = @description, is_featured = @isFeatured, updated_at = datetime('now')
+        description = @description, is_featured = @isFeatured,
+        sort_order = COALESCE(@sortOrder, sort_order),
+        is_default = COALESCE(@isDefault, is_default),
+        updated_at = datetime('now')
       WHERE id = @id
-    `).run({ ...ch, id, isFeatured: ch.isFeatured ? 1 : 0 });
+    `).run({
+      ...ch,
+      id,
+      isFeatured: ch.isFeatured ? 1 : 0,
+      sortOrder: ch.sortOrder !== undefined ? ch.sortOrder : null,
+      isDefault: ch.isDefault !== undefined ? (ch.isDefault ? 1 : 0) : null
+    });
     return getChannelById(id);
   }
   const data = readJsonDb();
   const idx = data.channels.findIndex(c => c.id === id);
   if (idx !== -1) {
-    data.channels[idx] = { ...data.channels[idx], ...ch, id, isFeatured: !!ch.isFeatured };
+    data.channels[idx] = { ...data.channels[idx], ...ch, id, isFeatured: !!ch.isFeatured, isDefault: ch.isDefault !== undefined ? !!ch.isDefault : data.channels[idx].isDefault };
     writeJsonDb(data);
     return data.channels[idx];
   }
@@ -429,13 +455,52 @@ function deleteChannel(id) {
   }
 }
 
+function setDefaultChannel(channelId) {
+  if (useSqlite) {
+    db.prepare('UPDATE channels SET is_default = CASE WHEN id = ? THEN 1 ELSE 0 END').run(channelId);
+    return getAllChannels();
+  } else {
+    const data = readJsonDb();
+    if (data.channels) {
+      data.channels.forEach(c => { c.isDefault = (c.id === channelId); });
+      writeJsonDb(data);
+    }
+    return getAllChannels();
+  }
+}
+
+function reorderChannels(orderedIds) {
+  if (useSqlite) {
+    const updateStmt = db.prepare('UPDATE channels SET sort_order = ? WHERE id = ?');
+    const trx = db.transaction((ids) => {
+      ids.forEach((id, index) => {
+        updateStmt.run(index + 1, id);
+      });
+    });
+    trx(orderedIds);
+    return getAllChannels();
+  } else {
+    const data = readJsonDb();
+    if (data.channels) {
+      orderedIds.forEach((id, index) => {
+        const ch = data.channels.find(c => c.id === id);
+        if (ch) ch.sortOrder = index + 1;
+      });
+      data.channels.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+      writeJsonDb(data);
+    }
+    return getAllChannels();
+  }
+}
+
 function mapChannel(row) {
   return {
     id: row.id, name: row.name, category: row.category, country: row.country,
     quality: row.quality, logo: row.logo, type: row.type,
     streamUrl: row.stream_url, fallbackUrl: row.fallback_url,
     description: row.description, isFeatured: row.is_featured === 1,
-    viewersCount: row.viewers_count, sortOrder: row.sort_order
+    viewersCount: row.viewers_count, sortOrder: row.sort_order,
+    isDefault: row.is_default === 1
   };
 }
 
@@ -644,6 +709,7 @@ initDatabase();
 
 module.exports = {
   getAllChannels, getChannelById, createChannel, updateChannel, deleteChannel,
+  setDefaultChannel, reorderChannels,
   getAllRadios, createRadio, updateRadio, deleteRadio,
   getAllMatches, createMatch, updateMatch, deleteMatch,
   getAllNews, createNews, deleteNews,

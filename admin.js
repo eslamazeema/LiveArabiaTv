@@ -232,30 +232,164 @@ document.addEventListener('DOMContentLoaded', () => {
   const editRadioForm = document.getElementById('editRadioForm');
 
   // ========================== DEPARTMENT 1: TV CHANNELS ==========================
+  function updateDefaultChannelBadge() {
+    const currentDefaultBadge = document.getElementById('currentDefaultChannelBadge');
+    if (!currentDefaultBadge) return;
+    const defCh = channels.find(c => c.isDefault) || channels[0];
+    if (defCh) {
+      currentDefaultBadge.innerHTML = `<i class="fa-solid fa-star"></i> ${defCh.name}`;
+    } else {
+      currentDefaultBadge.innerHTML = 'لم يتم تحديد قناة';
+    }
+  }
+
   function renderChannelsTable() {
     if (!channelsTableBody) return;
-    channelsTableBody.innerHTML = channels.map((ch) => `
-      <tr>
+    updateDefaultChannelBadge();
+
+    channelsTableBody.innerHTML = channels.map((ch, idx) => `
+      <tr draggable="true" data-id="${ch.id}" data-index="${idx}" class="draggable-row">
+        <td style="text-align: center;">
+          <span style="font-weight: 900; color: var(--primary); font-size: 0.95rem;">${idx + 1}</span>
+        </td>
         <td>
-          <img src="${ch.logo}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; vertical-align:middle; margin-left:8px; background:#fff;">
-          <strong>${ch.name}</strong>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="${ch.logo}" style="width:36px; height:36px; border-radius:50%; object-fit:contain; background:#fff; padding:2px; border:1px solid rgba(255,255,255,0.15); flex-shrink: 0;" onerror="this.src='/assets/logos/generic.svg'">
+            <div>
+              <strong>${ch.name}</strong>
+              <div style="font-size:0.75rem; color:var(--text-muted); direction:ltr; text-align:right;">${(ch.streamUrl || '').substring(0, 32)}...</div>
+            </div>
+          </div>
         </td>
         <td><span class="badge-quality">${ch.category}</span></td>
-        <td>${ch.country}</td>
-        <td>${ch.quality}</td>
-        <td><code style="font-size:0.7rem; color:var(--text-muted);">${(ch.streamUrl || '').substring(0, 32)}...</code></td>
+        <td>${ch.country || 'عربي'}</td>
+        <td><span class="badge-quality" style="color:var(--secondary); border-color:rgba(0,176,255,0.3); font-weight:800;">${ch.quality || 'HD'}</span></td>
+        <td style="text-align: center;">
+          ${ch.isDefault ? `
+            <span style="display:inline-flex; align-items:center; gap:6px; background:rgba(255,215,0,0.18); border:1px solid var(--gold); color:var(--gold); padding:5px 14px; border-radius:20px; font-weight:800; font-size:0.8rem; box-shadow:0 0 12px rgba(255,215,0,0.25);">
+              <i class="fa-solid fa-star"></i> القناة الافتراضية
+            </span>
+          ` : `
+            <button class="btn-icon" onclick="setAsDefault('${ch.id}')" style="padding:4px 12px; font-size:0.78rem; border-color:rgba(255,255,255,0.15); color:var(--text-muted); border-radius:20px;" title="تعيين كقناة افتراضية تبدأ تلقائياً عند زيارة الموقع">
+              <i class="fa-regular fa-star"></i> جعلها افتراضية
+            </button>
+          `}
+        </td>
+        <td style="text-align: center;">
+          <div style="display:inline-flex; gap:6px; align-items:center;">
+            <button class="order-btn" onclick="moveChannel(${idx}, -1)" ${idx === 0 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''} title="تحريك لأعلى">
+              <i class="fa-solid fa-arrow-up"></i>
+            </button>
+            <button class="order-btn" onclick="moveChannel(${idx}, 1)" ${idx === channels.length - 1 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''} title="تحريك لأسفل">
+              <i class="fa-solid fa-arrow-down"></i>
+            </button>
+          </div>
+        </td>
         <td>
           <div style="display:flex; gap:8px;">
-            <button class="btn-icon" onclick="editChannel('${ch.id}')" style="color: var(--primary); border-color: rgba(0,230,118,0.4);">
+            <button class="btn-icon" onclick="editChannel('${ch.id}')" style="color: var(--primary); border-color: rgba(255,82,0,0.4); padding: 5px 12px; font-size: 0.8rem;">
               <i class="fa-solid fa-pen"></i> تعديل
             </button>
-            <button class="btn-icon" onclick="deleteChannel('${ch.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3);">
+            <button class="btn-icon" onclick="deleteChannel('${ch.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3); padding: 5px 12px; font-size: 0.8rem;">
               <i class="fa-solid fa-trash"></i> حذف
             </button>
           </div>
         </td>
       </tr>
     `).join('');
+
+    setupChannelsDragAndDrop();
+  }
+
+  // ========================== CHANNELS REORDER & DEFAULT LOGIC ==========================
+  window.setAsDefault = async (id) => {
+    const ch = channels.find(c => c.id === id);
+    const result = await apiCall('POST', `/api/channels/${id}/set-default`);
+    if (result && result.success) {
+      channels.forEach(c => { c.isDefault = (c.id === id); });
+      renderChannelsTable();
+      showToast(`تم تعيين "${ch ? ch.name : id}" كقناة افتراضية بنجاح!`, 'success');
+    } else {
+      showToast(result?.message || 'فشل تحديد القناة الافتراضية', 'error');
+    }
+  };
+
+  window.moveChannel = async (index, delta) => {
+    const targetIndex = index + delta;
+    if (targetIndex < 0 || targetIndex >= channels.length) return;
+    const temp = channels[index];
+    channels[index] = channels[targetIndex];
+    channels[targetIndex] = temp;
+    renderChannelsTable();
+    await saveChannelOrder(false); // Auto-save in background
+  };
+
+  window.saveChannelOrder = async (showNotification = true) => {
+    const saveBtn = document.getElementById('saveOrderBtn');
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+    }
+    try {
+      const orderedIds = channels.map(c => c.id);
+      const result = await apiCall('POST', '/api/channels/reorder', { orderedIds });
+      if (result && result.success) {
+        if (showNotification) {
+          showToast('تم حفظ وتثبيت ترتيب القنوات الجديد بنجاح!', 'success');
+        }
+      } else {
+        if (showNotification) {
+          showToast(result?.message || 'فشل حفظ ترتيب القنوات', 'error');
+        }
+      }
+    } catch (err) {
+      console.error('Error saving channel order:', err);
+    } finally {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fa-solid fa-arrow-down-short-wide"></i> حفظ ترتيب القنوات الجديد';
+      }
+    }
+  };
+
+  let draggedRowIndex = null;
+  function setupChannelsDragAndDrop() {
+    if (!channelsTableBody) return;
+    const rows = channelsTableBody.querySelectorAll('tr.draggable-row');
+    rows.forEach(row => {
+      row.addEventListener('dragstart', (e) => {
+        draggedRowIndex = parseInt(row.dataset.index, 10);
+        row.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', draggedRowIndex);
+      });
+      row.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      });
+      row.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        row.style.background = 'rgba(255, 82, 0, 0.15)';
+      });
+      row.addEventListener('dragleave', () => {
+        row.style.background = '';
+      });
+      row.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        row.style.background = '';
+        const targetIndex = parseInt(row.dataset.index, 10);
+        if (draggedRowIndex !== null && draggedRowIndex !== targetIndex) {
+          const [movedItem] = channels.splice(draggedRowIndex, 1);
+          channels.splice(targetIndex, 0, movedItem);
+          renderChannelsTable();
+          await saveChannelOrder(true);
+        }
+      });
+      row.addEventListener('dragend', () => {
+        row.classList.remove('dragging');
+        draggedRowIndex = null;
+      });
+    });
   }
 
   window.editChannel = (id) => {

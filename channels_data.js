@@ -27,6 +27,7 @@ const DEFAULT_CHANNELS = [
     fallbackUrl: 'https://live-hls-web-aja.getaj.net/AJA/index.m3u8',
     description: 'بث حي ومباشر لقناة الجزيرة الإخبارية - تغطية إخبارية مستمرة.',
     isFeatured: true,
+    isDefault: true,
     viewersCount: 68200
   },
   {

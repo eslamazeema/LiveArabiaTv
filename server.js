@@ -223,6 +223,32 @@ app.delete('/api/channels/:id', requireAuth, (req, res) => {
   }
 });
 
+// POST /api/channels/reorder — Admin: reorder channels
+app.post('/api/channels/reorder', requireAuth, (req, res) => {
+  try {
+    const { orderedIds } = req.body;
+    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+      return res.status(400).json({ success: false, message: 'مصفوفة معرفات القنوات مطلوبة' });
+    }
+    const updated = db.reorderChannels(orderedIds);
+    res.json({ success: true, message: 'تم حفظ ترتيب القنوات بنجاح', data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/channels/:id/set-default — Admin: set default channel
+app.post('/api/channels/:id/set-default', requireAuth, (req, res) => {
+  try {
+    const channel = db.getChannelById(req.params.id);
+    if (!channel) return res.status(404).json({ success: false, message: 'القناة غير موجودة' });
+    const updated = db.setDefaultChannel(req.params.id);
+    res.json({ success: true, message: `تم تعيين قناة "${channel.name}" كقناة افتراضية بنجاح`, data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 function sanitizeChannel(body) {
   let streamUrl = (body.streamUrl || body.stream_url || '').trim();
   // Convert YouTube watch links to embed links
