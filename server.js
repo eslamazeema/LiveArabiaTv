@@ -464,11 +464,14 @@ function postHttps(url, postBody, headers = {}) {
   });
 }
 
-async function getNatGeoBaseUrl() {
-  if (natgeoCachedBase && (Date.now() - natgeoCacheTime < 10 * 60 * 1000)) {
-    return natgeoCachedBase;
+const elahmadCache = new Map();
+
+async function getElahmadStreamInfo(channelId) {
+  const cached = elahmadCache.get(channelId);
+  if (cached && (Date.now() - cached.cacheTime < 15 * 60 * 1000)) {
+    return cached;
   }
-  const pageRes = await fetchHttps('https://www.elahmad.ru/tv/radiant.php?id=natgeo_1', {
+  const pageRes = await fetchHttps(`https://www.elahmad.ru/tv/radiant.php?id=${encodeURIComponent(channelId)}`, {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
   });
   const html = pageRes.body.toString('utf8');
@@ -480,10 +483,10 @@ async function getNatGeoBaseUrl() {
     cookies = pageRes.headers['set-cookie'].map(c => c.split(';')[0]).join('; ');
   }
 
-  const postBody = `id=natgeo_1&csrf_token=${encodeURIComponent(csrf)}`;
+  const postBody = `id=${encodeURIComponent(channelId)}&csrf_token=${encodeURIComponent(csrf)}`;
   const apiRes = await postHttps('https://www.elahmad.ru/tv/result/embed_result_elahmad_82.php', postBody, {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-    'Referer': 'https://www.elahmad.ru/tv/radiant.php?id=natgeo_1',
+    'Referer': `https://www.elahmad.ru/tv/radiant.php?id=${channelId}`,
     'Origin': 'https://www.elahmad.ru',
     'Cookie': cookies
   });
@@ -497,36 +500,97 @@ async function getNatGeoBaseUrl() {
   let decrypted = decipher.update(cipher, null, 'utf8');
   decrypted += decipher.final('utf8');
 
-  natgeoCachedBase = decrypted.replace('/index.html', '');
-  natgeoCacheTime = Date.now();
-  return natgeoCachedBase;
+  const info = { decrypted, cacheTime: Date.now() };
+  elahmadCache.set(channelId, info);
+  return info;
 }
 
-// GET /api/stream/natgeo.m3u8 — Direct .m3u8 stream converted from elahmad embed
-app.get('/api/stream/natgeo.m3u8', async (req, res) => {
+async function getElahmadM3u8(channelId) {
+  let info;
   try {
-    const baseUrl = await getNatGeoBaseUrl();
-    const plRes = await fetchHttps(`${baseUrl}/v0/playlist.html`, {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-      'Referer': 'https://www.elahmad.ru/tv/radiant.php?id=natgeo_1'
-    });
+    info = await getElahmadStreamInfo(channelId);
+  } catch (err) {
+    elahmadCache.delete(channelId);
+    throw err;
+  }
 
-    const rawM3u8 = plRes.body.toString('utf8');
-    const rewritten = rawM3u8.split('\n').map(line => {
+  const decrypted = info.decrypted;
+
+  // Case 1: .m3u8 stream (e.g. games2.elahmad.store like nile_sport)
+  if (decrypted.includes('.m3u8')) {
+    const masterRes = await fetchHttps(decrypted, {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+      'Referer': `https://www.elahmad.ru/tv/radiant.php?id=${channelId}`
+    });
+    if (masterRes.status !== 200) {
+      elahmadCache.delete(channelId);
+      info = await getElahmadStreamInfo(channelId);
+      return getElahmadM3u8(channelId);
+    }
+    const masterBody = masterRes.body.toString('utf8');
+    const masterBase = decrypted.substring(0, decrypted.lastIndexOf('/') + 1);
+
+    const subLine = masterBody.split('\n').map(l => l.trim()).find(l => l && !l.startsWith('#') && l.includes('.m3u8'));
+    if (subLine) {
+      const subUrl = subLine.startsWith('http') ? subLine : masterBase + subLine;
+      const subRes = await fetchHttps(subUrl, {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'Referer': `https://www.elahmad.ru/tv/radiant.php?id=${channelId}`
+      });
+      const subBody = subRes.body.toString('utf8');
+      const subBase = subUrl.substring(0, subUrl.lastIndexOf('/') + 1);
+
+      return subBody.split('\n').map(line => {
+        const trimmed = line.trim();
+        if (trimmed && !trimmed.startsWith('#')) {
+          return trimmed.startsWith('http') ? trimmed : subBase + trimmed;
+        }
+        return line;
+      }).join('\n');
+    }
+
+    return masterBody.split('\n').map(line => {
       const trimmed = line.trim();
       if (trimmed && !trimmed.startsWith('#')) {
-        const cleanChunk = trimmed.replace('k9x_', '');
-        return `${baseUrl}/v0/${cleanChunk}`;
+        return trimmed.startsWith('http') ? trimmed : masterBase + trimmed;
       }
       return line;
     }).join('\n');
+  }
 
+  // Case 2: html/chunk base (e.g. accessdatacloud.shop like natgeo_1)
+  const baseUrl = decrypted.replace('/index.html', '');
+  const plRes = await fetchHttps(`${baseUrl}/v0/playlist.html`, {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+    'Referer': `https://www.elahmad.ru/tv/radiant.php?id=${channelId}`
+  });
+  if (plRes.status !== 200) {
+    elahmadCache.delete(channelId);
+    throw new Error('Playlist fetch failed: HTTP ' + plRes.status);
+  }
+  const rawM3u8 = plRes.body.toString('utf8');
+  return rawM3u8.split('\n').map(line => {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith('#')) {
+      const cleanChunk = trimmed.replace('k9x_', '');
+      return `${baseUrl}/v0/${cleanChunk}`;
+    }
+    return line;
+  }).join('\n');
+}
+
+// GET /api/stream/:channelId.m3u8 — Direct .m3u8 stream converted dynamically from embeds
+app.get('/api/stream/:channelId.m3u8', async (req, res) => {
+  let channelId = req.params.channelId;
+  if (channelId === 'natgeo') channelId = 'natgeo_1';
+  try {
+    const m3u8 = await getElahmadM3u8(channelId);
     res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.send(rewritten);
+    res.send(m3u8);
   } catch (err) {
-    console.error('Error serving natgeo.m3u8:', err.message);
+    console.error(`Error serving ${channelId}.m3u8:`, err.message);
     res.status(502).send('#EXTM3U\n#EXT-X-ERROR: ' + err.message);
   }
 });
