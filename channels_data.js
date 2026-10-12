@@ -174,18 +174,32 @@ const DEFAULT_CHANNELS = [
 
   // --- SPORTS CHANNELS (DIRECT HLS - ZERO ADS) ---
   {
-    id: 'ch-alkass-1',
-    name: 'قنوات الكأس 1 الرياضية (Al Kass)',
+    id: 'ch-nile-sport',
+    name: 'نايل سبورت HD (Nile Sport)',
+    category: 'sports',
+    country: 'مصر',
+    quality: 'Full HD',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Nile_Sport_Channel_logo.png/300px-Nile_Sport_Channel_logo.png',
+    type: 'hls',
+    streamUrl: '/api/stream/nile_sport.m3u8',
+    fallbackUrl: '/api/stream/nile_sport.m3u8',
+    description: 'البث المباشر لقناة نايل سبورت الرياضية المصرية - مباريات وبطولات الدوري المصري واستوديوهات تحليلية.',
+    isFeatured: true,
+    viewersCount: 88500
+  },
+  {
+    id: 'ch-bein-sports-xtra',
+    name: 'beIN SPORTS XTRA HD',
     category: 'sports',
     country: 'قطر',
     quality: 'Full HD',
     logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Al_Kass_Sports_Channels_logo.png/300px-Al_Kass_Sports_Channels_logo.png',
     type: 'hls',
-    streamUrl: 'https://shoof.alkass.net/live/ch1.m3u8',
-    fallbackUrl: 'https://shoof.alkass.net/live/ch1.m3u8',
-    description: 'البث المباشر لقناة الكأس 1 الرياضية لنقل البطولات والمباريات العربية مباشرة وبدون إعلانات.',
+    streamUrl: 'https://bein-xtra-bein.amagi.tv/playlist.m3u8',
+    fallbackUrl: 'https://bein-xtra-bein.amagi.tv/playlist.m3u8',
+    description: 'قناة beIN SPORTS XTRA المفتوحة لنقل أقوى الفعاليات الرياضية والأحداث العالمية مباشرة.',
     isFeatured: true,
-    viewersCount: 78500
+    viewersCount: 94200
   },
   {
     id: 'ch-ktv-sport',
@@ -242,6 +256,62 @@ const DEFAULT_CHANNELS = [
     description: 'القناة الرياضية الأردنية الرسمية - بث مباشر للمباريات والمنافسات الرياضية.',
     isFeatured: false,
     viewersCount: 43200
+  },
+  {
+    id: 'ch-bahrain-sports-1',
+    name: 'البحرين الرياضية 1 HD',
+    category: 'sports',
+    country: 'البحرين',
+    quality: 'Full HD',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/KSA_Sports_logo.svg/300px-KSA_Sports_logo.svg.png',
+    type: 'hls',
+    streamUrl: 'https://5c7b683162943.streamlock.net/live/ngrp:sportsone_all/playlist.m3u8',
+    fallbackUrl: 'https://5c7b683162943.streamlock.net/live/ngrp:sportsone_all/playlist.m3u8',
+    description: 'قناة البحرين الرياضية الأولى - بث حي للمباريات والمسابقات الرياضية الخليجية.',
+    isFeatured: false,
+    viewersCount: 39500
+  },
+  {
+    id: 'ch-bahrain-sports-2',
+    name: 'البحرين الرياضية 2 HD',
+    category: 'sports',
+    country: 'البحرين',
+    quality: 'Full HD',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/KSA_Sports_logo.svg/300px-KSA_Sports_logo.svg.png',
+    type: 'hls',
+    streamUrl: 'https://5c7b683162943.streamlock.net/live/ngrp:bahrainsportstwo_all/playlist.m3u8',
+    fallbackUrl: 'https://5c7b683162943.streamlock.net/live/ngrp:bahrainsportstwo_all/playlist.m3u8',
+    description: 'قناة البحرين الرياضية الثانية - تغطيات حية ومباشرة للفعاليات والبطولات.',
+    isFeatured: false,
+    viewersCount: 35100
+  },
+  {
+    id: 'ch-iraqia-sport',
+    name: 'العراقية الرياضية (Al Iraqia Sports)',
+    category: 'sports',
+    country: 'العراق',
+    quality: 'Full HD',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/KSA_Sports_logo.svg/300px-KSA_Sports_logo.svg.png',
+    type: 'hls',
+    streamUrl: 'https://imn-live.esite-lab.com/hls/iraqia-sports-1.m3u8',
+    fallbackUrl: 'https://imn-live.esite-lab.com/hls/iraqia-sports-1.m3u8',
+    description: 'شبكة الإعلام العراقي - قناة الرياضية لنقل مباريات دوري نجوم العراق والبطولات.',
+    isFeatured: false,
+    viewersCount: 48000
+  },
+  {
+    id: 'ch-elheddaf-sport',
+    name: 'الهداف الجزائرية (El Heddaf TV)',
+    category: 'sports',
+    country: 'الجزائر',
+    quality: 'Full HD',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/KSA_Sports_logo.svg/300px-KSA_Sports_logo.svg.png',
+    type: 'hls',
+    streamUrl: 'https://live.elheddaftv.com:8081/elheddaftv/index.m3u8',
+    fallbackUrl: 'https://live.elheddaftv.com:8081/elheddaftv/index.m3u8',
+    description: 'قناة الهداف الرياضية الأولى في الجزائر والمغرب العربي - تحليلات وأخبار حصرية.',
+    isFeatured: false,
+    viewersCount: 52400
   },
 
   // --- DRAMA & ENTERTAINMENT ---
