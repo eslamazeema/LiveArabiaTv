@@ -953,6 +953,59 @@ body {
   box-shadow: 0 0 30px rgba(255, 82, 0, 0.45);
 }
 
+.channel-card .fav-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(14, 18, 30, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(10px);
+}
+.channel-card .fav-btn:hover, .channel-card .fav-btn.is-fav {
+  color: #ff1744;
+  border-color: rgba(255, 23, 68, 0.4);
+  background: rgba(255, 23, 68, 0.15);
+  transform: scale(1.1);
+}
+
+.channel-card .card-share-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(14, 18, 30, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary);
+  font-size: 0.82rem;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(10px);
+}
+.channel-card .card-share-btn:hover {
+  color: #fff;
+  border-color: var(--secondary);
+  background: rgba(0, 176, 255, 0.25);
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(0, 176, 255, 0.35);
+}
+
 .channel-logo-wrapper {
   position: relative;
   width: 92px;

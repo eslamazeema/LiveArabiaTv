@@ -193,6 +193,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     activeChannel = channel;
     const streamUrl = channel.streamUrl || channel.fallbackUrl;
 
+    // Update browser URL query to this channel's unique ID dynamically without full page reload
+    if (typeof window !== 'undefined' && window.history && window.history.replaceState) {
+      let cleanPath = window.location.pathname;
+      if (cleanPath.endsWith('/index.html')) {
+        cleanPath = cleanPath.slice(0, -10) || '/';
+      }
+      window.history.replaceState({ chId: channel.id }, '', `${cleanPath}?ch=${encodeURIComponent(channel.id)}`);
+    }
+
+    // Dynamic document title with channel name
+    document.title = `${channel.name} - بث مباشر | arabialivetv.com`;
+
     // Update player details
     playerChannelLogo.src = channel.logo;
     playerChannelName.textContent = channel.name;
@@ -324,8 +336,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       shareModalText.textContent = `انشر رابط بث قناة "${channel.name}" مباشرة لأصدقائك في شبكات التواصل الاجتماعي:`;
     }
 
-    const shareUrl = `${window.location.origin}/`;
-    const shareText = `شاهد بث حي ومباشر لقناة "${channel.name}" بجودة عالية عبر منصة arabialivetv.com 📺:`;
+    const shareUrl = `${window.location.origin}/?ch=${encodeURIComponent(channel.id)}`;
+    const shareText = `شاهد الآن بث حي ومباشر لقناة "${channel.name}" بجودة عالية عبر منصة arabialivetv.com 📺:`;
 
     if (shareWhatsapp) shareWhatsapp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
     if (shareFacebook) shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
@@ -347,7 +359,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       shareModalText.textContent = `انشر رابط بث إذاعة "${radio.name}" مباشرة لأصدقائك في شبكات التواصل الاجتماعي:`;
     }
 
-    const shareUrl = `${window.location.origin}/`;
+    const shareUrl = `${window.location.origin}/?radio=${encodeURIComponent(radio.id)}`;
     const shareText = `استمع الآن إلى بث حي ومباشر لإذاعة "${radio.name}" بصوت نقي عبر منصة arabialivetv.com 🎙️📻:`;
 
     if (shareWhatsapp) shareWhatsapp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
@@ -438,6 +450,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           <button class="fav-btn ${isFav ? 'is-fav' : ''}" data-fav-id="${ch.id}" title="إضافة للمفضلة">
             <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
           </button>
+          <button class="card-share-btn" data-share-id="${ch.id}" title="مشاركة رابط هذه القناة">
+            <i class="fa-solid fa-share-nodes"></i>
+          </button>
           <div class="channel-logo-wrapper">
             <img src="${ch.logo}" alt="${ch.name}" class="channel-logo-img">
             <div class="play-overlay">
@@ -456,10 +471,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     channelsGrid.querySelectorAll('.channel-card').forEach(card => {
       card.addEventListener('click', (e) => {
-        if (e.target.closest('.fav-btn')) return;
+        if (e.target.closest('.fav-btn') || e.target.closest('.card-share-btn')) return;
         const chId = card.dataset.id;
         const targetCh = channels.find(c => c.id === chId);
         if (targetCh) playChannel(targetCh, true);
+      });
+    });
+
+    channelsGrid.querySelectorAll('.card-share-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const chId = btn.dataset.shareId;
+        const targetCh = channels.find(c => c.id === chId);
+        if (targetCh) openChannelShareModal(targetCh);
       });
     });
 
@@ -927,22 +951,58 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Initial Boot Logic
-  initRealtimeTicker();
-  renderCategories();
+  // --- DEEP LINKING SUPPORT (?ch= / ?channel= / ?radio= / ?match=) ---
+  const urlParams = new URLSearchParams(window.location.search);
+  const requestedChId = urlParams.get('ch') || urlParams.get('channel');
+  let targetChannel = null;
 
-  // Always clean URL address bar to main domain root (removes /index.html and any #hash)
-  if (window.history && window.history.replaceState) {
-    let cleanPath = window.location.pathname;
-    if (cleanPath.endsWith('/index.html')) {
-      cleanPath = cleanPath.substring(0, cleanPath.length - 10) || '/';
-    }
-    window.history.replaceState(null, null, cleanPath + window.location.search);
+  if (requestedChId) {
+    targetChannel = channels.find(c => c.id === requestedChId) ||
+                    channels.find(c => c.name && c.name.toLowerCase().includes(requestedChId.toLowerCase()));
   }
 
-  // Play default channel selected by admin (or first channel)
-  activeChannel = channels.find(c => c.isDefault) || channels.find(c => c.isFeatured) || channels[0];
-  playChannel(activeChannel, false);
+  if (targetChannel) {
+    activeChannel = targetChannel;
+    playChannel(activeChannel, true); // Scroll smoothly to player screen
+  } else {
+    // Play default channel selected by admin (or first channel)
+    activeChannel = channels.find(c => c.isDefault) || channels.find(c => c.isFeatured) || channels[0];
+    playChannel(activeChannel, false);
+  }
+
+  // Handle Radio Deep Linking
+  const requestedRadioId = urlParams.get('radio') || urlParams.get('rad');
+  if (requestedRadioId) {
+    const targetRadio = radios.find(r => r.id === requestedRadioId);
+    if (targetRadio) {
+      setTimeout(() => {
+        playRadio(targetRadio);
+        const radioSec = document.getElementById('radioSection');
+        if (radioSec) radioSec.scrollIntoView({ behavior: 'smooth' });
+      }, 600);
+    }
+  }
+
+  // Handle Match Deep Linking
+  const requestedMatchId = urlParams.get('match');
+  if (requestedMatchId) {
+    const targetMatch = matches.find(m => m.id === requestedMatchId);
+    if (targetMatch && typeof openMatchModal === 'function') {
+      setTimeout(() => {
+        openMatchModal(targetMatch);
+      }, 600);
+    }
+  }
+
+  // Handle browser back/forward buttons (SPA navigation)
+  window.addEventListener('popstate', (e) => {
+    const params = new URLSearchParams(window.location.search);
+    const chId = params.get('ch') || params.get('channel');
+    if (chId && (!activeChannel || activeChannel.id !== chId)) {
+      const ch = channels.find(c => c.id === chId);
+      if (ch) playChannel(ch, true);
+    }
+  });
 
   // ==================== CERTIFICATES GALLERY ENGINE ====================
   function initCertificatesGallery() {
