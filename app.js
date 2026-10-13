@@ -277,6 +277,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     renderChannelsGrid(getFilteredChannels());
+    if (typeof syncMatchCenterHeight === 'function') setTimeout(syncMatchCenterHeight, 80);
   }
 
   // Mobile Tap Overlay
@@ -547,7 +548,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (filtered.length === 0) {
       matchesList.innerHTML = `
         <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
-          <i class="fa-solid fa-futbol" style="font-size: 2rem; margin-bottom: 10px; display: block; opacity: 0.4;"></i>
+          <i class="fa-regular fa-calendar-xmark" style="font-size: 2rem; margin-bottom: 10px; display: block; opacity: 0.4;"></i>
           لا توجد مباريات مدرجة في هذا القسم حالياً.
         </div>
       `;
@@ -557,11 +558,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     matchesList.innerHTML = filtered.map(m => {
       let statusHtml = '';
       if (m.status === 'live') {
-        statusHtml = '<span class="pulse-dot-red"></span> مباشر الآن';
+        statusHtml = '<span class="pulse-dot-red"></span> مباشر';
       } else if (m.status === 'ended') {
         statusHtml = '<i class="fa-solid fa-flag-checkered"></i> انتهت';
       } else {
-        statusHtml = `<i class="fa-regular fa-calendar-days"></i> ${m.date || 'اليوم'} • <i class="fa-regular fa-clock"></i> ${m.time}`;
+        statusHtml = `${m.date || 'اليوم'} • ${m.time}`;
       }
 
       const scoreDisplay = m.score ? m.score : (m.status === 'live' ? '0 - 0' : (m.time || 'VS'));
@@ -576,13 +577,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
           <div class="match-teams-row">
             <div class="match-team team-home">
-              <span class="team-icon">${m.homeLogo || '⚽'}</span>
-              <span>${m.homeTeam}</span>
+              <span class="team-name">${m.homeTeam}</span>
             </div>
             <div class="match-score-pill ${m.status === 'live' ? 'score-live' : ''}">${scoreDisplay}</div>
             <div class="match-team team-away">
-              <span>${m.awayTeam}</span>
-              <span class="team-icon">${m.awayLogo || '⚽'}</span>
+              <span class="team-name">${m.awayTeam}</span>
             </div>
           </div>
           <div class="match-footer-row">
@@ -1189,9 +1188,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderCertificates();
   }
 
+  // --- PERFECT HEIGHT SYNCHRONIZATION WITH ADJACENT PLAYER CARD ---
+  function syncMatchCenterHeight() {
+    const matchesCard = document.getElementById('matchesCard');
+    if (!matchesCard || !playerCard) return;
+
+    if (window.innerWidth > 1024) {
+      const playerH = playerCard.offsetHeight;
+      if (playerH > 250) {
+        matchesCard.style.height = playerH + 'px';
+        matchesCard.style.maxHeight = playerH + 'px';
+      }
+    } else {
+      matchesCard.style.height = 'auto';
+      matchesCard.style.maxHeight = 'none';
+    }
+  }
+
+  window.addEventListener('resize', syncMatchCenterHeight);
+  if (typeof ResizeObserver !== 'undefined' && playerCard) {
+    const ro = new ResizeObserver(() => syncMatchCenterHeight());
+    ro.observe(playerCard);
+  }
+
   renderMatches();
   renderSportsNews();
   renderRadios();
   renderHighlights();
   initCertificatesGallery();
+
+  setTimeout(syncMatchCenterHeight, 100);
+  setTimeout(syncMatchCenterHeight, 600);
 });
