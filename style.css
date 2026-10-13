@@ -687,6 +687,17 @@ body {
   color: var(--secondary);
   border: 1px solid rgba(0, 176, 255, 0.35);
 }
+.status-ended {
+  background: rgba(158, 158, 158, 0.15);
+  color: #b0bec5;
+  border: 1px solid rgba(158, 158, 158, 0.35);
+}
+.match-score-pill.score-live {
+  background: rgba(255, 23, 68, 0.2);
+  border-color: #ff1744;
+  color: #ffeb3b;
+  box-shadow: 0 0 12px rgba(255, 23, 68, 0.45);
+}
 
 .match-teams-row {
   display: flex;

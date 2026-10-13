@@ -467,7 +467,27 @@
           <h2 style="font-size: 1.4rem; font-weight: 900; color: #00e676;">
             <i class="fa-solid fa-trophy"></i> 4. قسم جدول المباريات والبث المباشر للمباريات
           </h2>
-          <span style="color: var(--text-muted); font-size: 0.85rem;">إضافة وتعديل وحذف المباريات اليومية، ضبط حالة البث المباشر، القنوات الناقلة والسيرفرات</span>
+          <span style="color: var(--text-muted); font-size: 0.85rem;">إضافة وتعديل وحذف المباريات اليومية والقادمة، تعديل اسكربت البث المباشر، النتيجة اللحظية، ومسح المباريات المنتهية</span>
+        </div>
+
+        <!-- MATCHES TOP ACTION & FILTER BAR -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <button id="clearEndedMatchesBtn" class="btn-icon" style="background: rgba(255, 23, 68, 0.15); color: #ff5252; border: 1px solid rgba(255, 23, 68, 0.4); font-weight: 700; padding: 10px 18px;">
+              <i class="fa-solid fa-broom"></i> مسح جميع المباريات المنتهية <span id="endedMatchesCountBadge" style="background: #ff1744; color: #fff; border-radius: 20px; padding: 2px 8px; font-size: 0.75rem; margin-right: 6px;">0</span>
+            </button>
+            <div style="color: var(--text-muted); font-size: 0.85rem;" id="matchesStatsSummary">
+              <!-- e.g. إجمالي المباريات: 6 | مباشر: 2 | قادمة: 4 -->
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <select id="matchesFilterStatus" class="form-control" style="width: auto; padding: 8px 14px; font-size: 0.85rem;">
+              <option value="all">جميع المباريات (الكل)</option>
+              <option value="live">🔴 مباشر الآن فقط</option>
+              <option value="upcoming">⏳ المباريات القادمة</option>
+              <option value="ended">🏁 المباريات المنتهية</option>
+            </select>
+          </div>
         </div>
 
         <section class="form-card" style="margin-bottom: 24px;">
@@ -492,8 +512,16 @@
             </div>
 
             <div class="form-group">
-              <label>اليوم</label>
-              <input type="text" id="mDate" class="form-control" placeholder="اليوم / غداً / 15 سبتمبر">
+              <label>تاريخ المباراة (اليوم أو الأيام القادمة)</label>
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <input type="text" id="mDate" class="form-control" placeholder="اليوم / غداً / 15 أكتوبر" style="flex: 1;" required>
+                <input type="date" id="mDateInput" class="form-control" style="width: 44px; padding: 6px 4px; cursor: pointer;" title="اختر تاريخاً من التقويم">
+              </div>
+              <div style="display: flex; gap: 6px; margin-top: 6px;">
+                <button type="button" class="btn-sm" style="font-size: 0.75rem; padding: 2px 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: var(--text);" onclick="window.setQuickDate('اليوم')">اليوم</button>
+                <button type="button" class="btn-sm" style="font-size: 0.75rem; padding: 2px 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: var(--text);" onclick="window.setQuickDate('غداً')">غداً</button>
+                <button type="button" class="btn-sm" style="font-size: 0.75rem; padding: 2px 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: var(--text);" onclick="window.setQuickDate('بعد غد')">بعد غد</button>
+              </div>
             </div>
 
             <div class="form-group">
@@ -502,10 +530,15 @@
             </div>
 
             <div class="form-group">
+              <label>النتيجة الحالية</label>
+              <input type="text" id="mScore" class="form-control" placeholder="0 - 0 أو vs">
+            </div>
+
+            <div class="form-group">
               <label>حالة المباراة</label>
               <select id="mStatus" class="form-control">
                 <option value="live">🔴 مباشر الآن</option>
-                <option value="upcoming">⏳ قريباً</option>
+                <option value="upcoming" selected>⏳ قريباً</option>
                 <option value="ended">🏁 انتهت</option>
               </select>
             </div>
@@ -521,12 +554,21 @@
             </div>
 
             <div class="form-group" style="grid-column: 1 / -1;">
-              <label>رابط البث أو كود الـ iFrame المباشر للمباراة (سيرفر 1)</label>
-              <input type="text" id="mStreamUrl" class="form-control" placeholder="يمكنك لصق رابط مباشر أو كود <iframe src='...'></iframe> هنا">
+              <label style="color: #00e676; font-weight: 700;">
+                <i class="fa-solid fa-code"></i> اسكريبت أو رابط البث المباشر (سيرفر 1 - أساسي)
+              </label>
+              <textarea id="mStreamUrl" rows="2" class="form-control" placeholder="الصق هنا رابط البث المباشر (.m3u8) أو كود الـ <iframe src='...'></iframe> أو اسكريبت البث بالكامل"></textarea>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label style="color: var(--text-muted);">
+                <i class="fa-solid fa-server"></i> اسكريبت أو رابط البث الإضافي (سيرفر 2 - اختياري)
+              </label>
+              <textarea id="mStreamUrl2" rows="1" class="form-control" placeholder="رابط سيرفر احتياطي أو اسكريبت إضافي (اختياري)"></textarea>
             </div>
 
             <div style="grid-column: 1 / -1; margin-top: 10px;">
-              <button type="submit" class="btn-icon btn-primary" style="padding: 12px 28px; width: 100%; justify-content: center; font-size: 1rem; background: linear-gradient(135deg, #00e676, #00c853); color: #000;">
+              <button type="submit" class="btn-icon btn-primary" style="padding: 12px 28px; width: 100%; justify-content: center; font-size: 1rem; background: linear-gradient(135deg, #00e676, #00c853); color: #000; font-weight: 800;">
                 <i class="fa-solid fa-calendar-plus"></i> إدراج المباراة في جدول البث المباشر
               </button>
             </div>
@@ -539,9 +581,10 @@
               <tr>
                 <th>البطولة</th>
                 <th>المباراة</th>
-                <th>التوقيت</th>
+                <th>التاريخ والوقت</th>
+                <th>النتيجة</th>
                 <th>الحالة</th>
-                <th>القناة الناقلة</th>
+                <th>القناة والبث</th>
                 <th>إجراءات</th>
               </tr>
             </thead>
@@ -549,6 +592,100 @@
               <!-- Populated dynamically via admin.js -->
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- EDIT MATCH MODAL -->
+      <div class="modal-backdrop" id="editMatchModalBackdrop" style="z-index: 1500;">
+        <div class="form-card" style="width: 100%; max-width: 680px; background: #0c1220; border: 1px solid #00e676; max-height: 90vh; overflow-y: auto;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 style="color: #00e676; font-weight: 800;"><i class="fa-solid fa-pen-to-square"></i> تعديل بيانات واسكريبت بث المباراة</h3>
+            <button class="modal-close-btn" id="closeEditMatchModalBtn"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+
+          <form id="editMatchForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+            <input type="hidden" id="editMatchId">
+
+            <div class="form-group">
+              <label>البطولة / الدوري</label>
+              <input type="text" id="editMatchLeague" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label>الفريق الأول (صاحب الأرض)</label>
+              <input type="text" id="editMatchHomeTeam" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label>الفريق الثاني (الضيف)</label>
+              <input type="text" id="editMatchAwayTeam" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label>تاريخ المباراة (اليوم أو الأيام القادمة)</label>
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <input type="text" id="editMatchDate" class="form-control" placeholder="اليوم / غداً / 15 أكتوبر" style="flex: 1;" required>
+                <input type="date" id="editMatchDateInput" class="form-control" style="width: 44px; padding: 6px 4px; cursor: pointer;" title="اختر تاريخاً من التقويم">
+              </div>
+              <div style="display: flex; gap: 6px; margin-top: 6px;">
+                <button type="button" class="btn-sm" style="font-size: 0.75rem; padding: 2px 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: var(--text);" onclick="window.setQuickEditDate('اليوم')">اليوم</button>
+                <button type="button" class="btn-sm" style="font-size: 0.75rem; padding: 2px 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: var(--text);" onclick="window.setQuickEditDate('غداً')">غداً</button>
+                <button type="button" class="btn-sm" style="font-size: 0.75rem; padding: 2px 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: var(--text);" onclick="window.setQuickEditDate('بعد غد')">بعد غد</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>التوقيت</label>
+              <input type="text" id="editMatchTime" class="form-control" placeholder="21:00" required>
+            </div>
+
+            <div class="form-group">
+              <label>النتيجة الحالية</label>
+              <input type="text" id="editMatchScore" class="form-control" placeholder="2 - 1 أو vs">
+            </div>
+
+            <div class="form-group">
+              <label>حالة المباراة</label>
+              <select id="editMatchStatus" class="form-control">
+                <option value="live">🔴 مباشر الآن</option>
+                <option value="upcoming">⏳ قريباً</option>
+                <option value="ended">🏁 انتهت</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>القناة الناقلة</label>
+              <input type="text" id="editMatchChannelName" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label>اسم المعلق</label>
+              <input type="text" id="editMatchCommentator" class="form-control">
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label style="color: #00e676; font-weight: 700;">
+                <i class="fa-solid fa-code"></i> اسكريبت أو رابط البث المباشر (سيرفر 1 - أساسي)
+              </label>
+              <textarea id="editMatchStreamUrl" rows="2" class="form-control" placeholder="الصق هنا رابط البث المباشر (.m3u8) أو كود الـ <iframe> أو اسكريبت البث بالكامل"></textarea>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label style="color: var(--text-muted);">
+                <i class="fa-solid fa-server"></i> اسكريبت أو رابط البث الإضافي (سيرفر 2 - اختياري)
+              </label>
+              <textarea id="editMatchStreamUrl2" rows="1" class="form-control" placeholder="رابط سيرفر احتياطي أو اسكريبت إضافي (اختياري)"></textarea>
+            </div>
+
+            <div style="grid-column: 1 / -1; margin-top: 10px; display: flex; gap: 12px;">
+              <button type="submit" class="btn-icon btn-primary" style="flex: 1; justify-content: center; padding: 12px; background: linear-gradient(135deg, #00e676, #00c853); color: #000; font-weight: 800;">
+                <i class="fa-solid fa-floppy-disk"></i> حفظ التعديلات وتحديث البث فوراً
+              </button>
+              <button type="button" class="btn-icon" id="cancelEditMatchBtn" style="padding: 12px 20px;">
+                إلغاء
+              </button>
+            </div>
+          </form>
         </div>
       </div>
 

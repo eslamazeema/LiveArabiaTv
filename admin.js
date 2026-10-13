@@ -645,36 +645,280 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // ========================== DEPARTMENT 4: MATCHES ==========================
-  function renderMatchesTable() {
-    if (!matchesTableBody) return;
-    matchesTableBody.innerHTML = matches.map((m) => `
-      <tr>
-        <td>${m.leagueFlag || '🏆'} ${m.league}</td>
-        <td><strong>${m.homeTeam}</strong> vs <strong>${m.awayTeam}</strong></td>
-        <td>${m.date} ${m.time}</td>
-        <td>
-          <span class="match-status-tag ${m.status === 'live' ? 'status-live' : 'status-upcoming'}">
-            ${m.status === 'live' ? 'مباشر' : 'قريباً'}
-          </span>
-        </td>
-        <td>${m.channelName}</td>
-        <td>
-          <button class="btn-icon" onclick="deleteMatch('${m.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3);">
-            <i class="fa-solid fa-trash"></i> حذف
-          </button>
-        </td>
-      </tr>
-    `).join('');
+  const matchesFilterStatus = document.getElementById('matchesFilterStatus');
+  const clearEndedMatchesBtn = document.getElementById('clearEndedMatchesBtn');
+  const endedMatchesCountBadge = document.getElementById('endedMatchesCountBadge');
+  const matchesStatsSummary = document.getElementById('matchesStatsSummary');
+
+  const editMatchModalBackdrop = document.getElementById('editMatchModalBackdrop');
+  const editMatchForm = document.getElementById('editMatchForm');
+  const closeEditMatchModalBtn = document.getElementById('closeEditMatchModalBtn');
+  const cancelEditMatchBtn = document.getElementById('cancelEditMatchBtn');
+
+  // Quick Date Helpers
+  window.setQuickDate = (label) => {
+    const input = document.getElementById('mDate');
+    if (input) input.value = label;
+  };
+
+  window.setQuickEditDate = (label) => {
+    const input = document.getElementById('editMatchDate');
+    if (input) input.value = label;
+  };
+
+  const mDateInput = document.getElementById('mDateInput');
+  const mDate = document.getElementById('mDate');
+  if (mDateInput && mDate) {
+    mDateInput.addEventListener('change', (e) => {
+      if (e.target.value) {
+        const parts = e.target.value.split('-');
+        if (parts.length === 3) {
+          const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+          try {
+            mDate.value = d.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' });
+          } catch (_) {
+            mDate.value = e.target.value;
+          }
+        }
+      }
+    });
   }
 
+  const editMatchDateInput = document.getElementById('editMatchDateInput');
+  const editMatchDate = document.getElementById('editMatchDate');
+  if (editMatchDateInput && editMatchDate) {
+    editMatchDateInput.addEventListener('change', (e) => {
+      if (e.target.value) {
+        const parts = e.target.value.split('-');
+        if (parts.length === 3) {
+          const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+          try {
+            editMatchDate.value = d.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' });
+          } catch (_) {
+            editMatchDate.value = e.target.value;
+          }
+        }
+      }
+    });
+  }
+
+  function renderMatchesTable() {
+    if (!matchesTableBody) return;
+
+    const filter = matchesFilterStatus ? matchesFilterStatus.value : 'all';
+    const filteredMatches = matches.filter(m => {
+      if (filter === 'all') return true;
+      return m.status === filter;
+    });
+
+    // Update stats
+    const totalCount = matches.length;
+    const liveCount = matches.filter(m => m.status === 'live').length;
+    const upcomingCount = matches.filter(m => m.status === 'upcoming').length;
+    const endedCount = matches.filter(m => m.status === 'ended').length;
+
+    if (endedMatchesCountBadge) {
+      endedMatchesCountBadge.textContent = endedCount;
+    }
+    if (matchesStatsSummary) {
+      matchesStatsSummary.innerHTML = `إجمالي: <strong>${totalCount}</strong> | مباشر: <strong style="color:#00e676;">${liveCount}</strong> | قادمة: <strong style="color:var(--primary);">${upcomingCount}</strong> | منتهية: <strong style="color:#ff5252;">${endedCount}</strong>`;
+    }
+
+    if (filteredMatches.length === 0) {
+      matchesTableBody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 30px; color: var(--text-muted);">
+            <i class="fa-solid fa-futbol" style="font-size: 2rem; margin-bottom: 10px; display: block; opacity: 0.5;"></i>
+            لا توجد مباريات مطابقة للفلتر المحدد.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    matchesTableBody.innerHTML = filteredMatches.map((m) => {
+      const srv1 = (m.servers && m.servers[0] && m.servers[0].url) ? m.servers[0].url : '';
+      const hasEmbed = srv1.includes('<iframe') || srv1.includes('<script');
+      const hasHls = srv1.includes('.m3u8');
+      const scriptBadge = srv1
+        ? (hasEmbed
+            ? `<span style="display:inline-block; font-size:0.7rem; background:rgba(0,230,118,0.15); color:#00e676; padding:2px 6px; border-radius:4px; margin-top:4px;"><i class="fa-solid fa-code"></i> كود iFrame مدمج</span>`
+            : (hasHls
+                ? `<span style="display:inline-block; font-size:0.7rem; background:rgba(0,180,216,0.15); color:#00b4d8; padding:2px 6px; border-radius:4px; margin-top:4px;"><i class="fa-solid fa-play"></i> بث HLS مباشر</span>`
+                : `<span style="display:inline-block; font-size:0.7rem; background:rgba(255,193,7,0.15); color:#ffc107; padding:2px 6px; border-radius:4px; margin-top:4px;"><i class="fa-solid fa-link"></i> رابط مخصص</span>`))
+        : `<span style="display:inline-block; font-size:0.7rem; background:rgba(255,255,255,0.08); color:var(--text-muted); padding:2px 6px; border-radius:4px; margin-top:4px;">افتراضي</span>`;
+
+      let statusBadge = '';
+      if (m.status === 'live') {
+        statusBadge = `<span class="match-status-tag status-live"><span class="pulse-dot-red"></span> مباشر</span>`;
+      } else if (m.status === 'ended') {
+        statusBadge = `<span class="match-status-tag" style="background: rgba(158,158,158,0.15); color: #b0bec5; border: 1px solid rgba(158,158,158,0.3);"><i class="fa-solid fa-flag-checkered"></i> انتهت</span>`;
+      } else {
+        statusBadge = `<span class="match-status-tag status-upcoming"><i class="fa-regular fa-clock"></i> قريباً</span>`;
+      }
+
+      const currentScore = m.score || (m.status === 'live' ? '0 - 0' : 'vs');
+
+      return `
+        <tr>
+          <td>
+            <div style="font-weight: 700; color: #fff;">${m.leagueFlag || '🏆'} ${m.league}</div>
+            ${m.commentator ? `<small style="color: var(--text-muted); font-size: 0.75rem;"><i class="fa-solid fa-microphone"></i> ${m.commentator}</small>` : ''}
+          </td>
+          <td>
+            <div style="font-size: 0.95rem;">
+              <strong>${m.homeTeam}</strong> <span style="color: var(--text-muted); font-size: 0.8rem;">ضد</span> <strong>${m.awayTeam}</strong>
+            </div>
+          </td>
+          <td>
+            <div style="color: var(--primary); font-weight: 600; font-size: 0.85rem;">
+              <i class="fa-regular fa-calendar-days"></i> ${m.date || 'اليوم'}
+            </div>
+            <div style="color: var(--text-muted); font-size: 0.8rem;">
+              <i class="fa-regular fa-clock"></i> ${m.time}
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; gap: 4px; align-items: center;">
+              <input type="text" id="score_input_${m.id}" value="${currentScore}" style="width: 75px; text-align: center; font-weight: 900; background: #080d16; border: 1px solid var(--border-glass); border-radius: 6px; color: #ffeb3b; padding: 4px 6px; font-size: 0.9rem;" title="اضغط للتعديل ثم اضغط علامة الصح">
+              <button class="btn-sm" style="padding: 5px 8px; background: rgba(0,230,118,0.15); color: #00e676; border: 1px solid rgba(0,230,118,0.3); border-radius: 6px; cursor: pointer;" onclick="window.quickUpdateScore('${m.id}')" title="حفظ النتيجة فوراً">
+                <i class="fa-solid fa-check"></i>
+              </button>
+            </div>
+          </td>
+          <td>${statusBadge}</td>
+          <td>
+            <div>${m.channelName || 'قناة رياضية'}</div>
+            ${scriptBadge}
+          </td>
+          <td>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <button class="btn-icon" onclick="window.openEditMatchModal('${m.id}')" style="color: #00e676; border-color: rgba(0,230,118,0.3); font-size: 0.8rem; padding: 6px 12px;">
+                <i class="fa-solid fa-pen-to-square"></i> تعديل البث
+              </button>
+              <button class="btn-icon" onclick="window.deleteMatch('${m.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3); font-size: 0.8rem; padding: 6px 10px;">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  if (matchesFilterStatus) {
+    matchesFilterStatus.addEventListener('change', renderMatchesTable);
+  }
+
+  // --- Quick Score Update ---
+  window.quickUpdateScore = async (id) => {
+    const input = document.getElementById(`score_input_${id}`);
+    if (!input) return;
+    const newScore = input.value.trim();
+    const targetMatch = matches.find(m => m.id === id);
+
+    const result = await apiCall('PATCH', `/api/matches/${id}/score`, {
+      score: newScore,
+      status: targetMatch ? targetMatch.status : undefined
+    });
+
+    if (result && result.success) {
+      if (targetMatch) targetMatch.score = newScore;
+      showToast(`تم تحديث نتيجة المباراة إلى: ${newScore}`, 'success');
+      renderMatchesTable();
+    } else {
+      showToast(result?.message || 'فشل تحديث النتيجة', 'error');
+    }
+  };
+
+  // --- Open & Close Edit Match Modal ---
+  window.openEditMatchModal = (id) => {
+    const m = matches.find(x => x.id === id);
+    if (!m) return;
+
+    document.getElementById('editMatchId').value = m.id;
+    document.getElementById('editMatchLeague').value = m.league || '';
+    document.getElementById('editMatchHomeTeam').value = m.homeTeam || '';
+    document.getElementById('editMatchAwayTeam').value = m.awayTeam || '';
+    document.getElementById('editMatchDate').value = m.date || 'اليوم';
+    document.getElementById('editMatchTime').value = m.time || '';
+    document.getElementById('editMatchScore').value = m.score || (m.status === 'live' ? '0 - 0' : 'vs');
+    document.getElementById('editMatchStatus').value = m.status || 'upcoming';
+    document.getElementById('editMatchChannelName').value = m.channelName || '';
+    document.getElementById('editMatchCommentator').value = m.commentator || '';
+
+    const srv1 = (m.servers && m.servers[0]) ? m.servers[0].url : '';
+    const srv2 = (m.servers && m.servers[1]) ? m.servers[1].url : '';
+    document.getElementById('editMatchStreamUrl').value = srv1;
+    document.getElementById('editMatchStreamUrl2').value = srv2;
+
+    if (editMatchModalBackdrop) editMatchModalBackdrop.classList.add('active');
+  };
+
+  function closeEditMatchModal() {
+    if (editMatchModalBackdrop) editMatchModalBackdrop.classList.remove('active');
+  }
+
+  if (closeEditMatchModalBtn) closeEditMatchModalBtn.addEventListener('click', closeEditMatchModal);
+  if (cancelEditMatchBtn) cancelEditMatchBtn.addEventListener('click', closeEditMatchModal);
+  if (editMatchModalBackdrop) {
+    editMatchModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === editMatchModalBackdrop) closeEditMatchModal();
+    });
+  }
+
+  // --- Edit Match Form Submit ---
+  if (editMatchForm) {
+    editMatchForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editMatchId').value;
+      const srv1 = document.getElementById('editMatchStreamUrl').value.trim();
+      const srv2 = document.getElementById('editMatchStreamUrl2').value.trim();
+      const status = document.getElementById('editMatchStatus').value;
+
+      const payload = {
+        league: document.getElementById('editMatchLeague').value.trim(),
+        homeTeam: document.getElementById('editMatchHomeTeam').value.trim(),
+        awayTeam: document.getElementById('editMatchAwayTeam').value.trim(),
+        date: document.getElementById('editMatchDate').value.trim() || 'اليوم',
+        time: document.getElementById('editMatchTime').value.trim(),
+        score: document.getElementById('editMatchScore').value.trim() || (status === 'live' ? '0 - 0' : 'vs'),
+        status,
+        channelName: document.getElementById('editMatchChannelName').value.trim(),
+        commentator: document.getElementById('editMatchCommentator').value.trim() || 'غير محدد',
+        streamUrl: srv1,
+        streamUrl2: srv2,
+        servers: [
+          { name: 'سيرفر 1 (البث المباشر الأساسي)', url: srv1 || 'https://shoof.alkass.net/live/ch1.m3u8' },
+          { name: 'سيرفر 2 (احتياطي عالي السرعة)', url: srv2 || 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' }
+        ]
+      };
+
+      const result = await apiCall('PUT', `/api/matches/${id}`, payload);
+      if (result && result.success) {
+        const idx = matches.findIndex(x => x.id === id);
+        if (idx !== -1) {
+          matches[idx] = { ...matches[idx], ...payload, id };
+        }
+        renderMatchesTable();
+        closeEditMatchModal();
+        showToast('تم تحديث بيانات واسكريبت البث للمباراة بنجاح!', 'success');
+      } else {
+        showToast(result?.message || 'فشل تحديث المباراة', 'error');
+      }
+    });
+  }
+
+  // --- Add Match Form Submit ---
   if (addMatchForm) {
     addMatchForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const rawUrl = document.getElementById('mStreamUrl').value.trim() || 'https://www.youtube.com/embed/5_fQ_1nJpEE?autoplay=1';
-      const formattedUrl = formatStreamUrl(rawUrl);
+      const rawUrl = document.getElementById('mStreamUrl').value.trim();
+      const rawUrl2 = document.getElementById('mStreamUrl2') ? document.getElementById('mStreamUrl2').value.trim() : '';
       const status = document.getElementById('mStatus').value;
+      const scoreVal = document.getElementById('mScore') ? document.getElementById('mScore').value.trim() : '';
 
-      const result = await apiCall('POST', '/api/matches', {
+      const payload = {
         league: document.getElementById('mLeague').value.trim(),
         homeTeam: document.getElementById('mHomeTeam').value.trim(),
         awayTeam: document.getElementById('mAwayTeam').value.trim(),
@@ -683,27 +927,54 @@ document.addEventListener('DOMContentLoaded', () => {
         status,
         channelName: document.getElementById('mChannelName').value.trim(),
         commentator: document.getElementById('mCommentator').value.trim() || 'غير محدد',
-        score: status === 'live' ? '0 - 0' : 'vs',
-        streamUrl: formattedUrl,
+        score: scoreVal || (status === 'live' ? '0 - 0' : 'vs'),
+        streamUrl: rawUrl,
+        streamUrl2: rawUrl2,
         servers: [
-          { name: 'سيرفر 1 (Full HD Direct)', url: formattedUrl || 'https://shoof.alkass.net/live/ch1.m3u8' },
-          { name: 'سيرفر 2 (سريع بدون تقطيع)', url: 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' }
+          { name: 'سيرفر 1 (البث المباشر الأساسي)', url: rawUrl || 'https://shoof.alkass.net/live/ch1.m3u8' },
+          { name: 'سيرفر 2 (احتياطي عالي السرعة)', url: rawUrl2 || 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' }
         ]
-      });
+      };
 
+      const result = await apiCall('POST', '/api/matches', payload);
       if (result && result.success) {
         matches.unshift(result.data);
         renderMatchesTable();
         addMatchForm.reset();
-        showToast('تم إضافة المباراة بنجاح إلى جدول البث!', 'success');
+        showToast('تمت إضافة المباراة بنجاح إلى جدول البث المباشر!', 'success');
       } else {
         showToast(result?.message || 'فشل الإضافة', 'error');
       }
     });
   }
 
+  // --- Clear Ended Matches ---
+  window.clearEndedMatches = async () => {
+    const endedCount = matches.filter(m => m.status === 'ended').length;
+    if (endedCount === 0) {
+      showToast('لا توجد مباريات منتهية حالياً لمسحها', 'info');
+      return;
+    }
+
+    if (!confirm(`هل أنت متأكد من مسح جميع المباريات التي انتهت (${endedCount} مباراة) نهائياً من الجدول؟`)) return;
+
+    const result = await apiCall('POST', '/api/matches/clear-ended');
+    if (result && result.success) {
+      matches = matches.filter(m => m.status !== 'ended');
+      renderMatchesTable();
+      showToast(`تم مسح ${result.count || endedCount} مباراة منتهية بنجاح!`, 'success');
+    } else {
+      showToast(result?.message || 'فشل مسح المباريات المنتهية', 'error');
+    }
+  };
+
+  if (clearEndedMatchesBtn) {
+    clearEndedMatchesBtn.addEventListener('click', window.clearEndedMatches);
+  }
+
+  // --- Delete Single Match ---
   window.deleteMatch = async (id) => {
-    if (!confirm('هل أنت تأكد من رغبتك في حذف هذه المباراة؟')) return;
+    if (!confirm('هل أنت متأكد من رغبتك في حذف هذه المباراة؟')) return;
     const result = await apiCall('DELETE', `/api/matches/${id}`);
     if (result && result.success) {
       matches = matches.filter(m => m.id !== id);

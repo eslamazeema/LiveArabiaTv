@@ -335,7 +335,15 @@ app.get('/api/matches', (req, res) => {
 app.post('/api/matches', requireAuth, (req, res) => {
   try {
     const b = req.body;
-    const streamUrl = formatStreamUrl((b.streamUrl || '').trim());
+    let servers = b.servers;
+    if (!servers || !Array.isArray(servers) || servers.length === 0) {
+      const s1 = (b.streamUrl || '').trim();
+      const s2 = (b.streamUrl2 || '').trim();
+      servers = [
+        { name: 'سيرفر 1 (البث المباشر الأساسي)', url: formatStreamUrl(s1) || s1 || 'https://shoof.alkass.net/live/ch1.m3u8' },
+        { name: 'سيرفر 2 (احتياطي عالي السرعة)', url: formatStreamUrl(s2) || s2 || 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' }
+      ];
+    }
     const m = {
       league: (b.league || '').trim(),
       leagueFlag: b.leagueFlag || '🏆',
@@ -350,11 +358,8 @@ app.post('/api/matches', requireAuth, (req, res) => {
       channelId: (b.channelId || '').trim(),
       commentator: (b.commentator || 'غير محدد').trim(),
       stadium: (b.stadium || 'الملعب الرئيسي').trim(),
-      score: b.status === 'live' ? (b.score || '0 - 0') : 'vs',
-      servers: b.servers || [
-        { name: 'سيرفر 1 (Full HD Direct)', url: streamUrl || 'https://shoof.alkass.net/live/ch1.m3u8' },
-        { name: 'سيرفر 2 (سريع بدون تقطيع)', url: 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' }
-      ]
+      score: b.score ? b.score.trim() : (b.status === 'live' ? '0 - 0' : 'vs'),
+      servers
     };
     if (!m.homeTeam || !m.awayTeam) {
       return res.status(400).json({ success: false, message: 'الفريق المضيف والضيف مطلوبان' });
@@ -369,19 +374,34 @@ app.post('/api/matches', requireAuth, (req, res) => {
 app.put('/api/matches/:id', requireAuth, (req, res) => {
   try {
     const b = req.body;
-    const updated = db.updateMatch(req.params.id, {
-      league: b.league, leagueFlag: b.leagueFlag || '🏆',
-      homeTeam: b.homeTeam, homeLogo: b.homeLogo || '⚽',
-      awayTeam: b.awayTeam, awayLogo: b.awayLogo || '⚽',
-      time: b.time, date: b.date || 'اليوم',
-      status: b.status || 'upcoming',
-      channelName: b.channelName, channelId: b.channelId,
-      commentator: b.commentator || 'غير محدد',
-      stadium: b.stadium || 'الملعب الرئيسي',
-      score: b.score || 'vs',
-      servers: b.servers || []
-    });
-    res.json({ success: true, message: 'تم تحديث المباراة بنجاح', data: updated });
+    let servers = b.servers;
+    if (b.streamUrl !== undefined) {
+      const s1 = (b.streamUrl || '').trim();
+      const s2 = (b.streamUrl2 || '').trim();
+      servers = [
+        { name: 'سيرفر 1 (البث المباشر الأساسي)', url: formatStreamUrl(s1) || s1 },
+        { name: 'سيرفر 2 (احتياطي)', url: formatStreamUrl(s2) || s2 || 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' }
+      ];
+    }
+    const updateData = {};
+    if (b.league !== undefined) updateData.league = (b.league || '').trim();
+    if (b.leagueFlag !== undefined) updateData.leagueFlag = b.leagueFlag;
+    if (b.homeTeam !== undefined) updateData.homeTeam = (b.homeTeam || '').trim();
+    if (b.homeLogo !== undefined) updateData.homeLogo = b.homeLogo;
+    if (b.awayTeam !== undefined) updateData.awayTeam = (b.awayTeam || '').trim();
+    if (b.awayLogo !== undefined) updateData.awayLogo = b.awayLogo;
+    if (b.time !== undefined) updateData.time = (b.time || '').trim();
+    if (b.date !== undefined) updateData.date = (b.date || 'اليوم').trim();
+    if (b.status !== undefined) updateData.status = b.status;
+    if (b.channelName !== undefined) updateData.channelName = (b.channelName || '').trim();
+    if (b.channelId !== undefined) updateData.channelId = (b.channelId || '').trim();
+    if (b.commentator !== undefined) updateData.commentator = (b.commentator || 'غير محدد').trim();
+    if (b.stadium !== undefined) updateData.stadium = (b.stadium || 'الملعب الرئيسي').trim();
+    if (b.score !== undefined) updateData.score = (b.score || '').trim();
+    if (servers !== undefined) updateData.servers = servers;
+
+    const updated = db.updateMatch(req.params.id, updateData);
+    res.json({ success: true, message: 'تم تحديث بيانات واسكريبت البث للمباراة بنجاح', data: updated });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -391,16 +411,30 @@ app.put('/api/matches/:id', requireAuth, (req, res) => {
 app.patch('/api/matches/:id/score', requireAuth, (req, res) => {
   try {
     const { score, status } = req.body;
-    db.db.prepare('UPDATE matches SET score = ?, status = ?, updated_at = datetime(\'now\') WHERE id = ?')
-      .run(score || 'vs', status || 'live', req.params.id);
-    res.json({ success: true, message: 'تم تحديث النتيجة بنجاح' });
+    const updated = db.updateMatchScore(req.params.id, score || 'vs', status);
+    res.json({ success: true, message: 'تم تحديث النتيجة بنجاح', data: updated });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
+// POST /api/matches/clear-ended — Clear / Delete all ended matches
+app.post('/api/matches/clear-ended', requireAuth, (req, res) => {
+  try {
+    const count = db.deleteEndedMatches();
+    res.json({ success: true, message: `تم مسح ${count} مباراة منتهية بنجاح`, count });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/matches/:id
 app.delete('/api/matches/:id', requireAuth, (req, res) => {
   try {
+    if (req.params.id === 'ended') {
+      const count = db.deleteEndedMatches();
+      return res.json({ success: true, message: `تم مسح ${count} مباراة منتهية بنجاح`, count });
+    }
     db.deleteMatch(req.params.id);
     res.json({ success: true, message: 'تم حذف المباراة بنجاح' });
   } catch (err) {

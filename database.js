@@ -589,6 +589,15 @@ function createMatch(m) {
 
 function updateMatch(id, m) {
   if (useSqlite) {
+    const existing = db.prepare('SELECT * FROM matches WHERE id = ?').get(id);
+    if (!existing) return null;
+    const existingMapped = mapMatch(existing);
+    const updated = {
+      ...existingMapped,
+      ...m,
+      id,
+      servers: m.servers !== undefined ? m.servers : existingMapped.servers
+    };
     db.prepare(`
       UPDATE matches SET
         league = @league, league_flag = @leagueFlag, home_team = @homeTeam, home_logo = @homeLogo,
@@ -597,7 +606,7 @@ function updateMatch(id, m) {
         commentator = @commentator, stadium = @stadium, score = @score, servers = @servers,
         updated_at = datetime('now')
       WHERE id = @id
-    `).run({ ...m, id, servers: JSON.stringify(m.servers || []) });
+    `).run({ ...updated, servers: JSON.stringify(updated.servers || []) });
     return mapMatch(db.prepare('SELECT * FROM matches WHERE id = ?').get(id));
   }
   const data = readJsonDb();
@@ -610,6 +619,26 @@ function updateMatch(id, m) {
   return null;
 }
 
+function updateMatchScore(id, score, status) {
+  if (useSqlite) {
+    const existing = db.prepare('SELECT * FROM matches WHERE id = ?').get(id);
+    if (!existing) return null;
+    const newStatus = status || existing.status;
+    db.prepare("UPDATE matches SET score = ?, status = ?, updated_at = datetime('now') WHERE id = ?")
+      .run(score, newStatus, id);
+    return mapMatch(db.prepare('SELECT * FROM matches WHERE id = ?').get(id));
+  }
+  const data = readJsonDb();
+  const m = (data.matches || []).find(x => x.id === id);
+  if (m) {
+    m.score = score;
+    if (status) m.status = status;
+    writeJsonDb(data);
+    return m;
+  }
+  return null;
+}
+
 function deleteMatch(id) {
   if (useSqlite) {
     db.prepare('DELETE FROM matches WHERE id = ?').run(id);
@@ -617,6 +646,19 @@ function deleteMatch(id) {
     const data = readJsonDb();
     data.matches = data.matches.filter(x => x.id !== id);
     writeJsonDb(data);
+  }
+}
+
+function deleteEndedMatches() {
+  if (useSqlite) {
+    const info = db.prepare("DELETE FROM matches WHERE status = 'ended'").run();
+    return info.changes;
+  } else {
+    const data = readJsonDb();
+    const countBefore = (data.matches || []).length;
+    data.matches = (data.matches || []).filter(x => x.status !== 'ended');
+    writeJsonDb(data);
+    return countBefore - data.matches.length;
   }
 }
 
@@ -711,7 +753,7 @@ module.exports = {
   getAllChannels, getChannelById, createChannel, updateChannel, deleteChannel,
   setDefaultChannel, reorderChannels,
   getAllRadios, createRadio, updateRadio, deleteRadio,
-  getAllMatches, createMatch, updateMatch, deleteMatch,
+  getAllMatches, createMatch, updateMatch, deleteMatch, updateMatchScore, deleteEndedMatches,
   getAllNews, createNews, deleteNews,
   getAdminUser, createAdminUser, adminUserExists,
   db

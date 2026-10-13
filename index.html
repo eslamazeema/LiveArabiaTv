@@ -161,6 +161,14 @@
           <span class="live-dot-badge"><span class="pulse-dot-red"></span> مباشر 🔴</span>
         </div>
 
+        <!-- Match Filter Tabs (All / Live / Today / Upcoming) -->
+        <div class="matches-filter-tabs" id="matchTabsContainer" style="display: flex; gap: 6px; padding: 8px 14px; border-bottom: 1px solid var(--border-glass); background: rgba(0,0,0,0.25);">
+          <button class="match-tab-btn active" data-filter="all" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--primary); background: rgba(0,230,118,0.15); color: #00e676; cursor: pointer; transition: all 0.2s ease;">الكل</button>
+          <button class="match-tab-btn" data-filter="live" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;">🔴 مباشر</button>
+          <button class="match-tab-btn" data-filter="today" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;">اليوم</button>
+          <button class="match-tab-btn" data-filter="upcoming" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;">📅 القادمة</button>
+        </div>
+
         <div class="matches-list" id="matchesList">
           <!-- Populated dynamically via JS -->
         </div>

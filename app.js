@@ -487,38 +487,92 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // --- 8. RENDER DAILY MATCH CENTER & LIVE STREAM MODAL ---
+  let activeMatchFilter = 'all';
+
+  const matchTabsContainer = document.getElementById('matchTabsContainer');
+  if (matchTabsContainer) {
+    matchTabsContainer.querySelectorAll('.match-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        matchTabsContainer.querySelectorAll('.match-tab-btn').forEach(b => {
+          b.classList.remove('active');
+          b.style.background = 'transparent';
+          b.style.color = 'var(--text-muted)';
+          b.style.borderColor = 'var(--border-glass)';
+        });
+        btn.classList.add('active');
+        btn.style.background = 'rgba(0,230,118,0.15)';
+        btn.style.color = '#00e676';
+        btn.style.borderColor = 'var(--primary)';
+        activeMatchFilter = btn.dataset.filter || 'all';
+        renderMatches();
+      });
+    });
+  }
+
   function renderMatches() {
     if (!matchesList) return;
-    matchesList.innerHTML = matches.map(m => `
-      <div class="match-item" data-match-id="${m.id}">
-        <div class="match-league-row">
-          <span class="match-league-badge"><i class="fa-solid fa-trophy"></i> ${m.league}</span>
-          <span class="match-status-tag ${m.status === 'live' ? 'status-live' : 'status-upcoming'}">
-            ${m.status === 'live' ? '<span class="pulse-dot-red"></span> مباشر الآن' : `<i class="fa-regular fa-clock"></i> ${m.date || 'اليوم'} ${m.time}`}
-          </span>
+
+    const filtered = matches.filter(m => {
+      if (activeMatchFilter === 'all') return true;
+      if (activeMatchFilter === 'live') return m.status === 'live';
+      if (activeMatchFilter === 'upcoming') return m.status === 'upcoming' || (m.date && m.date !== 'اليوم');
+      if (activeMatchFilter === 'today') return (!m.date || m.date === 'اليوم' || m.date.includes('اليوم'));
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      matchesList.innerHTML = `
+        <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+          <i class="fa-solid fa-futbol" style="font-size: 2rem; margin-bottom: 10px; display: block; opacity: 0.4;"></i>
+          لا توجد مباريات مدرجة في هذا القسم حالياً.
         </div>
-        <div class="match-teams-row">
-          <div class="match-team team-home">
-            <span class="team-icon">${m.homeLogo || '⚽'}</span>
-            <span>${m.homeTeam}</span>
+      `;
+      return;
+    }
+
+    matchesList.innerHTML = filtered.map(m => {
+      let statusHtml = '';
+      if (m.status === 'live') {
+        statusHtml = '<span class="pulse-dot-red"></span> مباشر الآن';
+      } else if (m.status === 'ended') {
+        statusHtml = '<i class="fa-solid fa-flag-checkered"></i> انتهت';
+      } else {
+        statusHtml = `<i class="fa-regular fa-calendar-days"></i> ${m.date || 'اليوم'} • <i class="fa-regular fa-clock"></i> ${m.time}`;
+      }
+
+      const scoreDisplay = m.score ? m.score : (m.status === 'live' ? '0 - 0' : (m.time || 'VS'));
+
+      return `
+        <div class="match-item" data-match-id="${m.id}">
+          <div class="match-league-row">
+            <span class="match-league-badge"><i class="fa-solid fa-trophy"></i> ${m.league}</span>
+            <span class="match-status-tag ${m.status === 'live' ? 'status-live' : (m.status === 'ended' ? 'status-ended' : 'status-upcoming')}">
+              ${statusHtml}
+            </span>
           </div>
-          <div class="match-score-pill">${m.score || m.time || 'VS'}</div>
-          <div class="match-team team-away">
-            <span>${m.awayTeam}</span>
-            <span class="team-icon">${m.awayLogo || '⚽'}</span>
+          <div class="match-teams-row">
+            <div class="match-team team-home">
+              <span class="team-icon">${m.homeLogo || '⚽'}</span>
+              <span>${m.homeTeam}</span>
+            </div>
+            <div class="match-score-pill ${m.status === 'live' ? 'score-live' : ''}">${scoreDisplay}</div>
+            <div class="match-team team-away">
+              <span>${m.awayTeam}</span>
+              <span class="team-icon">${m.awayLogo || '⚽'}</span>
+            </div>
+          </div>
+          <div class="match-footer-row">
+            <div class="match-channel-meta">
+              <span><i class="fa-solid fa-tv"></i> ${m.channelName || 'قناة رياضية'}</span>
+              ${m.commentator ? `<span><i class="fa-solid fa-microphone-lines"></i> ${m.commentator}</span>` : ''}
+            </div>
+            <button class="match-watch-btn">
+              <i class="fa-solid fa-circle-play"></i> مشاهدة
+            </button>
           </div>
         </div>
-        <div class="match-footer-row">
-          <div class="match-channel-meta">
-            <span><i class="fa-solid fa-tv"></i> ${m.channelName || 'قناة رياضية'}</span>
-            ${m.commentator ? `<span><i class="fa-solid fa-microphone-lines"></i> ${m.commentator}</span>` : ''}
-          </div>
-          <button class="match-watch-btn">
-            <i class="fa-solid fa-circle-play"></i> مشاهدة
-          </button>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
     matchesList.querySelectorAll('.match-item').forEach(item => {
       item.addEventListener('click', () => {
@@ -561,7 +615,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (modalPlayerFrame) {
         modalPlayerFrame.style.display = 'block';
         modalPlayerFrame.referrerPolicy = 'no-referrer';
-        modalPlayerFrame.src = url;
+        if (url && (url.trim().startsWith('<iframe') || url.trim().startsWith('<script') || url.includes('<div'))) {
+          modalPlayerFrame.src = 'about:blank';
+          modalPlayerFrame.srcdoc = `<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body{margin:0;padding:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh;overflow:hidden;}iframe{width:100%!important;height:100%!important;border:none!important;}</style></head><body>${url}</body></html>`;
+        } else {
+          modalPlayerFrame.removeAttribute('srcdoc');
+          modalPlayerFrame.src = url;
+        }
       }
     }
   }
