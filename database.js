@@ -504,12 +504,23 @@ function mapChannel(row) {
   };
 }
 
+function mapRadio(r) {
+  if (!r) return null;
+  return {
+    id: r.id,
+    name: r.name,
+    country: r.country,
+    streamUrl: r.stream_url || r.streamUrl || '',
+    icon: r.icon,
+    description: r.description,
+    sortOrder: r.sort_order !== undefined ? r.sort_order : (r.sortOrder || 0)
+  };
+}
+
 // ========================== RADIOS CRUD ==========================
 function getAllRadios() {
   if (useSqlite) {
-    return db.prepare('SELECT * FROM radios ORDER BY sort_order ASC, created_at DESC').all().map(r => ({
-      id: r.id, name: r.name, country: r.country, streamUrl: r.stream_url, icon: r.icon, description: r.description
-    }));
+    return db.prepare('SELECT * FROM radios ORDER BY sort_order ASC, created_at DESC').all().map(mapRadio);
   }
   const data = readJsonDb();
   return (data.radios || []).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
@@ -522,10 +533,10 @@ function createRadio(r) {
       INSERT INTO radios (id, name, country, stream_url, icon, description, sort_order)
       VALUES (@id, @name, @country, @streamUrl, @icon, @description, @sortOrder)
     `).run({ id, ...r, streamUrl: r.streamUrl || '', sortOrder: r.sortOrder || 0 });
-    return db.prepare('SELECT * FROM radios WHERE id = ?').get(id);
+    return mapRadio(db.prepare('SELECT * FROM radios WHERE id = ?').get(id));
   }
   const data = readJsonDb();
-  const newR = { id, ...r };
+  const newR = { id, ...r, streamUrl: r.streamUrl || '' };
   data.radios.push(newR);
   writeJsonDb(data);
   return newR;
@@ -537,8 +548,15 @@ function updateRadio(id, r) {
       UPDATE radios SET name = @name, country = @country, stream_url = @streamUrl,
         icon = @icon, description = @description, updated_at = datetime('now')
       WHERE id = @id
-    `).run({ ...r, id });
-    return db.prepare('SELECT * FROM radios WHERE id = ?').get(id);
+    `).run({
+      id,
+      name: r.name || '',
+      country: r.country || 'عربي',
+      streamUrl: r.streamUrl || '',
+      icon: r.icon || 'fa-radio',
+      description: r.description || ''
+    });
+    return mapRadio(db.prepare('SELECT * FROM radios WHERE id = ?').get(id));
   }
   const data = readJsonDb();
   const idx = data.radios.findIndex(x => x.id === id);

@@ -207,7 +207,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (matchData.success) matches = matchData.data;
       if (newsData.success) sportsNews = newsData.data;
     } catch (err) {
-      console.error('Failed to load data:', err);
+      console.warn('⚠️ Server API unreachable, using built-in default data in admin panel:', err);
+      if (typeof DEFAULT_CHANNELS !== 'undefined' && channels.length === 0) channels = [...DEFAULT_CHANNELS];
+      if (typeof DEFAULT_RADIOS !== 'undefined' && radios.length === 0) radios = [...DEFAULT_RADIOS];
+      if (typeof DEFAULT_MATCHES !== 'undefined' && matches.length === 0) matches = [...DEFAULT_MATCHES];
+      if (typeof DEFAULT_SPORTS_NEWS !== 'undefined' && sportsNews.length === 0) sportsNews = [...DEFAULT_SPORTS_NEWS];
     }
   }
 
@@ -537,21 +541,35 @@ document.addEventListener('DOMContentLoaded', () => {
     editRadioForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const id = document.getElementById('editRadId').value;
-      const result = await apiCall('PUT', `/api/radios/${id}`, {
+      const rawUrl = document.getElementById('editRadStreamUrl').value.trim();
+      const formattedUrl = formatStreamUrl(rawUrl);
+
+      const payload = {
         name: document.getElementById('editRadName').value.trim(),
         country: document.getElementById('editRadCountry').value.trim(),
-        streamUrl: document.getElementById('editRadStreamUrl').value.trim(),
+        streamUrl: formattedUrl,
         icon: document.getElementById('editRadIcon').value.trim() || 'fa-radio',
         description: document.getElementById('editRadDesc').value.trim()
-      });
+      };
+
+      const result = await apiCall('PUT', `/api/radios/${id}`, payload);
       if (result && result.success) {
         const idx = radios.findIndex(r => r.id === id);
         if (idx !== -1) radios[idx] = result.data;
         renderRadiosTable();
         if (editRadioModalBackdrop) editRadioModalBackdrop.classList.remove('active');
         showToast('تم تعديل محطة الراديو بنجاح!', 'success');
-      } else {
-        showToast(result?.message || 'فشل التحديث', 'error');
+      } else if (!result || !result.success) {
+        // Fallback for static mode
+        const idx = radios.findIndex(r => r.id === id);
+        if (idx !== -1) {
+          radios[idx] = { ...radios[idx], ...payload, id };
+          renderRadiosTable();
+          if (editRadioModalBackdrop) editRadioModalBackdrop.classList.remove('active');
+          showToast('تم تحديث بيانات الراديو محلياً بنجاح!', 'success');
+        } else {
+          showToast(result?.message || 'فشل التحديث', 'error');
+        }
       }
     });
   }
@@ -559,33 +577,45 @@ document.addEventListener('DOMContentLoaded', () => {
   if (addRadioForm) {
     addRadioForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const result = await apiCall('POST', '/api/radios', {
+      const rawUrl = document.getElementById('radStreamUrl').value.trim();
+      const formattedUrl = formatStreamUrl(rawUrl);
+
+      const payload = {
         name: document.getElementById('radName').value.trim(),
         country: document.getElementById('radCountry').value.trim() || 'عربي',
-        streamUrl: document.getElementById('radStreamUrl').value.trim(),
+        streamUrl: formattedUrl,
         icon: document.getElementById('radIcon').value.trim() || 'fa-radio',
         description: document.getElementById('radDesc').value.trim() || 'بث صوّتي حي ومباشر'
-      });
+      };
+
+      const result = await apiCall('POST', '/api/radios', payload);
       if (result && result.success) {
         radios.unshift(result.data);
         renderRadiosTable();
         addRadioForm.reset();
         showToast('تم إضافة محطة الراديو بنجاح!', 'success');
       } else {
-        showToast(result?.message || 'فشل الإضافة', 'error');
+        // Fallback for static mode
+        const newRadio = { id: 'rad-' + Date.now(), ...payload };
+        radios.unshift(newRadio);
+        renderRadiosTable();
+        addRadioForm.reset();
+        showToast('تمت إضافة محطة الراديو محلياً بنجاح!', 'success');
       }
     });
   }
 
   window.deleteRadio = async (id) => {
-    if (!confirm('هل أنت تأكد من حذف محطة الراديو هذه؟')) return;
+    if (!confirm('هل أنت متأكد من حذف محطة الراديو هذه؟')) return;
     const result = await apiCall('DELETE', `/api/radios/${id}`);
     if (result && result.success) {
       radios = radios.filter(r => r.id !== id);
       renderRadiosTable();
       showToast('تم حذف المحطة بنجاح', 'success');
     } else {
-      showToast(result?.message || 'فشل الحذف', 'error');
+      radios = radios.filter(r => r.id !== id);
+      renderRadiosTable();
+      showToast('تم حذف المحطة محلياً بنجاح', 'success');
     }
   };
 

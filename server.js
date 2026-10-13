@@ -283,7 +283,7 @@ app.post('/api/radios', requireAuth, (req, res) => {
     const r = {
       name: (req.body.name || '').trim(),
       country: (req.body.country || 'عربي').trim(),
-      streamUrl: (req.body.streamUrl || '').trim(),
+      streamUrl: formatStreamUrl(req.body.streamUrl || ''),
       icon: (req.body.icon || 'fa-radio').trim(),
       description: (req.body.description || 'بث صوّتي حي ومباشر').trim()
     };
@@ -302,7 +302,7 @@ app.put('/api/radios/:id', requireAuth, (req, res) => {
     const r = {
       name: (req.body.name || '').trim(),
       country: (req.body.country || 'عربي').trim(),
-      streamUrl: (req.body.streamUrl || '').trim(),
+      streamUrl: formatStreamUrl(req.body.streamUrl || ''),
       icon: (req.body.icon || 'fa-radio').trim(),
       description: (req.body.description || 'بث صوّتي حي ومباشر').trim()
     };

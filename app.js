@@ -790,15 +790,40 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  let radioHlsInstance = null;
+
   function playRadio(radio) {
     activeRadio = radio;
-    audioEl.src = radio.streamUrl;
-    audioEl.play().catch(e => {
-      console.log('Audio autoplay prevented:', e);
-    });
+    const stream = (radio.streamUrl || '').trim();
+
+    if (radioHlsInstance) {
+      radioHlsInstance.destroy();
+      radioHlsInstance = null;
+    }
+
+    if (stream.includes('.m3u8') && typeof Hls !== 'undefined' && Hls.isSupported()) {
+      radioHlsInstance = new Hls({ enableWorker: true });
+      radioHlsInstance.loadSource(stream);
+      radioHlsInstance.attachMedia(audioEl);
+      radioHlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+        audioEl.play().catch(e => console.log('Radio autoplay prevented:', e));
+      });
+      radioHlsInstance.on(Hls.Events.ERROR, (event, data) => {
+        if (data.fatal) {
+          console.warn('Radio HLS error, fallback to direct src:', data);
+          audioEl.src = stream;
+          audioEl.play().catch(e => console.log('Direct audio play error:', e));
+        }
+      });
+    } else {
+      audioEl.src = stream;
+      audioEl.play().catch(e => {
+        console.log('Audio autoplay prevented:', e);
+      });
+    }
     
     audioRadioName.textContent = radio.name;
-    audioRadioDesc.textContent = radio.description;
+    audioRadioDesc.textContent = radio.description || 'بث صوّتي حي ومباشر';
     audioPlayerBar.classList.add('active');
     audioPlayPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
 
