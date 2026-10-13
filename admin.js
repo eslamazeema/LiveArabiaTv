@@ -1,5 +1,5 @@
 /**
- * Arabia Live TV (arabialivetv.com) - Admin Control Panel v2.0
+ * Arabia Live TV (arabialivetv.com) - Admin Control Panel v2.5
  *
  * Rebuilt to use server-side REST API with JWT authentication.
  * - All data changes go to SQLite via API (cross-browser, persistent)

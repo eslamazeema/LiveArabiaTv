@@ -15,7 +15,7 @@
 
 document.addEventListener('DOMContentLoaded', async () => {
   /**
-   * Arabia Live TV — Unified API Data Layer
+   * Arabia Live TV v2.5 — Unified API Data Layer
    * All data loaded from server-side SQLite database via REST API.
    * Works identically across ALL browsers, devices, and tabs.
    */
