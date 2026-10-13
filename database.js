@@ -1163,7 +1163,23 @@ function seedDefaultData() {
       VALUES 
         (@id, @name, @category, @country, @quality, @logo, @type, @streamUrl, @fallbackUrl, @description, @isFeatured, @viewersCount, @sortOrder)
     `);
-    for (const c of DEFAULT_CHANNELS) insert.run(c);
+    for (const c of DEFAULT_CHANNELS) {
+      insert.run({
+        id: c.id,
+        name: c.name || '',
+        category: c.category || 'all',
+        country: c.country || 'عربي',
+        quality: c.quality || 'Full HD',
+        logo: c.logo || '',
+        type: c.type || (c.streamUrl && c.streamUrl.includes('.m3u8') ? 'hls' : 'iframe'),
+        streamUrl: c.streamUrl || '',
+        fallbackUrl: c.fallbackUrl || c.streamUrl || '',
+        description: c.description || '',
+        isFeatured: c.isFeatured ? 1 : 0,
+        viewersCount: c.viewersCount || 15000,
+        sortOrder: c.sortOrder || 0
+      });
+    }
   }
   const radCount = db.prepare('SELECT COUNT(*) as cnt FROM radios').get();
   if (radCount.cnt === 0) {
@@ -1171,7 +1187,17 @@ function seedDefaultData() {
       INSERT OR IGNORE INTO radios (id, name, country, stream_url, icon, description, sort_order)
       VALUES (@id, @name, @country, @streamUrl, @icon, @description, @sortOrder)
     `);
-    for (const r of DEFAULT_RADIOS) insert.run(r);
+    for (const r of DEFAULT_RADIOS) {
+      insert.run({
+        id: r.id,
+        name: r.name || '',
+        country: r.country || 'عربي',
+        streamUrl: r.streamUrl || '',
+        icon: r.icon || 'fa-radio',
+        description: r.description || '',
+        sortOrder: r.sortOrder || 0
+      });
+    }
   }
   const matchCount = db.prepare('SELECT COUNT(*) as cnt FROM matches').get();
   if (matchCount.cnt === 0) {
