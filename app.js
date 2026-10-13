@@ -491,21 +491,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!matchesList) return;
     matchesList.innerHTML = matches.map(m => `
       <div class="match-item" data-match-id="${m.id}">
-        <div class="match-league">
-          <span>${m.leagueFlag || '🏆'} ${m.league}</span>
+        <div class="match-league-row">
+          <span class="match-league-badge"><i class="fa-solid fa-trophy"></i> ${m.league}</span>
           <span class="match-status-tag ${m.status === 'live' ? 'status-live' : 'status-upcoming'}">
-            ${m.status === 'live' ? '🔴 مباشر الآن' : `⏳ ${m.date} ${m.time}`}
+            ${m.status === 'live' ? '<span class="pulse-dot-red"></span> مباشر الآن' : `<i class="fa-regular fa-clock"></i> ${m.date || 'اليوم'} ${m.time}`}
           </span>
         </div>
-        <div class="match-teams">
-          <span>${m.homeLogo || '⚽'} ${m.homeTeam}</span>
-          <span class="match-score">${m.score}</span>
-          <span>${m.awayTeam} ${m.awayLogo || '⚽'}</span>
+        <div class="match-teams-row">
+          <div class="match-team team-home">
+            <span class="team-icon">${m.homeLogo || '⚽'}</span>
+            <span>${m.homeTeam}</span>
+          </div>
+          <div class="match-score-pill">${m.score || m.time || 'VS'}</div>
+          <div class="match-team team-away">
+            <span>${m.awayTeam}</span>
+            <span class="team-icon">${m.awayLogo || '⚽'}</span>
+          </div>
         </div>
-        <div class="match-channel">
-          <span><i class="fa-solid fa-tv"></i> ${m.channelName}</span>
-          <button class="btn-icon btn-primary" style="padding: 4px 12px; font-size: 0.75rem;">
-            <i class="fa-solid fa-circle-play"></i> مشاهدة مباشر
+        <div class="match-footer-row">
+          <div class="match-channel-meta">
+            <span><i class="fa-solid fa-tv"></i> ${m.channelName || 'قناة رياضية'}</span>
+            ${m.commentator ? `<span><i class="fa-solid fa-microphone-lines"></i> ${m.commentator}</span>` : ''}
+          </div>
+          <button class="match-watch-btn">
+            <i class="fa-solid fa-circle-play"></i> مشاهدة
           </button>
         </div>
       </div>
