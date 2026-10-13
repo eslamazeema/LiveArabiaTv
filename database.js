@@ -1522,6 +1522,7 @@ function updateMatch(id, m) {
       ...existingMapped,
       ...m,
       id,
+      sortOrder: m.sortOrder !== undefined ? m.sortOrder : null,
       servers: m.servers !== undefined ? m.servers : existingMapped.servers
     };
     db.prepare(`
@@ -1530,6 +1531,7 @@ function updateMatch(id, m) {
         away_team = @awayTeam, away_logo = @awayLogo, time = @time, date = @date,
         status = @status, channel_name = @channelName, channel_id = @channelId,
         commentator = @commentator, stadium = @stadium, score = @score, servers = @servers,
+        sort_order = COALESCE(@sortOrder, sort_order),
         updated_at = datetime('now')
       WHERE id = @id
     `).run({ ...updated, servers: JSON.stringify(updated.servers || []) });
@@ -1588,6 +1590,30 @@ function deleteEndedMatches() {
   }
 }
 
+function reorderMatches(orderedIds) {
+  if (useSqlite) {
+    const updateStmt = db.prepare('UPDATE matches SET sort_order = ? WHERE id = ?');
+    const trx = db.transaction((ids) => {
+      ids.forEach((id, index) => {
+        updateStmt.run(index + 1, id);
+      });
+    });
+    trx(orderedIds);
+    return getAllMatches();
+  } else {
+    const data = readJsonDb();
+    if (data.matches) {
+      orderedIds.forEach((id, index) => {
+        const m = data.matches.find(x => x.id === id);
+        if (m) m.sortOrder = index + 1;
+      });
+      data.matches.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+      writeJsonDb(data);
+    }
+    return getAllMatches();
+  }
+}
+
 function mapMatch(row) {
   return {
     id: row.id, league: row.league, leagueFlag: row.league_flag,
@@ -1596,7 +1622,8 @@ function mapMatch(row) {
     time: row.time, date: row.date, status: row.status,
     channelName: row.channel_name, channelId: row.channel_id,
     commentator: row.commentator, stadium: row.stadium,
-    score: row.score, servers: JSON.parse(row.servers || '[]')
+    score: row.score, servers: JSON.parse(row.servers || '[]'),
+    sortOrder: row.sort_order !== undefined ? row.sort_order : 0
   };
 }
 
@@ -1679,7 +1706,7 @@ module.exports = {
   getAllChannels, getChannelById, createChannel, updateChannel, deleteChannel,
   setDefaultChannel, reorderChannels,
   getAllRadios, createRadio, updateRadio, deleteRadio,
-  getAllMatches, createMatch, updateMatch, deleteMatch, updateMatchScore, deleteEndedMatches,
+  getAllMatches, createMatch, updateMatch, deleteMatch, updateMatchScore, deleteEndedMatches, reorderMatches,
   getAllNews, createNews, deleteNews,
   getAdminUser, createAdminUser, adminUserExists,
   db

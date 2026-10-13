@@ -1792,13 +1792,14 @@ body {
   border-top-left-radius: var(--radius-sm);
   border-bottom-left-radius: var(--radius-sm);
 }
-.data-table tr.draggable-row {
+.data-table tr.draggable-row,
+.data-table tr.draggable-match-row {
   cursor: grab;
 }
 .data-table tr.dragging {
   opacity: 0.45;
-  background: rgba(255, 82, 0, 0.15) !important;
-  border: 2px dashed var(--primary);
+  background: rgba(0, 230, 118, 0.15) !important;
+  border: 2px dashed #00e676;
 }
 .order-btn {
   width: 32px;

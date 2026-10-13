@@ -484,7 +484,16 @@
               <!-- e.g. إجمالي المباريات: 6 | مباشر: 2 | قادمة: 4 -->
             </div>
           </div>
-          <div style="display: flex; gap: 8px;">
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <button id="saveMatchesOrderBtn" class="btn-icon" style="background: rgba(0, 230, 118, 0.2); color: #00e676; border-color: rgba(0, 230, 118, 0.5); font-weight: 700; padding: 8px 16px;" title="حفظ الترتيب الحالي وتثبيته في قاعدة البيانات">
+              <i class="fa-solid fa-floppy-disk"></i> حفظ ترتيب المباريات
+            </button>
+            <button id="sortMatchesLiveFirstBtn" class="btn-icon" style="padding: 8px 12px; font-size: 0.82rem; border-color: rgba(255,255,255,0.15);" title="ترتيب سريع: المباريات المباشرة أولاً ثم القادمة">
+              <i class="fa-solid fa-arrow-down-short-wide" style="color: #00e676;"></i> المباشر أولاً
+            </button>
+            <button id="sortMatchesByTimeBtn" class="btn-icon" style="padding: 8px 12px; font-size: 0.82rem; border-color: rgba(255,255,255,0.15);" title="ترتيب تصاعدي حسب توقيت المباراة">
+              <i class="fa-regular fa-clock" style="color: var(--primary);"></i> حسب التوقيت
+            </button>
             <select id="matchesFilterStatus" class="form-control" style="width: auto; padding: 8px 14px; font-size: 0.85rem;">
               <option value="all">جميع المباريات (الكل)</option>
               <option value="live">🔴 مباشر الآن فقط</option>
@@ -583,6 +592,8 @@
           <table class="data-table">
             <thead>
               <tr>
+                <th style="width: 45px; text-align: center;">#</th>
+                <th style="width: 85px; text-align: center;">الترتيب</th>
                 <th>البطولة</th>
                 <th>المباراة</th>
                 <th>التاريخ والوقت</th>

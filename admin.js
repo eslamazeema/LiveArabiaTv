@@ -757,7 +757,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filteredMatches.length === 0) {
       matchesTableBody.innerHTML = `
         <tr>
-          <td colspan="7" style="text-align: center; padding: 30px; color: var(--text-muted);">
+          <td colspan="9" style="text-align: center; padding: 30px; color: var(--text-muted);">
             <i class="fa-solid fa-futbol" style="font-size: 2rem; margin-bottom: 10px; display: block; opacity: 0.5;"></i>
             لا توجد مباريات مطابقة للفلتر المحدد.
           </td>
@@ -766,7 +766,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    matchesTableBody.innerHTML = filteredMatches.map((m) => {
+    matchesTableBody.innerHTML = filteredMatches.map((m, idx) => {
       const srv1 = (m.servers && m.servers[0] && m.servers[0].url) ? m.servers[0].url : '';
       const hasEmbed = srv1.includes('<iframe') || srv1.includes('<script');
       const hasHls = srv1.includes('.m3u8');
@@ -790,7 +790,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentScore = m.score || (m.status === 'live' ? '0 - 0' : 'vs');
 
       return `
-        <tr>
+        <tr draggable="true" data-id="${m.id}" data-index="${idx}" class="draggable-match-row">
+          <td style="text-align: center;">
+            <span style="font-weight: 900; color: #00e676; font-size: 0.95rem;">${idx + 1}</span>
+          </td>
+          <td style="text-align: center;">
+            <div style="display:inline-flex; gap:4px; align-items:center;">
+              <i class="fa-solid fa-grip-vertical" style="color: var(--text-muted); cursor: grab; padding: 0 4px;" title="اسحب لإعادة الترتيب"></i>
+              <button class="order-btn" onclick="moveMatch(${idx}, -1)" ${idx === 0 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''} title="تحريك لأعلى">
+                <i class="fa-solid fa-arrow-up"></i>
+              </button>
+              <button class="order-btn" onclick="moveMatch(${idx}, 1)" ${idx === filteredMatches.length - 1 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''} title="تحريك لأسفل">
+                <i class="fa-solid fa-arrow-down"></i>
+              </button>
+            </div>
+          </td>
           <td>
             <div style="font-weight: 700; color: #fff;">${m.leagueFlag || '🏆'} ${m.league}</div>
             ${m.commentator ? `<small style="color: var(--text-muted); font-size: 0.75rem;"><i class="fa-solid fa-microphone"></i> ${m.commentator}</small>` : ''}
@@ -834,6 +848,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </tr>
       `;
     }).join('');
+
+    setupMatchesDragAndDrop();
   }
 
   if (matchesFilterStatus) {
@@ -1014,6 +1030,115 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast(result?.message || 'فشل الحذف', 'error');
     }
   };
+
+  // ========================== MATCHES REORDER & DRAG AND DROP ==========================
+  window.moveMatch = async (index, delta) => {
+    const targetIndex = index + delta;
+    if (targetIndex < 0 || targetIndex >= matches.length) return;
+    const temp = matches[index];
+    matches[index] = matches[targetIndex];
+    matches[targetIndex] = temp;
+    renderMatchesTable();
+    await window.saveMatchOrder(false); // Auto-save in background
+  };
+
+  window.saveMatchOrder = async (showNotification = true) => {
+    const saveBtn = document.getElementById('saveMatchesOrderBtn');
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+    }
+    try {
+      const orderedIds = matches.map(m => m.id);
+      const result = await apiCall('POST', '/api/matches/reorder', { orderedIds });
+      if (result && result.success) {
+        if (showNotification) {
+          showToast('تم حفظ وتثبيت ترتيب جدول المباريات بنجاح!', 'success');
+        }
+      } else {
+        if (showNotification) {
+          showToast(result?.message || 'فشل حفظ ترتيب المباريات', 'error');
+        }
+      }
+    } catch (err) {
+      console.error('Error saving match order:', err);
+    } finally {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> حفظ ترتيب المباريات';
+      }
+    }
+  };
+
+  let draggedMatchRowIndex = null;
+  function setupMatchesDragAndDrop() {
+    if (!matchesTableBody) return;
+    const rows = matchesTableBody.querySelectorAll('tr.draggable-match-row');
+    rows.forEach(row => {
+      row.addEventListener('dragstart', (e) => {
+        draggedMatchRowIndex = parseInt(row.dataset.index, 10);
+        row.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', draggedMatchRowIndex);
+      });
+      row.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      });
+      row.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        row.style.background = 'rgba(0, 230, 118, 0.15)';
+      });
+      row.addEventListener('dragleave', () => {
+        row.style.background = '';
+      });
+      row.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        row.style.background = '';
+        const targetIndex = parseInt(row.dataset.index, 10);
+        if (draggedMatchRowIndex !== null && draggedMatchRowIndex !== targetIndex) {
+          const [movedItem] = matches.splice(draggedMatchRowIndex, 1);
+          matches.splice(targetIndex, 0, movedItem);
+          renderMatchesTable();
+          await window.saveMatchOrder(true);
+        }
+      });
+      row.addEventListener('dragend', () => {
+        row.classList.remove('dragging');
+        draggedMatchRowIndex = null;
+      });
+    });
+  }
+
+  const saveMatchesOrderBtn = document.getElementById('saveMatchesOrderBtn');
+  if (saveMatchesOrderBtn) {
+    saveMatchesOrderBtn.addEventListener('click', () => window.saveMatchOrder(true));
+  }
+
+  const sortMatchesLiveFirstBtn = document.getElementById('sortMatchesLiveFirstBtn');
+  if (sortMatchesLiveFirstBtn) {
+    sortMatchesLiveFirstBtn.addEventListener('click', async () => {
+      const statusWeight = { 'live': 1, 'upcoming': 2, 'ended': 3 };
+      matches.sort((a, b) => {
+        const wA = statusWeight[a.status] || 2;
+        const wB = statusWeight[b.status] || 2;
+        return wA - wB;
+      });
+      renderMatchesTable();
+      await window.saveMatchOrder(true);
+      showToast('تم ترتيب المباريات: المباشر أولاً ثم القادمة وحفظ الترتيب!', 'success');
+    });
+  }
+
+  const sortMatchesByTimeBtn = document.getElementById('sortMatchesByTimeBtn');
+  if (sortMatchesByTimeBtn) {
+    sortMatchesByTimeBtn.addEventListener('click', async () => {
+      matches.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+      renderMatchesTable();
+      await window.saveMatchOrder(true);
+      showToast('تم ترتيب المباريات حسب التوقيت وحفظ الترتيب!', 'success');
+    });
+  }
 
   // ========================== RESET DATA ==========================
   if (resetDataBtn) {

@@ -418,6 +418,20 @@ app.patch('/api/matches/:id/score', requireAuth, (req, res) => {
   }
 });
 
+// POST /api/matches/reorder — Reorder matches schedule
+app.post('/api/matches/reorder', requireAuth, (req, res) => {
+  try {
+    const { orderedIds } = req.body;
+    if (!orderedIds || !Array.isArray(orderedIds)) {
+      return res.status(400).json({ success: false, message: 'مصفوفة معرّفات المباريات مطلوبة' });
+    }
+    const updated = db.reorderMatches(orderedIds);
+    res.json({ success: true, message: 'تم حفظ وتثبيت ترتيب جدول المباريات بنجاح', data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // POST /api/matches/clear-ended — Clear / Delete all ended matches
 app.post('/api/matches/clear-ended', requireAuth, (req, res) => {
   try {

@@ -534,10 +534,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  let activeMatchSort = 'custom';
+  const userMatchSortSelect = document.getElementById('userMatchSortSelect');
+  if (userMatchSortSelect) {
+    userMatchSortSelect.addEventListener('change', (e) => {
+      activeMatchSort = e.target.value;
+      renderMatches();
+    });
+  }
+
   function renderMatches() {
     if (!matchesList) return;
 
-    const filtered = matches.filter(m => {
+    let sorted = [...matches];
+    if (activeMatchSort === 'liveFirst') {
+      const statusWeight = { 'live': 1, 'upcoming': 2, 'ended': 3 };
+      sorted.sort((a, b) => (statusWeight[a.status] || 2) - (statusWeight[b.status] || 2));
+    } else if (activeMatchSort === 'time') {
+      sorted.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+    }
+
+    const filtered = sorted.filter(m => {
       if (activeMatchFilter === 'all') return true;
       if (activeMatchFilter === 'live') return m.status === 'live';
       if (activeMatchFilter === 'upcoming') return m.status === 'upcoming' || (m.date && m.date !== 'اليوم');
