@@ -1045,12 +1045,12 @@ const DEFAULT_MATCHES = [
     "awayLogo": "🔵⚪",
     "time": "17:00",
     "date": "اليوم",
-    "status": "live",
+    "status": "upcoming",
     "channelName": "بي إن سبورتس 1 HD",
     "channelId": "ch-bein-1",
     "commentator": "خليل البلوشي",
     "stadium": "آنفيلد (Anfield)",
-    "score": "1 - 0",
+    "score": "vs",
     "servers": [
       {
         "name": "سيرفر 1 (الأردن الرياضية HD)",
@@ -1077,12 +1077,12 @@ const DEFAULT_MATCHES = [
     "awayLogo": "🍒",
     "time": "17:00",
     "date": "اليوم",
-    "status": "live",
+    "status": "upcoming",
     "channelName": "بي إن سبورتس 2 HD",
     "channelId": "ch-bein-2",
     "commentator": "حفيظ دراجي",
     "stadium": "أولد ترافورد (Old Trafford)",
-    "score": "2 - 1",
+    "score": "vs",
     "servers": [
       {
         "name": "سيرفر 1 (الكويت سبورت HD)",
