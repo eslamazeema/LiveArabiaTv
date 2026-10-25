@@ -57,6 +57,21 @@ function writeJsonDb(data) {
 // ========================== DEFAULT SEED DATA (100% DIRECT HLS - ZERO ADS) ==========================
 const DEFAULT_CHANNELS = [
   {
+  "id": "ch-redbull-tv",
+  "name": "قناة ريد بُل الرياضية (Red Bull TV HD)",
+  "category": "sports",
+  "country": "عالمي",
+  "quality": "1080p Full HD",
+  "logo": "https://images.pluto.tv/channels/5e7cb84a172a0f0007da69e4/colorLogoPNG.png",
+  "type": "hls",
+  "streamUrl": "https://3ea22335.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWdiX1JlZEJ1bGxUVl9ITFM/playlist.m3u8",
+  "fallbackUrl": "https://0b73ace69ebb45eaa249bb87837cb958.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-644-WORBUSENFAST-LG_US/644/lgtv/hls/master/playlist.m3u8",
+  "description": "البث المباشر لقناة ريد بُل العالمية - أقوى الرياضات الحركية والمغامرات وسباقات السرعة بجودة Full HD 1080p.",
+  "isFeatured": true,
+  "viewersCount": 28500,
+  "sortOrder": 14
+},
+  {
     "id": "ch-1791895445789",
     "name": "MIX بالعربي",
     "category": "drama",
@@ -987,11 +1002,276 @@ const DEFAULT_CHANNELS = [
 ];
 
 const DEFAULT_RADIOS = [
-  { id: 'rad-quran-cairo', name: 'إذاعة القرآن الكريم من القاهرة', country: 'مصر', streamUrl: 'https://stream.radiojar.com/8s44vhq97duvv', logo: 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=200&auto=format&fit=crop&q=80', icon: 'fa-mosque', description: 'تلاوات خاشعة وأحاديث شريفة برواية حفص عن عاصم على مدار 24 ساعة.', sortOrder: 1 },
-  { id: 'rad-quran-makkah', name: 'إذاعة القرآن الكريم - مكة المكرمة', country: 'السعودية', streamUrl: 'https://ssl.live.hawaa.link/listen/quran_makkah/radio.mp3', logo: 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=200&auto=format&fit=crop&q=80', icon: 'fa-kaaba', description: 'البث الصوتي المباشر للتلاوات والصلوات من الحرم المكي الشريف.', sortOrder: 2 },
-  { id: 'rad-monte-carlo', name: 'إذاعة مونت كارلو الدولية', country: 'فرنسا/عربي', streamUrl: 'https://montecarlo.ice.infomaniak.ch/mc-doualiya-midfi.mp3', logo: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=200&auto=format&fit=crop&q=80', icon: 'fa-tower-cell', description: 'أخبار عالمية وتحليلات سياسية وثقافية بلغة عربية راقية ومباشرة.', sortOrder: 3 },
-  { id: 'rad-radio-sawa', name: 'إذاعة راديو سوا', country: 'عربي', streamUrl: 'https://mbn-channel-01.akamaized.net/hls/live/2003501/sawa/master.m3u8', logo: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&auto=format&fit=crop&q=80', icon: 'fa-radio', description: 'أحدث الأخبار الإقليمية والبرامج الموسيقية والشبابية.', sortOrder: 4 },
-  { id: 'rad-rotana-fm', name: 'إذاعة روتانا إف إم', country: 'السعودية', streamUrl: 'https://stream.radiojar.com/8s44vhq97duvv', logo: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=200&auto=format&fit=crop&q=80', icon: 'fa-music', description: 'أشهر الأغاني العربية الحديثة والبرامج الترفيهية الفنية.', sortOrder: 5 }
+  {
+    "id": "rad-quran-cairo",
+    "name": "إذاعة القرآن الكريم من القاهرة",
+    "country": "مصر",
+    "streamUrl": "https://stream.radiojar.com/8s44vhq97duvv",
+    "logo": "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-mosque",
+    "description": "تلاوات خاشعة وأحاديث شريفة برواية حفص عن عاصم على مدار 24 ساعة من القاهرة.",
+    "sortOrder": 1
+  },
+  {
+    "id": "rad-quran-makkah",
+    "name": "إذاعة القرآن الكريم - مكة المكرمة",
+    "country": "السعودية",
+    "streamUrl": "https://ssl.live.hawaa.link/listen/quran_makkah/radio.mp3",
+    "logo": "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-kaaba",
+    "description": "البث الصوتي المباشر للتلاوات والصلوات من الحرم المكي الشريف.",
+    "sortOrder": 2
+  },
+  {
+    "id": "rad-9090",
+    "name": "راديو 9090 مصر (Radio 9090)",
+    "country": "مصر",
+    "streamUrl": "http://9090streaming.mobtada.com/9090FMEGYPT",
+    "logo": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-radio",
+    "description": "هواها مصري - برامج إخبارية وفنية وثقافية متنوعة على مدار الساعة.",
+    "sortOrder": 3
+  },
+  {
+    "id": "rad-onsport-fm",
+    "name": "أون سبورت إف إم (On Sport FM)",
+    "country": "مصر",
+    "streamUrl": "https://carina.streamerr.co:2020/stream/OnSportFM",
+    "logo": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-futbol",
+    "description": "الإذاعة الرياضية الأولى في مصر - تغطية حية لجميع مباريات الدوري والبطولات.",
+    "sortOrder": 4
+  },
+  {
+    "id": "rad-hossary",
+    "name": "إذاعة الشيخ محمود خليل الحصري",
+    "country": "مصر",
+    "streamUrl": "https://qurango.net/radio/mahmoud_khalil_alhussary_warsh",
+    "logo": "https://images.unsplash.com/photo-1609599006353-e629aaabfeae?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-book-quran",
+    "description": "المصحف المرتل برواية ورش وقالون بصوت شيخ المقارئ المصرية محمود خليل الحصري.",
+    "sortOrder": 5
+  },
+  {
+    "id": "rad-afasy",
+    "name": "إذاعة الشيخ مشاري العفاسي",
+    "country": "الكويت / عربي",
+    "streamUrl": "https://qurango.net/radio/mishary_alafasi",
+    "logo": "https://images.unsplash.com/photo-1597983073493-88cd35cf93b0?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-microphone",
+    "description": "تلاوات عذبة وأدعية وأذكار خاشعة بصوت القارئ مشاري راشد العفاسي.",
+    "sortOrder": 6
+  },
+  {
+    "id": "rad-mustafa-ismail",
+    "name": "إذاعة الشيخ مصطفى إسماعيل",
+    "country": "مصر",
+    "streamUrl": "https://qurango.net/radio/mustafa_ismail",
+    "logo": "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-mosque",
+    "description": "روائع التلاوات القرآنية النادرة لسلطان المقرئين الشيخ مصطفى إسماعيل.",
+    "sortOrder": 7
+  },
+  {
+    "id": "rad-sunnah",
+    "name": "إذاعة السنة النبوية",
+    "country": "السعودية",
+    "streamUrl": "http://andromeda.shoutca.st:8189/live",
+    "logo": "https://images.unsplash.com/photo-1584286595398-a59f21d313f5?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-kaaba",
+    "description": "أحاديث شريفة وشروح للسنة النبوية المطهرة على صاحبها أفضل الصلاة والسلام.",
+    "sortOrder": 8
+  },
+  {
+    "id": "rad-mp3quran-tarateel",
+    "name": "إذاعة تراتيل القرآن (Mp3Quran Tarateel)",
+    "country": "السعودية",
+    "streamUrl": "https://qurango.net/radio/tarateel",
+    "logo": "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-book-quran",
+    "description": "تراتيل وقراءات هادئة متنوعة بأصوات نخبة من كبار قراء العالم الإسلامي.",
+    "sortOrder": 9
+  },
+  {
+    "id": "rad-mp3quran-main",
+    "name": "إذاعة القرآن الكريم العامة (Mp3Quran Mix)",
+    "country": "عربي",
+    "streamUrl": "https://qurango.net/radio/mix",
+    "logo": "https://images.unsplash.com/photo-1609599006353-e629aaabfeae?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-mosque",
+    "description": "بث قرآني متواصل لأشهر التلاوات المختارة على مدار 24 ساعة بدون انقطاع.",
+    "sortOrder": 10
+  },
+  {
+    "id": "rad-saudi-quran",
+    "name": "إذاعة القرآن الكريم السعودية",
+    "country": "السعودية",
+    "streamUrl": "http://stream.radiojar.com/0tpy1h0kxtzuv",
+    "logo": "https://images.unsplash.com/photo-1584286595398-a59f21d313f5?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-kaaba",
+    "description": "إذاعة القرآن الكريم الرسمية من المملكة العربية السعودية - برامج وتلاوات الحرمين.",
+    "sortOrder": 11
+  },
+  {
+    "id": "rad-tes3enat",
+    "name": "تسعينات إف إم (Tes3enat FM)",
+    "country": "مصر",
+    "streamUrl": "http://178.33.135.244:20095/;",
+    "logo": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-music",
+    "description": "أجمل ذكريات وأغاني جيل التسعينات والزمن الجميل بجودة صوت نقية.",
+    "sortOrder": 12
+  },
+  {
+    "id": "rad-amr-diab",
+    "name": "راديو عمرو دياب (Amr Diab Radio)",
+    "country": "مصر",
+    "streamUrl": "https://stream-40.zeno.fm/xa4yhh4k838uv",
+    "logo": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-compact-disc",
+    "description": "محطة مخصصة لجميع ألبومات وأغاني الهضبة عمرو دياب القديمة والحديثة.",
+    "sortOrder": 13
+  },
+  {
+    "id": "rad-fayroz",
+    "name": "إذاعة فيروزيات (Fayroz Radio)",
+    "country": "لبنان / عربي",
+    "streamUrl": "https://stream.zeno.fm/zv3e5wykprhvv.mp3",
+    "logo": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-mug-hot",
+    "description": "أجمل صباحيات وأغاني السيدة فيروز وروائع الأخوين رحباني.",
+    "sortOrder": 14
+  },
+  {
+    "id": "rad-alifalif-fm",
+    "name": "ألف ألف إف إم (AlifAlif FM)",
+    "country": "السعودية",
+    "streamUrl": "https://alifalifjobs.com/radio/8000/AlifAlifLive.mp3",
+    "logo": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-radio",
+    "description": "الإذاعة الشبابية والترفيهية الأولى في المملكة العربية السعودية.",
+    "sortOrder": 15
+  },
+  {
+    "id": "rad-alarabiya-fm",
+    "name": "العربية إف إم (Al Arabiya FM)",
+    "country": "السعودية / عربي",
+    "streamUrl": "https://fm.alarabiya.net/fm/myStream/playlist.m3u8",
+    "logo": "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-newspaper",
+    "description": "البث الإذاعي الإخباري المباشر لشبكة قنوات العربية على مدار الساعة.",
+    "sortOrder": 16
+  },
+  {
+    "id": "rad-mbc-fm",
+    "name": "إم بي سي إف إم (MBC FM)",
+    "country": "السعودية",
+    "streamUrl": "https://mbcfm-radio.mbc.net/mbcfm-radio.m3u8",
+    "logo": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-tower-broadcast",
+    "description": "أول إذاعة خاصة في الخليج - برامج حوارية وأحدث الأغاني الخليجية والعربية.",
+    "sortOrder": 17
+  },
+  {
+    "id": "rad-rotana-fm",
+    "name": "إذاعة روتانا إف إم (Rotana FM)",
+    "country": "السعودية",
+    "streamUrl": "https://stream.radiojar.com/8s44vhq97duvv",
+    "logo": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-music",
+    "description": "أشهر الإنتاجات الموسيقية والبرامج الترفيهية الفنية الحصرية من روتانا.",
+    "sortOrder": 18
+  },
+  {
+    "id": "rad-monte-carlo",
+    "name": "إذاعة مونت كارلو الدولية (Monte Carlo)",
+    "country": "فرنسا / عربي",
+    "streamUrl": "https://montecarlo.ice.infomaniak.ch/mc-doualiya-midfi.mp3",
+    "logo": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-tower-cell",
+    "description": "أخبار دولية وتحليلات سياسية وثقافية بلغة عربية راقية ومباشرة من باريس.",
+    "sortOrder": 19
+  },
+  {
+    "id": "rad-radio-sawa",
+    "name": "إذاعة راديو سوا (Radio Sawa)",
+    "country": "عربي",
+    "streamUrl": "https://mbn-channel-01.akamaized.net/hls/live/2003501/sawa/master.m3u8",
+    "logo": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-radio",
+    "description": "أحدث الأخبار الإقليمية وبرامج الموسيقى والمنوعات الشبابية.",
+    "sortOrder": 20
+  },
+  {
+    "id": "rad-radiomars",
+    "name": "راديو مارس الرياضي (Radio Mars)",
+    "country": "المغرب",
+    "streamUrl": "https://radiomars.ice.infomaniak.ch/radiomars-128.mp3",
+    "logo": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-futbol",
+    "description": "الإذاعة الرياضية الأولى بالمغرب العربي - متابعة مستمرة للبطولات الإفريقية والمغربية.",
+    "sortOrder": 21
+  },
+  {
+    "id": "rad-aswat",
+    "name": "راديو أصوات (Radio Aswat)",
+    "country": "المغرب",
+    "streamUrl": "http://broadcast.ice.infomaniak.ch/aswat-high.mp3",
+    "logo": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-comments",
+    "description": "إذاعة اجتماعية وإخبارية مغربية تقدم برامج تفاعلية وموسيقى هادئة.",
+    "sortOrder": 22
+  },
+  {
+    "id": "rad-hitradio",
+    "name": "هيت راديو (Hit Radio Maroc)",
+    "country": "المغرب",
+    "streamUrl": "https://stream.zeno.fm/une3a02mb",
+    "logo": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-headphones",
+    "description": "الموسيقى والإيقاعات العالمية والشبابية الأكثر شعبية في المغرب وشمال إفريقيا.",
+    "sortOrder": 23
+  },
+  {
+    "id": "rad-medi1-tarab",
+    "name": "ميدي 1 طرب (Medi 1 Tarab)",
+    "country": "المغرب / عربي",
+    "streamUrl": "http://live.medi1.com/Tarab",
+    "logo": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-guitar",
+    "description": "روائع الطرب العربي الأصيل والقصائد الخالدة على مدار 24 ساعة.",
+    "sortOrder": 24
+  },
+  {
+    "id": "rad-medi1-andalouse",
+    "name": "ميدي 1 أندلسية (Medi 1 Andalouse)",
+    "country": "المغرب / عربي",
+    "streamUrl": "http://live.medi1.com/Andalouse",
+    "logo": "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-music",
+    "description": "تراث الموسيقى الأندلسية العريقة ونوبات الموشحات المغاربية التاريخية.",
+    "sortOrder": 25
+  },
+  {
+    "id": "rad-onlyrai",
+    "name": "راديو الراي (Only Rai)",
+    "country": "الجزائر / المغرب",
+    "streamUrl": "http://onlyrai.ice.infomaniak.ch/onlyrai-high.mp3",
+    "logo": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-drum",
+    "description": "مختارات من روائع موسيقى وفن الراي الجزائري والمغاربي على مدار اليوم.",
+    "sortOrder": 26
+  },
+  {
+    "id": "rad-bldi",
+    "name": "راديو بلدي (Radio Beldi)",
+    "country": "المغرب",
+    "streamUrl": "http://beldifm.hf.ma/radio/8000/radio.mp3",
+    "logo": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-radio",
+    "description": "الفولكلور والتراث الشعبي والموسيقى التقليدية الأصيلة.",
+    "sortOrder": 27
+  }
 ];
 
 const DEFAULT_MATCHES = [
