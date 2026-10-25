@@ -1004,35 +1004,128 @@ const DEFAULT_SPORTS_NEWS = [
 
 const DEFAULT_MATCHES = [
   {
-    "id": "match-1",
-    "league": "دوري أبطال إفريقيا",
-    "leagueFlag": "🏆",
-    "homeTeam": "الأهلي المصري",
-    "homeLogo": "🔴",
-    "awayTeam": "الزمالك",
-    "awayLogo": "⚪",
-    "time": "21:00",
+    "id": "match-clasico-barca-real",
+    "league": "الدوري الإسباني (كلاسيكو الأرض)",
+    "leagueFlag": "🇪🇸",
+    "homeTeam": "برشلونة",
+    "homeLogo": "🔵🔴",
+    "awayTeam": "ريال مدريد",
+    "awayLogo": "⚪👑",
+    "time": "23:00",
     "date": "اليوم",
-    "status": "live",
-    "channelName": "الكأس 1 الرياضية HD",
-    "channelId": "ch-alkass-1",
-    "commentator": "مدحت شلبي",
-    "stadium": "ستاد القاهرة الدولي",
-    "score": "2 - 0",
+    "status": "upcoming",
+    "channelName": "بي إن سبورتس 1 HD",
+    "channelId": "ch-bein-1",
+    "commentator": "عصام الشوالي",
+    "stadium": "كامب نو (Spotify Camp Nou)",
+    "score": "vs",
     "servers": [
       {
-        "name": "سيرفر 1 (البث المباشر الأساسي)",
+        "name": "سيرفر 1 (الكأس 1 HD - بث مباشر)",
         "url": "https://shoof.alkass.net/live/ch1.m3u8"
       },
       {
-        "name": "سيرفر 2 (احتياطي)",
+        "name": "سيرفر 2 (الكويت سبورت HD مباشر)",
         "url": "https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8"
+      },
+      {
+        "name": "سيرفر 3 (عُمان الرياضية HD)",
+        "url": "https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8"
       }
-    ]
+    ],
+    "sortOrder": 1
   },
   {
-    "id": "match-2",
-    "league": "دوري روشن السعودي",
+    "id": "match-liverpool-brighton",
+    "league": "الدوري الإنجليزي الممتاز",
+    "leagueFlag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+    "homeTeam": "ليفربول",
+    "homeLogo": "🔴",
+    "awayTeam": "برايتون",
+    "awayLogo": "🔵⚪",
+    "time": "17:00",
+    "date": "اليوم",
+    "status": "live",
+    "channelName": "بي إن سبورتس 1 HD",
+    "channelId": "ch-bein-1",
+    "commentator": "خليل البلوشي",
+    "stadium": "آنفيلد (Anfield)",
+    "score": "1 - 0",
+    "servers": [
+      {
+        "name": "سيرفر 1 (الأردن الرياضية HD)",
+        "url": "https://jrtv-live.ercdn.net/jordansporthd/jordansporthd.m3u8"
+      },
+      {
+        "name": "سيرفر 2 (الكأس 2 HD مباشر)",
+        "url": "https://shoof.alkass.net/live/ch2.m3u8"
+      },
+      {
+        "name": "سيرفر 3 (الكويت بلس HD)",
+        "url": "https://kwtsplta.cdn.mangomolo.com/spl/smil:spl.stream.smil/chunklist.m3u8"
+      }
+    ],
+    "sortOrder": 2
+  },
+  {
+    "id": "match-man-united-bournemouth",
+    "league": "الدوري الإنجليزي الممتاز",
+    "leagueFlag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+    "homeTeam": "مانشستر يونايتد",
+    "homeLogo": "🔴⚫",
+    "awayTeam": "بورنموث",
+    "awayLogo": "🍒",
+    "time": "17:00",
+    "date": "اليوم",
+    "status": "live",
+    "channelName": "بي إن سبورتس 2 HD",
+    "channelId": "ch-bein-2",
+    "commentator": "حفيظ دراجي",
+    "stadium": "أولد ترافورد (Old Trafford)",
+    "score": "2 - 1",
+    "servers": [
+      {
+        "name": "سيرفر 1 (الكويت سبورت HD)",
+        "url": "https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8"
+      },
+      {
+        "name": "سيرفر 2 (الكأس 1 HD مباشر)",
+        "url": "https://shoof.alkass.net/live/ch1.m3u8"
+      }
+    ],
+    "sortOrder": 3
+  },
+  {
+    "id": "match-ahly-kitara",
+    "league": "كأس الكونفدرالية الإفريقية",
+    "leagueFlag": "🏆",
+    "homeTeam": "الأهلي المصري",
+    "homeLogo": "🦅🔴",
+    "awayTeam": "كيتارا الأوغندي",
+    "awayLogo": "🟡",
+    "time": "19:00",
+    "date": "اليوم",
+    "status": "upcoming",
+    "channelName": "أون تايم سبورتس 1 / قناة الأهلي",
+    "channelId": "ch-ontime-1",
+    "commentator": "مدحت شلبي",
+    "stadium": "ستاد القاهرة الدولي",
+    "score": "vs",
+    "servers": [
+      {
+        "name": "سيرفر 1 (نايل سبورت HD مباشر)",
+        "url": "https://shoof.alkass.net/live/ch1.m3u8"
+      },
+      {
+        "name": "سيرفر 2 (الكويت سبورت HD)",
+        "url": "https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8"
+      }
+    ],
+    "sortOrder": 4
+  },
+  {
+    "id": "match-hilal-nassr",
+    "league": "دوري روشن السعودي (ديربي الرياض)",
     "leagueFlag": "🇸🇦",
     "homeTeam": "الهلال",
     "homeLogo": "🔵",
@@ -1040,57 +1133,111 @@ const DEFAULT_MATCHES = [
     "awayLogo": "🟡",
     "time": "20:30",
     "date": "اليوم",
-    "status": "live",
+    "status": "upcoming",
     "channelName": "الكويت الرياضية HD",
     "channelId": "ch-ktv-sport",
     "commentator": "فهد العتيبي",
-    "stadium": "ملعب المملكة أرينا",
-    "score": "2 - 2",
+    "stadium": "المملكة أرينا (Kingdom Arena)",
+    "score": "vs",
     "servers": [
       {
         "name": "سيرفر 1 (الكويت سبورت HD مباشر)",
         "url": "https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8"
       },
       {
-        "name": "سيرفر 2 (الكويت سبورت بلس HD)",
-        "url": "https://kwtsplta.cdn.mangomolo.com/spl/smil:spl.stream.smil/chunklist.m3u8"
+        "name": "سيرفر 2 (الكأس 1 HD مباشر)",
+        "url": "https://shoof.alkass.net/live/ch1.m3u8"
       },
       {
-        "name": "سيرفر 3 (الكأس 1 HD مباشر)",
-        "url": "https://shoof.alkass.net/live/ch1.m3u8"
+        "name": "سيرفر 3 (عُمان الرياضية HD)",
+        "url": "https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8"
       }
-    ]
+    ],
+    "sortOrder": 5
   },
   {
-    "id": "match-3",
-    "league": "دوري أبطال أوروبا",
-    "leagueFlag": "🇪🇺",
-    "homeTeam": "ريال مدريد",
-    "homeLogo": "⚪",
-    "awayTeam": "مانشستر سيتي",
-    "awayLogo": "🩵",
-    "time": "22:00",
+    "id": "match-ca-tunis-mazembe",
+    "league": "دوري أبطال إفريقيا",
+    "leagueFlag": "🏆",
+    "homeTeam": "الإفريقي التونسي",
+    "homeLogo": "🔴⚪",
+    "awayTeam": "تي بي مازيمبي",
+    "awayLogo": "⚫⚪",
+    "time": "20:00",
     "date": "اليوم",
-    "status": "live",
-    "channelName": "الأردن الرياضية HD",
-    "channelId": "ch-jordan-sport",
-    "commentator": "حفيظ دراجي",
-    "stadium": "سانتياغو برنابيو",
-    "score": "1 - 1",
+    "status": "upcoming",
+    "channelName": "بي إن سبورتس HD",
+    "channelId": "ch-bein-sport",
+    "commentator": "رؤوف خليف",
+    "stadium": "الملعب الأولمبي برادس",
+    "score": "vs",
     "servers": [
       {
-        "name": "سيرفر 1 (الأردن سبورت HD مباشر)",
+        "name": "سيرفر 1 (الأردن الرياضية HD)",
         "url": "https://jrtv-live.ercdn.net/jordansporthd/jordansporthd.m3u8"
       },
       {
-        "name": "سيرفر 2 (عُمان سبورت HD مباشر)",
+        "name": "سيرفر 2 (الكأس 1 HD)",
+        "url": "https://shoof.alkass.net/live/ch1.m3u8"
+      }
+    ],
+    "sortOrder": 6
+  },
+  {
+    "id": "match-milan-udinese",
+    "league": "الدوري الإيطالي (Serie A)",
+    "leagueFlag": "🇮🇹",
+    "homeTeam": "أودينيزي",
+    "homeLogo": "⚪⚫",
+    "awayTeam": "ميلان",
+    "awayLogo": "🔴⚫",
+    "time": "22:45",
+    "date": "اليوم",
+    "status": "upcoming",
+    "channelName": "أبوظبي الرياضية بريميوم",
+    "channelId": "ch-ad-sport",
+    "commentator": "فارس عوض",
+    "stadium": "ملعب داسيا أرينا (الفريولي)",
+    "score": "vs",
+    "servers": [
+      {
+        "name": "سيرفر 1 (الكويت سبورت بلس HD)",
+        "url": "https://kwtsplta.cdn.mangomolo.com/spl/smil:spl.stream.smil/chunklist.m3u8"
+      },
+      {
+        "name": "سيرفر 2 (الكأس 2 HD)",
+        "url": "https://shoof.alkass.net/live/ch2.m3u8"
+      }
+    ],
+    "sortOrder": 7
+  },
+  {
+    "id": "match-bayern-freiburg",
+    "league": "الدوري الألماني (Bundesliga)",
+    "leagueFlag": "🇩🇪",
+    "homeTeam": "فرايبورج",
+    "homeLogo": "🔴⚪",
+    "awayTeam": "بايرن ميونخ",
+    "awayLogo": "🔴👑",
+    "time": "19:30",
+    "date": "اليوم",
+    "status": "upcoming",
+    "channelName": "بي إن سبورتس 3 HD",
+    "channelId": "ch-bein-3",
+    "commentator": "محمد بركات",
+    "stadium": "ملعب يوروبا بارك",
+    "score": "vs",
+    "servers": [
+      {
+        "name": "سيرفر 1 (عُمان الرياضية HD)",
         "url": "https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8"
       },
       {
-        "name": "سيرفر 3 (الكأس HD مباشر)",
-        "url": "https://shoof.alkass.net/live/ch1.m3u8"
+        "name": "سيرفر 2 (الكويت سبورت HD)",
+        "url": "https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8"
       }
-    ]
+    ],
+    "sortOrder": 8
   }
 ];
 
