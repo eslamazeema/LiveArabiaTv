@@ -1004,12 +1004,12 @@ const DEFAULT_CHANNELS = [
 const DEFAULT_RADIOS = [
   {
     "id": "rad-quran-cairo",
-    "name": "إذاعة القرآن الكريم من القاهرة",
+    "name": "إذاعة القرآن الكريم من القاهرة (مصر)",
     "country": "مصر",
-    "streamUrl": "https://stream.radiojar.com/8s44vhq97duvv",
+    "streamUrl": "https://stream.radiojar.com/8s5u5tpdtwzuv",
     "logo": "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=200&auto=format&fit=crop&q=80",
     "icon": "fa-mosque",
-    "description": "تلاوات خاشعة وأحاديث شريفة برواية حفص عن عاصم على مدار 24 ساعة من القاهرة.",
+    "description": "البث الصوتي المباشر لإذاعة القرآن الكريم من القاهرة على مدار 24 ساعة بدون انقطاع.",
     "sortOrder": 1
   },
   {
@@ -1271,6 +1271,96 @@ const DEFAULT_RADIOS = [
     "icon": "fa-radio",
     "description": "الفولكلور والتراث الشعبي والموسيقى التقليدية الأصيلة.",
     "sortOrder": 27
+  },
+  {
+    "id": "rad-abdulbasit-mojawwad",
+    "name": "إذاعة الشيخ عبد الباسط عبد الصمد (المجود)",
+    "country": "مصر",
+    "streamUrl": "https://qurango.net/radio/abdulbasit_abdulsamad_mojawwad",
+    "logo": "https://images.unsplash.com/photo-1609599006353-e629aaabfeae?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-book-quran",
+    "description": "روائع التلاوات المجودة الخالدة بصوت كروان المقرئين الشيخ عبد الباسط عبد الصمد.",
+    "sortOrder": 28
+  },
+  {
+    "id": "rad-minshawi-mojawwad",
+    "name": "إذاعة الشيخ محمد صديق المنشاوي (المجود)",
+    "country": "مصر",
+    "streamUrl": "https://qurango.net/radio/mohammed_siddiq_alminshawi_mojawwad",
+    "logo": "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-book-quran",
+    "description": "التلاوات الخاشعة الباكية بصوت الشيخ الجليل محمد صديق المنشاوي.",
+    "sortOrder": 29
+  },
+  {
+    "id": "rad-tablawi",
+    "name": "إذاعة الشيخ محمد محمود الطبلاوي",
+    "country": "مصر",
+    "streamUrl": "https://qurango.net/radio/mohammad_altablaway",
+    "logo": "https://images.unsplash.com/photo-1584286595398-a59f21d313f5?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-mosque",
+    "description": "المصحف المرتل وروائع التلاوات بأداء نقيب القراء الشيخ محمد محمود الطبلاوي.",
+    "sortOrder": 30
+  },
+  {
+    "id": "rad-banna",
+    "name": "إذاعة الشيخ محمود علي البنا",
+    "country": "مصر",
+    "streamUrl": "https://qurango.net/radio/mahmoud_ali__albanna_murattal",
+    "logo": "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-book-quran",
+    "description": "تلاوات قرآنية عذبة بصوت أحد عمالقة دولة التلاوة المصرية الشيخ محمود علي البنا.",
+    "sortOrder": 31
+  },
+  {
+    "id": "rad-sudais",
+    "name": "إذاعة الشيخ عبد الرحمن السديس",
+    "country": "السعودية",
+    "streamUrl": "https://qurango.net/radio/abdulrahman_alsudaes",
+    "logo": "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-kaaba",
+    "description": "تلاوات الحرم المكي الشريف والصلوات برواية حفص عن عاصم بصوت الشيخ السديس.",
+    "sortOrder": 32
+  },
+  {
+    "id": "rad-shuraim",
+    "name": "إذاعة الشيخ سعود الشريم",
+    "country": "السعودية",
+    "streamUrl": "https://qurango.net/radio/saud_alshuraim",
+    "logo": "https://images.unsplash.com/photo-1584286595398-a59f21d313f5?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-kaaba",
+    "description": "المصحف المرتل برواية حفص عن عاصم بصوت إمام الحرم المكي الشيخ سعود الشريم.",
+    "sortOrder": 33
+  },
+  {
+    "id": "rad-mazaj-fm",
+    "name": "راديو مزاج إف إم (Mazaj FM الأردن)",
+    "country": "الأردن",
+    "streamUrl": "https://mazajfm.ice.infomaniak.ch/mazajfm-192.mp3",
+    "logo": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-music",
+    "description": "الإذاعة الأردنية الشبابية الأولى - برامج وموسيقى وأحدث الأغاني العربية.",
+    "sortOrder": 34
+  },
+  {
+    "id": "rad-mosaique-fm",
+    "name": "راديو موزاييك إف إم (Mosaique FM تونس)",
+    "country": "تونس",
+    "streamUrl": "https://radio.mosaiquefm.net/mosalive",
+    "logo": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-radio",
+    "description": "الإذاعة الأولى والأكثر استماعاً في تونس وشمال إفريقيا - أخبار ومنوعات مباشرة.",
+    "sortOrder": 35
+  },
+  {
+    "id": "rad-jawhara-fm",
+    "name": "راديو جوهرة إف إم (Jawhara FM تونس)",
+    "country": "تونس",
+    "streamUrl": "https://streaming2.toutech.net/jawharafm",
+    "logo": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=200&auto=format&fit=crop&q=80",
+    "icon": "fa-comments",
+    "description": "صوت الساحل التونسي - برامج حوارية وموسيقى طربية ومغاربية راقية.",
+    "sortOrder": 36
   }
 ];
 
