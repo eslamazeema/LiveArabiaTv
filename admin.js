@@ -67,6 +67,14 @@ document.addEventListener('DOMContentLoaded', () => {
             sec.style.display = (sec.id === targetDept) ? 'block' : 'none';
           }
         });
+        if (targetDept === 'dept-whatsapp' || targetDept === 'all') {
+          loadWhatsAppConfig();
+          loadWaSubscribers();
+        }
+        if (targetDept === 'dept-matches' || targetDept === 'all') {
+          loadMatches();
+          loadWaSubscribers();
+        }
       });
     });
   }
@@ -140,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (err) {
         // Fallback for static hosting (e.g. GitHub Pages or static host before backend is deployed)
-        if (u === 'admin' && p === 'admin123') {
+        if (u === 'admin' && (p === 'admin' || p === 'admin123')) {
           setToken('static-admin-session');
           if (loginErrorMsg) loginErrorMsg.style.display = 'none';
           showAdmin();
@@ -203,7 +211,10 @@ document.addEventListener('DOMContentLoaded', () => {
         chRes.json(), radRes.json(), matchRes.json(), newsRes.json()
       ]);
       if (chData.success) channels = chData.data;
-      if (radData.success) radios = radData.data;
+      if (radData.success) {
+        radios = radData.data;
+        radios.sort((a, b) => (a.sortOrder || a.sort_order || 0) - (b.sortOrder || b.sort_order || 0));
+      }
       if (matchData.success) matches = matchData.data;
       if (newsData.success) sportsNews = newsData.data;
     } catch (err) {
@@ -493,27 +504,144 @@ document.addEventListener('DOMContentLoaded', () => {
   // ========================== DEPARTMENT 2: RADIO STATIONS ==========================
   function renderRadiosTable() {
     if (!radiosTableBody) return;
-    radiosTableBody.innerHTML = radios.map((r) => `
-      <tr>
-        <td>
-          <i class="fa-solid ${r.icon || 'fa-radio'}" style="color: var(--secondary); margin-left:8px; font-size: 1.1rem;"></i>
-          <strong>${r.name}</strong>
+    radiosTableBody.innerHTML = radios.map((r, idx) => `
+      <tr class="draggable-row" draggable="true" data-index="${idx}" data-id="${r.id}">
+        <td style="text-align: center; vertical-align: middle;">
+          ${r.logo ? `
+            <img src="${r.logo}" alt="${r.name}" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary); display: inline-block; box-shadow: 0 2px 8px rgba(0,176,255,0.3);" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+            <div style="display:none; width:42px; height:42px; border-radius:50%; background:rgba(0,176,255,0.15); border:1px solid var(--secondary); align-items:center; justify-content:center;">
+              <i class="fa-solid ${r.icon || 'fa-radio'}" style="color: var(--secondary); font-size: 1.1rem;"></i>
+            </div>
+          ` : `
+            <div style="display:inline-flex; width:42px; height:42px; border-radius:50%; background:rgba(0,176,255,0.15); border:1px solid var(--secondary); align-items:center; justify-content:center;">
+              <i class="fa-solid ${r.icon || 'fa-radio'}" style="color: var(--secondary); font-size: 1.1rem;"></i>
+            </div>
+          `}
         </td>
-        <td>${r.country || 'عربي'}</td>
-        <td><code style="font-size:0.7rem; color:var(--text-muted);">${(r.streamUrl || '').substring(0, 35)}...</code></td>
-        <td>${r.description || 'بث صوتي مباشر'}</td>
-        <td>
+        <td style="vertical-align: middle;">
+          <strong style="font-size: 0.95rem; color: #fff;">${r.name}</strong>
+        </td>
+        <td style="vertical-align: middle;"><span class="badge-quality" style="background: rgba(0,176,255,0.15); color: var(--secondary); border: 1px solid rgba(0,176,255,0.3);">${r.country || 'عربي'}</span></td>
+        <td style="vertical-align: middle;"><code style="font-size:0.75rem; color:var(--text-muted); background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px;">${(r.streamUrl || '').substring(0, 32)}...</code></td>
+        <td style="vertical-align: middle; color: var(--text-muted); font-size: 0.85rem;">${r.description || 'بث صوتي مباشر'}</td>
+        <td style="text-align: center; vertical-align: middle;">
+          <div style="display:inline-flex; gap:6px; align-items:center;">
+            <button type="button" class="order-btn" onclick="window.moveRadioById('${r.id}', -1)" ${idx === 0 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''} title="تحريك لأعلى">
+              <i class="fa-solid fa-arrow-up"></i>
+            </button>
+            <button type="button" class="order-btn" onclick="window.moveRadioById('${r.id}', 1)" ${idx === radios.length - 1 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''} title="تحريك لأسفل">
+              <i class="fa-solid fa-arrow-down"></i>
+            </button>
+          </div>
+        </td>
+        <td style="vertical-align: middle;">
           <div style="display:flex; gap:8px;">
-            <button class="btn-icon" onclick="editRadio('${r.id}')" style="color: var(--secondary); border-color: rgba(0,176,255,0.4);">
+            <button class="btn-icon" onclick="editRadio('${r.id}')" style="color: var(--secondary); border-color: rgba(0,176,255,0.4); padding: 6px 14px; font-size: 0.82rem;">
               <i class="fa-solid fa-pen"></i> تعديل
             </button>
-            <button class="btn-icon" onclick="deleteRadio('${r.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3);">
+            <button class="btn-icon" onclick="deleteRadio('${r.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3); padding: 6px 14px; font-size: 0.82rem;">
               <i class="fa-solid fa-trash"></i> حذف
             </button>
           </div>
         </td>
       </tr>
     `).join('');
+
+    setupRadiosDragAndDrop();
+  }
+
+  window.moveRadioById = async (id, delta) => {
+    const index = radios.findIndex(r => String(r.id) === String(id));
+    if (index === -1) return;
+    const targetIndex = index + delta;
+    if (targetIndex < 0 || targetIndex >= radios.length) return;
+    const temp = radios[index];
+    radios[index] = radios[targetIndex];
+    radios[targetIndex] = temp;
+    radios.forEach((r, i) => { r.sortOrder = i + 1; });
+    renderRadiosTable();
+    await window.saveRadioOrder(false); // Auto-save in background
+  };
+
+  window.moveRadio = window.moveRadioById;
+
+  window.saveRadioOrder = async (showNotification = true) => {
+    const saveBtn = document.getElementById('saveRadiosOrderBtn');
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+    }
+    try {
+      const orderedIds = radios.map(r => r.id);
+      const result = await apiCall('POST', '/api/radios/reorder', { orderedIds });
+      if (result && result.success) {
+        if (showNotification) {
+          showToast('تم حفظ وتثبيت ترتيب محطات الراديو بنجاح!', 'success');
+        }
+      } else {
+        if (showNotification) {
+          showToast(result?.message || 'فشل حفظ ترتيب محطات الراديو', 'error');
+        }
+      }
+    } catch (err) {
+      console.error('Error saving radio order:', err);
+      if (showNotification) {
+        showToast('حدث خطأ أثناء حفظ ترتيب محطات الراديو', 'error');
+      }
+    } finally {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fa-solid fa-arrow-down-short-wide"></i> حفظ ترتيب محطات الراديو';
+      }
+    }
+  };
+
+  const saveRadiosOrderBtn = document.getElementById('saveRadiosOrderBtn');
+  if (saveRadiosOrderBtn) {
+    saveRadiosOrderBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.saveRadioOrder(true);
+    });
+  }
+
+  let draggedRadioIndex = null;
+  function setupRadiosDragAndDrop() {
+    if (!radiosTableBody) return;
+    const rows = radiosTableBody.querySelectorAll('tr.draggable-row');
+    rows.forEach(row => {
+      row.addEventListener('dragstart', (e) => {
+        draggedRadioIndex = parseInt(row.dataset.index, 10);
+        row.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', draggedRadioIndex);
+      });
+      row.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      });
+      row.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        row.style.background = 'rgba(0, 176, 255, 0.15)';
+      });
+      row.addEventListener('dragleave', () => {
+        row.style.background = '';
+      });
+      row.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        row.style.background = '';
+        const targetIndex = parseInt(row.dataset.index, 10);
+        if (draggedRadioIndex !== null && draggedRadioIndex !== targetIndex) {
+          const [movedItem] = radios.splice(draggedRadioIndex, 1);
+          radios.splice(targetIndex, 0, movedItem);
+          renderRadiosTable();
+          await saveRadioOrder(true);
+        }
+      });
+      row.addEventListener('dragend', () => {
+        row.classList.remove('dragging');
+        draggedRadioIndex = null;
+      });
+    });
   }
 
   window.editRadio = (id) => {
@@ -523,6 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('editRadName').value = r.name;
     document.getElementById('editRadCountry').value = r.country || '';
     document.getElementById('editRadStreamUrl').value = r.streamUrl || '';
+    document.getElementById('editRadLogo').value = r.logo || r.image || '';
     document.getElementById('editRadIcon').value = r.icon || 'fa-radio';
     document.getElementById('editRadDesc').value = r.description || '';
     if (editRadioModalBackdrop) editRadioModalBackdrop.classList.add('active');
@@ -548,6 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: document.getElementById('editRadName').value.trim(),
         country: document.getElementById('editRadCountry').value.trim(),
         streamUrl: formattedUrl,
+        logo: document.getElementById('editRadLogo').value.trim(),
         icon: document.getElementById('editRadIcon').value.trim() || 'fa-radio',
         description: document.getElementById('editRadDesc').value.trim()
       };
@@ -558,7 +688,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (idx !== -1) radios[idx] = result.data;
         renderRadiosTable();
         if (editRadioModalBackdrop) editRadioModalBackdrop.classList.remove('active');
-        showToast('تم تعديل محطة الراديو بنجاح!', 'success');
+        showToast('تم تعديل محطة الراديو وحفظ الصورة بنجاح!', 'success');
       } else if (!result || !result.success) {
         // Fallback for static mode
         const idx = radios.findIndex(r => r.id === id);
@@ -584,6 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
         name: document.getElementById('radName').value.trim(),
         country: document.getElementById('radCountry').value.trim() || 'عربي',
         streamUrl: formattedUrl,
+        logo: document.getElementById('radLogo').value.trim(),
         icon: document.getElementById('radIcon').value.trim() || 'fa-radio',
         description: document.getElementById('radDesc').value.trim() || 'بث صوّتي حي ومباشر'
       };
@@ -787,7 +918,9 @@ document.addEventListener('DOMContentLoaded', () => {
         statusBadge = `<span class="match-status-tag status-upcoming"><i class="fa-regular fa-clock"></i> قريباً</span>`;
       }
 
-      const currentScore = m.score || (m.status === 'live' ? '0 - 0' : 'vs');
+      const scoreParts = (m.score || '').split(/[-–:]/).map(x => x.trim());
+      const homeScoreVal = !isNaN(scoreParts[0]) && scoreParts[0] !== '' ? scoreParts[0] : (m.status === 'live' ? '0' : '0');
+      const awayScoreVal = !isNaN(scoreParts[1]) && scoreParts[1] !== '' ? scoreParts[1] : (m.status === 'live' ? '0' : '0');
 
       return `
         <tr draggable="true" data-id="${m.id}" data-index="${idx}" class="draggable-match-row">
@@ -797,10 +930,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <td style="text-align: center;">
             <div style="display:inline-flex; gap:4px; align-items:center;">
               <i class="fa-solid fa-grip-vertical" style="color: var(--text-muted); cursor: grab; padding: 0 4px;" title="اسحب لإعادة الترتيب"></i>
-              <button class="order-btn" onclick="moveMatch(${idx}, -1)" ${idx === 0 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''} title="تحريك لأعلى">
+              <button class="order-btn" onclick="moveMatchById('${m.id}', -1)" ${idx === 0 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''} title="تحريك لأعلى">
                 <i class="fa-solid fa-arrow-up"></i>
               </button>
-              <button class="order-btn" onclick="moveMatch(${idx}, 1)" ${idx === filteredMatches.length - 1 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''} title="تحريك لأسفل">
+              <button class="order-btn" onclick="moveMatchById('${m.id}', 1)" ${idx === filteredMatches.length - 1 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''} title="تحريك لأسفل">
                 <i class="fa-solid fa-arrow-down"></i>
               </button>
             </div>
@@ -811,7 +944,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
           <td>
             <div style="font-size: 0.95rem;">
-              <strong>${m.homeTeam}</strong> <span style="color: var(--text-muted); font-size: 0.8rem;">ضد</span> <strong>${m.awayTeam}</strong>
+              <strong style="color: #00e676;">${m.homeTeam}</strong> <span style="color: var(--text-muted); font-size: 0.8rem;">ضد</span> <strong style="color: var(--secondary);">${m.awayTeam}</strong>
             </div>
           </td>
           <td>
@@ -823,9 +956,17 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </td>
           <td>
-            <div style="display: flex; gap: 4px; align-items: center;">
-              <input type="text" id="score_input_${m.id}" value="${currentScore}" style="width: 75px; text-align: center; font-weight: 900; background: #080d16; border: 1px solid var(--border-glass); border-radius: 6px; color: #ffeb3b; padding: 4px 6px; font-size: 0.9rem;" title="اضغط للتعديل ثم اضغط علامة الصح">
-              <button class="btn-sm" style="padding: 5px 8px; background: rgba(0,230,118,0.15); color: #00e676; border: 1px solid rgba(0,230,118,0.3); border-radius: 6px; cursor: pointer;" onclick="window.quickUpdateScore('${m.id}')" title="حفظ النتيجة فوراً">
+            <div style="display: inline-flex; align-items: center; gap: 6px; direction: rtl; background: rgba(0,0,0,0.45); padding: 5px 8px; border-radius: 8px; border: 1px solid var(--border-glass);">
+              <div style="display: flex; flex-direction: column; align-items: center;">
+                <span style="font-size: 0.72rem; color: #00e676; max-width: 65px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; margin-bottom: 2px;" title="${m.homeTeam}">${m.homeTeam}</span>
+                <input type="number" id="score_home_${m.id}" value="${homeScoreVal}" min="0" style="width: 42px; height: 32px; text-align: center; font-weight: 900; background: #080d16; border: 1.5px solid #00e676; border-radius: 6px; color: #ffeb3b; padding: 2px; font-size: 1.05rem;" title="أهداف: ${m.homeTeam} (صاحب الأرض - اليمين)">
+              </div>
+              <span style="color: var(--text-muted); font-weight: 900; font-size: 1.2rem; margin-top: 14px;">-</span>
+              <div style="display: flex; flex-direction: column; align-items: center;">
+                <span style="font-size: 0.72rem; color: var(--secondary); max-width: 65px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 800; margin-bottom: 2px;" title="${m.awayTeam}">${m.awayTeam}</span>
+                <input type="number" id="score_away_${m.id}" value="${awayScoreVal}" min="0" style="width: 42px; height: 32px; text-align: center; font-weight: 900; background: #080d16; border: 1.5px solid var(--secondary); border-radius: 6px; color: #ffeb3b; padding: 2px; font-size: 1.05rem;" title="أهداف: ${m.awayTeam} (الضيف - اليسار)">
+              </div>
+              <button class="btn-sm" style="padding: 6px 9px; background: rgba(0,230,118,0.2); color: #00e676; border: 1px solid #00e676; border-radius: 6px; cursor: pointer; margin-top: 14px; margin-right: 2px;" onclick="window.quickUpdateScore('${m.id}')" title="حفظ النتيجة">
                 <i class="fa-solid fa-check"></i>
               </button>
             </div>
@@ -837,6 +978,9 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
           <td>
             <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <button class="btn-icon" onclick="window.openManualGoalModal('${m.id}')" style="color: #25D366; border-color: rgba(37,211,102,0.35); font-size: 0.8rem; padding: 6px 10px; display: inline-flex; align-items: center; gap: 4px;" title="إرسال إشعار هدف بالواتساب للمشتركين">
+                <i class="fa-brands fa-whatsapp"></i> هدف ${waSubscribersList && waSubscribersList.filter(s => s.match_id === m.id && s.is_active).length > 0 ? `<span style="background: rgba(37,211,102,0.22); color: #25D366; border-radius: 10px; padding: 1px 6px; font-size: 0.72rem; font-weight: 800;">${waSubscribersList.filter(s => s.match_id === m.id && s.is_active).length}</span>` : ''}
+              </button>
               <button class="btn-icon" onclick="window.openEditMatchModal('${m.id}')" style="color: #00e676; border-color: rgba(0,230,118,0.3); font-size: 0.8rem; padding: 6px 12px;">
                 <i class="fa-solid fa-pen-to-square"></i> تعديل البث
               </button>
@@ -858,10 +1002,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Quick Score Update ---
   window.quickUpdateScore = async (id) => {
-    const input = document.getElementById(`score_input_${id}`);
-    if (!input) return;
-    const newScore = input.value.trim();
+    const homeInput = document.getElementById(`score_home_${id}`);
+    const awayInput = document.getElementById(`score_away_${id}`);
     const targetMatch = matches.find(m => m.id === id);
+
+    let newScore = '0 - 0';
+    if (homeInput && awayInput) {
+      const hVal = homeInput.value.trim() || '0';
+      const aVal = awayInput.value.trim() || '0';
+      newScore = `${hVal} - ${aVal}`;
+    }
 
     const result = await apiCall('PATCH', `/api/matches/${id}/score`, {
       score: newScore,
@@ -870,7 +1020,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (result && result.success) {
       if (targetMatch) targetMatch.score = newScore;
-      showToast(`تم تحديث نتيجة المباراة إلى: ${newScore}`, 'success');
+      const toastMsg = result.message || `تم تحديث نتيجة المباراة إلى: ${newScore}`;
+      showToast(toastMsg, 'success');
       renderMatchesTable();
     } else {
       showToast(result?.message || 'فشل تحديث النتيجة', 'error');
@@ -888,7 +1039,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('editMatchAwayTeam').value = m.awayTeam || '';
     document.getElementById('editMatchDate').value = m.date || 'اليوم';
     document.getElementById('editMatchTime').value = m.time || '';
-    document.getElementById('editMatchScore').value = m.score || (m.status === 'live' ? '0 - 0' : 'vs');
+    
+    // Dual RTL score inputs with clear color-coded labels
+    const editHomeLabel = document.getElementById('editHomeTeamLabel');
+    const editAwayLabel = document.getElementById('editAwayTeamLabel');
+    if (editHomeLabel) editHomeLabel.innerHTML = `<strong style="color: #00e676;">${m.homeTeam || 'صاحب الأرض'}</strong> <small style="display:block; font-size:0.7rem; color:var(--text-muted);">(اليمين)</small>`;
+    if (editAwayLabel) editAwayLabel.innerHTML = `<strong style="color: var(--secondary);">${m.awayTeam || 'الضيف'}</strong> <small style="display:block; font-size:0.7rem; color:var(--text-muted);">(اليسار)</small>`;
+    const editScoreParts = (m.score || '0-0').split(/[-–:]/).map(x => x.trim());
+    if (document.getElementById('editMatchHomeScore')) document.getElementById('editMatchHomeScore').value = (!isNaN(editScoreParts[0]) && editScoreParts[0] !== '') ? editScoreParts[0] : '0';
+    if (document.getElementById('editMatchAwayScore')) document.getElementById('editMatchAwayScore').value = (!isNaN(editScoreParts[1]) && editScoreParts[1] !== '') ? editScoreParts[1] : '0';
     document.getElementById('editMatchStatus').value = m.status || 'upcoming';
     document.getElementById('editMatchChannelName').value = m.channelName || '';
     document.getElementById('editMatchCommentator').value = m.commentator || '';
@@ -897,6 +1056,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const srv2 = (m.servers && m.servers[1]) ? m.servers[1].url : '';
     document.getElementById('editMatchStreamUrl').value = srv1;
     document.getElementById('editMatchStreamUrl2').value = srv2;
+    if (document.getElementById('editMatchDateInput')) {
+      document.getElementById('editMatchDateInput').value = m.dateIso || '';
+    }
 
     if (editMatchModalBackdrop) editMatchModalBackdrop.classList.add('active');
   };
@@ -913,6 +1075,72 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Live team name label update for Edit Modal
+  const editMatchHomeTeamInput = document.getElementById('editMatchHomeTeam');
+  if (editMatchHomeTeamInput) {
+    editMatchHomeTeamInput.addEventListener('input', () => {
+      const editHomeLabel = document.getElementById('editHomeTeamLabel');
+      if (editHomeLabel) editHomeLabel.innerHTML = `<strong style="color: #00e676;">${editMatchHomeTeamInput.value.trim() || 'صاحب الأرض'}</strong> <small style="display:block; font-size:0.7rem; color:var(--text-muted);">(اليمين)</small>`;
+    });
+  }
+  const editMatchAwayTeamInput = document.getElementById('editMatchAwayTeam');
+  if (editMatchAwayTeamInput) {
+    editMatchAwayTeamInput.addEventListener('input', () => {
+      const editAwayLabel = document.getElementById('editAwayTeamLabel');
+      if (editAwayLabel) editAwayLabel.innerHTML = `<strong style="color: var(--secondary);">${editMatchAwayTeamInput.value.trim() || 'الضيف'}</strong> <small style="display:block; font-size:0.7rem; color:var(--text-muted);">(اليسار)</small>`;
+    });
+  }
+
+  function normalizeArabicDigits(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+      .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+  }
+
+  function parseDateToIsoClient(dateStr, explicitIso) {
+    if (explicitIso && /^\d{4}-\d{2}-\d{2}$/.test(String(explicitIso).trim())) {
+      return String(explicitIso).trim();
+    }
+    const today = new Date().toLocaleDateString('en-CA');
+    const s = normalizeArabicDigits(dateStr || '').trim();
+    if (!s || s === 'اليوم') return today;
+
+    const isoMatch = s.match(/\b(\d{4})-(\d{1,2})-(\d{1,2})\b/);
+    if (isoMatch) return `${isoMatch[1]}-${isoMatch[2].padStart(2, '0')}-${isoMatch[3].padStart(2, '0')}`;
+
+    const dmyMatch = s.match(/\b(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})\b/);
+    if (dmyMatch) return `${dmyMatch[3]}-${dmyMatch[2].padStart(2, '0')}-${dmyMatch[1].padStart(2, '0')}`;
+
+    if (s.includes('غداً') || s.includes('غدا')) {
+      const tom = new Date(); tom.setDate(tom.getDate() + 1);
+      return tom.toLocaleDateString('en-CA');
+    }
+    if (s.includes('بعد غد')) {
+      const aft = new Date(); aft.setDate(aft.getDate() + 2);
+      return aft.toLocaleDateString('en-CA');
+    }
+
+    const ARABIC_MONTHS = {
+      'يناير': 1, 'فبراير': 2, 'مارس': 3, 'أبريل': 4, 'ابريل': 4,
+      'مايو': 5, 'يونيو': 6, 'يوليو': 7, 'أغسطس': 8, 'اغسطس': 8,
+      'سبتمبر': 9, 'أكتوبر': 10, 'اكتوبر': 10, 'نوفمبر': 11, 'ديسمبر': 12
+    };
+
+    for (const [mName, mNum] of Object.entries(ARABIC_MONTHS)) {
+      if (s.includes(mName)) {
+        const dM = s.match(/\b(\d{1,2})\b/);
+        if (dM) {
+          const day = parseInt(dM[1], 10);
+          const yM = s.match(/\b(20\d{2})\b/);
+          const year = yM ? parseInt(yM[1], 10) : new Date().getFullYear();
+          return `${year}-${String(mNum).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        }
+      }
+    }
+    return today;
+  }
+
   // --- Edit Match Form Submit ---
   if (editMatchForm) {
     editMatchForm.addEventListener('submit', async (e) => {
@@ -922,13 +1150,25 @@ document.addEventListener('DOMContentLoaded', () => {
       const srv2 = document.getElementById('editMatchStreamUrl2').value.trim();
       const status = document.getElementById('editMatchStatus').value;
 
+      const editDateVal = document.getElementById('editMatchDate').value.trim() || 'اليوم';
+      const editDatePicker = document.getElementById('editMatchDateInput') ? document.getElementById('editMatchDateInput').value : '';
+      const dateIso = parseDateToIsoClient(editDateVal, editDatePicker);
+
+      const editHScore = document.getElementById('editMatchHomeScore') ? document.getElementById('editMatchHomeScore').value.trim() : '0';
+      const editAScore = document.getElementById('editMatchAwayScore') ? document.getElementById('editMatchAwayScore').value.trim() : '0';
+      let scoreVal = `${editHScore || '0'} - ${editAScore || '0'}`;
+      if (status === 'upcoming' && (editHScore === '0' || editHScore === '') && (editAScore === '0' || editAScore === '')) {
+        scoreVal = 'vs';
+      }
+
       const payload = {
         league: document.getElementById('editMatchLeague').value.trim(),
         homeTeam: document.getElementById('editMatchHomeTeam').value.trim(),
         awayTeam: document.getElementById('editMatchAwayTeam').value.trim(),
-        date: document.getElementById('editMatchDate').value.trim() || 'اليوم',
+        date: editDateVal,
+        dateIso,
         time: document.getElementById('editMatchTime').value.trim(),
-        score: document.getElementById('editMatchScore').value.trim() || (status === 'live' ? '0 - 0' : 'vs'),
+        score: scoreVal,
         status,
         channelName: document.getElementById('editMatchChannelName').value.trim(),
         commentator: document.getElementById('editMatchCommentator').value.trim() || 'غير محدد',
@@ -955,6 +1195,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Live team name label update for Add Form
+  const mHomeTeamInput = document.getElementById('mHomeTeam');
+  if (mHomeTeamInput) {
+    mHomeTeamInput.addEventListener('input', () => {
+      const addHomeLabel = document.getElementById('addHomeTeamLabel');
+      if (addHomeLabel) addHomeLabel.innerHTML = `<strong style="color: #00e676;">${mHomeTeamInput.value.trim() || 'صاحب الأرض'}</strong> <small style="display:block; font-size:0.7rem; color:var(--text-muted);">(اليمين)</small>`;
+    });
+  }
+  const mAwayTeamInput = document.getElementById('mAwayTeam');
+  if (mAwayTeamInput) {
+    mAwayTeamInput.addEventListener('input', () => {
+      const addAwayLabel = document.getElementById('addAwayTeamLabel');
+      if (addAwayLabel) addAwayLabel.innerHTML = `<strong style="color: var(--secondary);">${mAwayTeamInput.value.trim() || 'الضيف'}</strong> <small style="display:block; font-size:0.7rem; color:var(--text-muted);">(اليسار)</small>`;
+    });
+  }
+
   // --- Add Match Form Submit ---
   if (addMatchForm) {
     addMatchForm.addEventListener('submit', async (e) => {
@@ -962,18 +1218,29 @@ document.addEventListener('DOMContentLoaded', () => {
       const rawUrl = document.getElementById('mStreamUrl').value.trim();
       const rawUrl2 = document.getElementById('mStreamUrl2') ? document.getElementById('mStreamUrl2').value.trim() : '';
       const status = document.getElementById('mStatus').value;
-      const scoreVal = document.getElementById('mScore') ? document.getElementById('mScore').value.trim() : '';
+
+      const addHScore = document.getElementById('mHomeScore') ? document.getElementById('mHomeScore').value.trim() : '0';
+      const addAScore = document.getElementById('mAwayScore') ? document.getElementById('mAwayScore').value.trim() : '0';
+      let scoreVal = `${addHScore || '0'} - ${addAScore || '0'}`;
+      if (status === 'upcoming' && (addHScore === '0' || addHScore === '') && (addAScore === '0' || addAScore === '')) {
+        scoreVal = 'vs';
+      }
+
+      const mDateVal = document.getElementById('mDate').value.trim() || 'اليوم';
+      const mDatePicker = document.getElementById('mDateInput') ? document.getElementById('mDateInput').value : '';
+      const dateIso = parseDateToIsoClient(mDateVal, mDatePicker);
 
       const payload = {
         league: document.getElementById('mLeague').value.trim(),
         homeTeam: document.getElementById('mHomeTeam').value.trim(),
         awayTeam: document.getElementById('mAwayTeam').value.trim(),
         time: document.getElementById('mTime').value.trim(),
-        date: document.getElementById('mDate').value.trim() || 'اليوم',
+        date: mDateVal,
+        dateIso,
         status,
         channelName: document.getElementById('mChannelName').value.trim(),
         commentator: document.getElementById('mCommentator').value.trim() || 'غير محدد',
-        score: scoreVal || (status === 'live' ? '0 - 0' : 'vs'),
+        score: scoreVal,
         streamUrl: rawUrl,
         streamUrl2: rawUrl2,
         servers: [
@@ -1032,7 +1299,10 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // ========================== MATCHES REORDER & DRAG AND DROP ==========================
-  window.moveMatch = async (index, delta) => {
+  // Move by ID — works correctly regardless of active filter
+  window.moveMatchById = async (id, delta) => {
+    const index = matches.findIndex(m => String(m.id) === String(id));
+    if (index === -1) return;
     const targetIndex = index + delta;
     if (targetIndex < 0 || targetIndex >= matches.length) return;
     const temp = matches[index];
@@ -1040,6 +1310,17 @@ document.addEventListener('DOMContentLoaded', () => {
     matches[targetIndex] = temp;
     renderMatchesTable();
     await window.saveMatchOrder(false); // Auto-save in background
+  };
+
+  // Legacy alias kept for compatibility
+  window.moveMatch = async (index, delta) => {
+    const targetIndex = index + delta;
+    if (targetIndex < 0 || targetIndex >= matches.length) return;
+    const temp = matches[index];
+    matches[index] = matches[targetIndex];
+    matches[targetIndex] = temp;
+    renderMatchesTable();
+    await window.saveMatchOrder(false);
   };
 
   window.saveMatchOrder = async (showNotification = true) => {
@@ -1193,6 +1474,338 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => toast.remove(), 3000);
   }
 
+  // ========================== DEPARTMENT 5: WHATSAPP MANAGEMENT ==========================
+  let waSubscribersList = [];
+
+  async function loadWhatsAppConfig() {
+    try {
+      const res = await apiCall('GET', '/api/admin/whatsapp/config');
+      if (res && res.success && res.data) {
+        const cfg = res.data;
+        const enEl = document.getElementById('waCfgEnabled');
+        const provEl = document.getElementById('waCfgProvider');
+        const instEl = document.getElementById('waCfgInstanceId');
+        const tokEl = document.getElementById('waCfgToken');
+        const phoneEl = document.getElementById('waCfgSenderPhone');
+        const badge = document.getElementById('waConfigBadge');
+
+        if (enEl) enEl.value = cfg.enabled ? 'true' : 'false';
+        if (provEl) provEl.value = cfg.provider || 'simulator';
+        if (instEl) instEl.value = cfg.instanceId || '';
+        if (tokEl) tokEl.value = cfg.token || '';
+        if (phoneEl) phoneEl.value = cfg.senderPhone || '';
+
+        if (badge) {
+          if (cfg.provider === 'simulator' || !cfg.token) {
+            badge.textContent = `🧪 وضع المحاكاة الداخلي (رسائل: ${cfg.sentCount || 0})`;
+            badge.style.color = '#25D366';
+            badge.style.borderColor = 'rgba(37,211,102,0.4)';
+          } else {
+            badge.textContent = `🚀 بوابة ${cfg.provider} مفعّلة (رسائل: ${cfg.sentCount || 0})`;
+            badge.style.color = '#00e676';
+            badge.style.borderColor = 'rgba(0,230,118,0.5)';
+          }
+        }
+        checkWhatsAppStatus();
+      }
+    } catch (e) {
+      console.warn('Error loading WhatsApp config:', e.message);
+    }
+  }
+
+  async function checkWhatsAppStatus() {
+    const qrBox = document.getElementById('waQrBox');
+    const alertBox = document.getElementById('waStatusAlert');
+    const qrImg = document.getElementById('waQrImg');
+    const qrContainer = document.getElementById('waQrContainer');
+    const refreshBtn = document.getElementById('refreshWaStatusBtn');
+
+    if (!qrBox) return;
+
+    const prov = document.getElementById('waCfgProvider')?.value || 'simulator';
+    if (prov !== 'greenapi') {
+      qrBox.style.display = 'none';
+      return;
+    }
+
+    qrBox.style.display = 'block';
+    if (refreshBtn) refreshBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري فحص الاتصال...';
+
+    try {
+      const res = await apiCall('GET', '/api/admin/whatsapp/status');
+      if (refreshBtn) refreshBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> تحديث رمز الـ QR والحالة';
+
+      if (res && res.success) {
+        if (res.isAuthorized || res.state === 'authorized') {
+          alertBox.style.background = 'rgba(0, 230, 118, 0.15)';
+          alertBox.style.border = '1px solid rgba(0, 230, 118, 0.4)';
+          alertBox.style.color = '#00e676';
+          alertBox.innerHTML = '<i class="fa-solid fa-circle-check" style="font-size: 1.2rem;"></i> <span>رقم هاتفك متصل بنجاح وجاهز 100% لإرسال إشعارات الأهداف تلقائياً للمشتركين!</span>';
+          if (qrContainer) qrContainer.style.display = 'none';
+        } else {
+          alertBox.style.background = 'rgba(255, 171, 0, 0.15)';
+          alertBox.style.border = '1px solid rgba(255, 171, 0, 0.4)';
+          alertBox.style.color = 'var(--gold)';
+          alertBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="font-size: 1.2rem;"></i> <span>الهاتف غير مرتبط حالياً. يرجى مسح رمز الـ QR أدناه عبر تطبيق واتساب على هاتفك لتفعيله:</span>';
+          if (qrContainer) qrContainer.style.display = 'flex';
+
+          if (res.qr) {
+            qrImg.src = `data:image/png;base64,${res.qr}`;
+          } else {
+            qrImg.src = './whatsapp_qr.png?' + Date.now();
+          }
+        }
+      }
+    } catch (e) {
+      if (refreshBtn) refreshBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> تحديث رمز الـ QR والحالة';
+      console.warn('Error checking WhatsApp status:', e.message);
+    }
+  }
+
+  const refreshWaStatusBtn = document.getElementById('refreshWaStatusBtn');
+  if (refreshWaStatusBtn) {
+    refreshWaStatusBtn.addEventListener('click', () => {
+      checkWhatsAppStatus();
+    });
+  }
+
+  const provSelect = document.getElementById('waCfgProvider');
+  if (provSelect) {
+    provSelect.addEventListener('change', () => {
+      checkWhatsAppStatus();
+    });
+  }
+
+  const whatsappConfigForm = document.getElementById('whatsappConfigForm');
+  if (whatsappConfigForm) {
+    whatsappConfigForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        enabled: document.getElementById('waCfgEnabled').value === 'true',
+        provider: document.getElementById('waCfgProvider').value,
+        instanceId: document.getElementById('waCfgInstanceId').value.trim(),
+        token: document.getElementById('waCfgToken').value.trim(),
+        senderPhone: document.getElementById('waCfgSenderPhone').value.trim()
+      };
+      const res = await apiCall('POST', '/api/admin/whatsapp/config', payload);
+      if (res && res.success) {
+        showToast('تم حفظ وتحديث إعدادات بوابة الواتساب بنجاح!', 'success');
+        loadWhatsAppConfig();
+      } else {
+        showToast(res?.message || 'فشل حفظ الإعدادات', 'error');
+      }
+    });
+  }
+
+  const sendWaTestBtn = document.getElementById('sendWaTestBtn');
+  if (sendWaTestBtn) {
+    sendWaTestBtn.addEventListener('click', async () => {
+      const phone = document.getElementById('waTestPhone').value.trim();
+      const resBox = document.getElementById('waTestResult');
+      if (!phone) {
+        showToast('يرجى كتابة رقم الهاتف للتجربة', 'error');
+        return;
+      }
+      sendWaTestBtn.disabled = true;
+      sendWaTestBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإرسال...';
+      const res = await apiCall('POST', '/api/admin/whatsapp/test', { phone });
+      sendWaTestBtn.disabled = false;
+      sendWaTestBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال تجربة الآن';
+      if (resBox) {
+        resBox.style.display = 'block';
+        if (res && res.success) {
+          resBox.style.background = 'rgba(0,230,118,0.15)';
+          resBox.style.color = '#00e676';
+          resBox.innerHTML = `✅ تم إرسال الرسالة بنجاح إلى ${phone}! ${res.result?.simulated ? '(تم حفظها في سجل محاكاة الواتساب بنجاح)' : ''}`;
+          showToast('تم إرسال رسالة الاختبار بنجاح!', 'success');
+        } else {
+          resBox.style.background = 'rgba(255,23,68,0.15)';
+          resBox.style.color = '#ff5252';
+          resBox.textContent = `❌ ${res?.message || res?.result?.error || 'فشل الإرسال'}`;
+        }
+      }
+    });
+  }
+
+  async function loadWaSubscribers() {
+    try {
+      const res = await apiCall('GET', '/api/admin/whatsapp/subscribers');
+      if (res && res.success) {
+        waSubscribersList = res.data || [];
+        renderWaSubscribersTable();
+      }
+    } catch (e) {
+      console.warn('Error loading subscribers:', e.message);
+    }
+  }
+
+  function renderWaSubscribersTable() {
+    const tbody = document.getElementById('waSubscribersTableBody');
+    const countEl = document.getElementById('waSubscribersTotalCount');
+    if (countEl) countEl.textContent = waSubscribersList.length;
+    if (!tbody) return;
+
+    const query = (document.getElementById('waSubscriberSearch')?.value || '').trim().toLowerCase();
+    const filtered = waSubscribersList.filter(s => {
+      if (!query) return true;
+      return (s.phone && s.phone.includes(query)) ||
+             (s.whatsapp_number && s.whatsapp_number.includes(query)) ||
+             (s.matchTitle && s.matchTitle.toLowerCase().includes(query));
+    });
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 25px; color: var(--text-muted);">
+            <i class="fa-brands fa-whatsapp" style="font-size: 2rem; opacity: 0.3; display: block; margin-bottom: 8px;"></i>
+            لا يوجد مشتركون مسجلون حالياً.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map((s, idx) => `
+      <tr>
+        <td style="text-align:center; font-weight:700; color: #25D366;">${idx + 1}</td>
+        <td>
+          <div style="direction: ltr; text-align: right; font-weight:700; color:#fff;">
+            <i class="fa-brands fa-whatsapp" style="color: #25D366; margin-left: 6px;"></i> +${s.whatsapp_number}
+          </div>
+          ${s.phone !== s.whatsapp_number ? `<small style="color: var(--text-muted);">${s.phone}</small>` : ''}
+        </td>
+        <td>
+          <div style="font-weight: 700; color:#fff;">${s.matchTitle || 'مباراة'}</div>
+          <small style="color: var(--text-muted);">${s.matchLeague || ''}</small>
+        </td>
+        <td>
+          <span class="badge-quality" style="background: rgba(255,255,255,0.08); font-size: 0.75rem;">
+            ${s.team_interest === 'home' ? 'الفريق الأول' : (s.team_interest === 'away' ? 'الفريق الثاني' : 'كلا الفريقين')}
+          </span>
+        </td>
+        <td>
+          <small style="color: var(--text-muted);">${s.created_at ? s.created_at.replace('T', ' ').slice(0, 16) : 'مؤخراً'}</small>
+        </td>
+        <td>
+          ${s.is_active ? '<span style="color: #00e676; font-size: 0.8rem; font-weight: 700;">🟢 نشط</span>' : '<span style="color: #9e9e9e; font-size: 0.8rem;">⚪ ملغي</span>'}
+        </td>
+        <td style="text-align: center;">
+          <button class="btn-icon" onclick="window.deleteWaSubscriber('${s.id}')" style="color: var(--danger); border-color: rgba(255,23,68,0.3); padding: 5px 10px; font-size: 0.8rem;">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  window.deleteWaSubscriber = async (id) => {
+    if (!confirm('هل أنت متأكد من حذف هذا المشترك؟')) return;
+    const res = await apiCall('DELETE', `/api/admin/whatsapp/subscribers/${id}`);
+    if (res && res.success) {
+      showToast('تم حذف المشترك بنجاح', 'success');
+      loadWaSubscribers();
+    } else {
+      showToast(res?.message || 'فشل حذف المشترك', 'error');
+    }
+  };
+
+  const refreshWaSubscribersBtn = document.getElementById('refreshWaSubscribersBtn');
+  if (refreshWaSubscribersBtn) {
+    refreshWaSubscribersBtn.addEventListener('click', () => {
+      loadWaSubscribers();
+      showToast('تم تحديث قائمة المشتركين!', 'info');
+    });
+  }
+
+  const waSubscriberSearch = document.getElementById('waSubscriberSearch');
+  if (waSubscriberSearch) {
+    waSubscriberSearch.addEventListener('input', renderWaSubscribersTable);
+  }
+
+  // --- Manual Goal Alert Modal ---
+  const manualGoalModalBackdrop = document.getElementById('manualGoalModalBackdrop');
+  const closeManualGoalModalBtn = document.getElementById('closeManualGoalModalBtn');
+  const manualGoalForm = document.getElementById('manualGoalForm');
+
+  window.openManualGoalModal = async (matchId) => {
+    const m = matches.find(x => x.id === matchId);
+    if (!m) return;
+    document.getElementById('mgMatchId').value = m.id;
+    document.getElementById('mgModalMatchTitle').textContent = `${m.homeTeam} 🆚 ${m.awayTeam} (${m.league})`;
+    
+    if (document.getElementById('mgHomeTeamName')) document.getElementById('mgHomeTeamName').innerHTML = `<strong style="color: #00e676;">${m.homeTeam}</strong> <small style="display:block; font-size:0.75rem; color:var(--text-muted); font-weight:normal;">(صاحب الأرض - اليمين)</small>`;
+    if (document.getElementById('mgAwayTeamName')) document.getElementById('mgAwayTeamName').innerHTML = `<strong style="color: var(--secondary);">${m.awayTeam}</strong> <small style="display:block; font-size:0.75rem; color:var(--text-muted); font-weight:normal;">(الضيف - اليسار)</small>`;
+
+    const parts = (m.score || '0-0').split(/[-–:]/).map(x => x.trim());
+    if (document.getElementById('mgHomeScore')) document.getElementById('mgHomeScore').value = !isNaN(parts[0]) ? parts[0] : '0';
+    if (document.getElementById('mgAwayScore')) document.getElementById('mgAwayScore').value = !isNaN(parts[1]) ? parts[1] : '0';
+
+    document.getElementById('mgScorerName').value = '';
+    const statusBox = document.getElementById('mgStatus');
+    if (statusBox) statusBox.style.display = 'none';
+    document.getElementById('mgModalSubscribersCount').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري فحص عدد المشتركين...';
+    if (manualGoalModalBackdrop) manualGoalModalBackdrop.classList.add('active');
+
+    try {
+      await loadWaSubscribers();
+      const matchSubs = waSubscribersList.filter(s => s.match_id === m.id && s.is_active);
+      document.getElementById('mgModalSubscribersCount').innerHTML = `عدد المشتركين المسجلين لهذه المباراة: <strong style="color: #25D366; font-size: 0.95rem;">${matchSubs.length} مشترك</strong>`;
+    } catch (_) {}
+  };
+
+  if (closeManualGoalModalBtn) {
+    closeManualGoalModalBtn.addEventListener('click', () => manualGoalModalBackdrop.classList.remove('active'));
+  }
+  if (manualGoalModalBackdrop) {
+    manualGoalModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === manualGoalModalBackdrop) manualGoalModalBackdrop.classList.remove('active');
+    });
+  }
+
+  if (manualGoalForm) {
+    manualGoalForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const matchId = document.getElementById('mgMatchId').value;
+      const hScore = document.getElementById('mgHomeScore') ? document.getElementById('mgHomeScore').value.trim() : '0';
+      const aScore = document.getElementById('mgAwayScore') ? document.getElementById('mgAwayScore').value.trim() : '0';
+      const score = `${hScore} - ${aScore}`;
+      const scorerName = document.getElementById('mgScorerName').value.trim();
+      const submitBtn = document.getElementById('mgSubmitBtn');
+      const statusBox = document.getElementById('mgStatus');
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري إرسال الإشعار لجميع المشتركين...';
+
+      const res = await apiCall('POST', `/api/admin/matches/${encodeURIComponent(matchId)}/notify-goal`, {
+        score,
+        scorerName
+      });
+
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال إشعار الهدف الآن لجميع المشتركين';
+
+      if (statusBox) {
+        statusBox.style.display = 'block';
+        if (res && res.success) {
+          statusBox.style.background = 'rgba(0, 230, 118, 0.18)';
+          statusBox.style.color = '#00e676';
+          statusBox.textContent = `✅ ${res.message}`;
+          showToast('تم إرسال إشعار الأهداف للمشتركين بنجاح!', 'success');
+          const targetM = matches.find(x => x.id === matchId);
+          if (targetM) targetM.score = score;
+          renderMatchesTable();
+          setTimeout(() => {
+            if (manualGoalModalBackdrop) manualGoalModalBackdrop.classList.remove('active');
+          }, 2000);
+        } else {
+          statusBox.style.background = 'rgba(255, 23, 68, 0.18)';
+          statusBox.style.color = '#ff5252';
+          statusBox.textContent = `❌ ${res?.message || 'فشل إرسال الإشعار'}`;
+        }
+      }
+    });
+  }
+
   // ========================== RENDER ALL TABLES ==========================
   async function renderAllTables() {
     await loadAllData();
@@ -1200,6 +1813,8 @@ document.addEventListener('DOMContentLoaded', () => {
     renderRadiosTable();
     renderSportsNewsTable();
     renderMatchesTable();
+    loadWhatsAppConfig();
+    loadWaSubscribers();
   }
 
   // ========================== INIT ==========================

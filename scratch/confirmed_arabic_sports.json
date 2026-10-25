@@ -1,0 +1,65 @@
+[
+  {
+    "name": "الكأس 1 الرياضية HD",
+    "country": "قطر",
+    "url": "https://shoof.alkass.net/live/ch1.m3u8",
+    "quality": "Full HD",
+    "type": "hls"
+  },
+  {
+    "name": "الكأس 2 الرياضية HD",
+    "country": "قطر",
+    "url": "https://shoof.alkass.net/live/ch2.m3u8",
+    "quality": "Full HD",
+    "type": "hls"
+  },
+  {
+    "name": "الكأس 4 الرياضية HD",
+    "country": "قطر",
+    "url": "https://shoof.alkass.net/live/ch4.m3u8",
+    "quality": "Full HD",
+    "type": "hls"
+  },
+  {
+    "name": "الشارقة الرياضية HD",
+    "country": "الإمارات",
+    "url": "https://live.kwikmotion.com/smc4live/smc4tv.smil/playlist.m3u8",
+    "quality": "Full HD",
+    "type": "hls"
+  },
+  {
+    "name": "الكويت الرياضية HD",
+    "country": "الكويت",
+    "url": "https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8",
+    "quality": "Full HD",
+    "type": "hls"
+  },
+  {
+    "name": "الكويت سبورت بلس HD",
+    "country": "الكويت",
+    "url": "https://kwtsplta.cdn.mangomolo.com/spl/smil:spl.stream.smil/chunklist.m3u8",
+    "quality": "Full HD",
+    "type": "hls"
+  },
+  {
+    "name": "عُمان الرياضية HD",
+    "country": "عُمان",
+    "url": "https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8",
+    "quality": "Full HD",
+    "type": "hls"
+  },
+  {
+    "name": "الأردن الرياضية HD",
+    "country": "الأردن",
+    "url": "https://jrtv-live.ercdn.net/jordansporthd/jordansporthd.m3u8",
+    "quality": "Full HD",
+    "type": "hls"
+  },
+  {
+    "name": "بي إن سبورتس الإخبارية (beIN News)",
+    "country": "قطر",
+    "url": "https://live-hls-web-aja-fa.thehlive.com/AJA/index.m3u8",
+    "quality": "Full HD",
+    "type": "hls"
+  }
+]

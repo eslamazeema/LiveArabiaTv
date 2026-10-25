@@ -1,6 +1,6 @@
 {
   "name": "arabia-live-tv",
-  "version": "2.5.0",
+  "version": "3.5.0",
   "description": "Arabia Live TV Portal & EPG Match Guide - arabialivetv.com",
   "main": "server.js",
   "scripts": {

@@ -1,0 +1,47 @@
+{
+  "url": "https://www.dailymotion.com/video/x8n6e3a",
+  "error": {
+    "title": "محتوى غير متوفر",
+    "message": "لا يمكن مشاهدة هذا الفيديو على هذا الموقع. لقد حصر NMA نشرها على Dailymotion. <a target=\"_top\" href=\"https://www.dailymotion.com/video/x8n6e3a\">شاهدوا الآن.</a>",
+    "raw_message": "لا يمكن مشاهدة هذا الفيديو على هذا الموقع. لقد حصر NMA نشرها على Dailymotion.",
+    "code": "DM016",
+    "status_code": 403,
+    "refresh": 0
+  },
+  "aspect_ratio": 1.3333333333333,
+  "audience_url": "https://am-01.ix7.dailymotion.com/vx8n6e3a",
+  "description": "البث المباشر لقناة النيل للدراما<br />maspero.eg",
+  "duration": 0,
+  "id": "x8n6e3a",
+  "live_public_status": "on_air",
+  "stream_altered_with_ai": false,
+  "title": "النيل للدراما",
+  "private": false,
+  "data_center": "ix7",
+  "view_id": "1k57dm0q44k9p59uejj",
+  "access_id": "x8n6e3a",
+  "is_password_protected": false,
+  "advertising": {
+    "ad_url": "https://dmxleo.dailymotion.com/cdn/manifest/video/x8n6e3a.m3u8?auth=1792497138-2688-5hug92g3-3237238e74380765f1e73cc0364df36aG1Bvd_sXvhTmG3HvNrSruwa1OKlIo7ZjDEeynIHBbcYzot8BJq126B1q_ZeDg8kW5-6Wu8SlCOiEmewHDDLvYsZmeFJmoZ0nIPouYwZbEcUiqBV7xwRY-qkfkGExKjPGF1r7a4MVEKlz2Zs1zbqqRS-XAel12qFlu2fcWejde5v2lXIiX0dYKOX-qnLtAGx7TSYMzwPaP7F-Uhm4zgHo_ttz67evWIVEc9bh6DRZwNn16lwKpJAMuNsPPeBI2JQAb_WNDIDjF0xDArsku07wbqQDy9fMBRYvZLBzqcz3zrwfDfvae0f3Zqh8g5TjVnPRcsRIoccIeLVNrV2mZGqOo4RXpTTTA7fVzWTNxRUFBjhDScPC5ice6cSZfmEKekWszzkQWGb_8gwBo7gEBgUOul2_JjNF7QbUK9OnQq6L3Df6aFAqoQ_qvjStmw5L07TS8f04IfCPvV4SvzQ76u-73JuoUcbCTW9UqkVGAGjvsFibixF4-KzYow3gdeKQkpbfWqYaSR9mErStcakiQJnE5tDKRz1HbEr1ifo6Iemqyoa-tkexXy2KMHoBR1hW2hA3hs8pdNwTEiZ5Jwnm82rvYpH8DLt84w2rxYb3l9HT7dBW7zXkfMPfxTWuPTwKbbX_etsAsi3XwopzXkr4Oo3s9SgsXaiZqEQohBMtjXjaRinNDxsMiS_L3qd1wH8yS223OAjqCMOxyOA7fPScJTMdZZm6WXXrCqrv4gRvvaIWcqHZDWKxPo6Zk54qhdvhBm1K1IyR6t65Zv8AylW0RTgo4mmUR6aJ4bil_3JN7k3jEZvsrJ4CoKCTkM12O-PiqO3x3oTqWjLLHtLx73lioqEVDPPzdY8hKk0pv12l-1QRJx21YI5ORn4NQR5OqQMBzwp_1jEpPPe_Edi8d_InUnI4VTymHC6SaiDzVDWC1njM9vEEzmgk8936ZSA_X3kInAW16HaJUUqhboNOy3t6HWpMEWweRrKg330DKj4OK7CvT5M9bJwiGEG6_S2qwBnh7-NFiEmTG02o3cC40pbcxtKNnn_s2hrd84ogY_i1lPwiuL_oxFrcH3LPx9jZ1AK4Br8irrwDHmVFPKuOuixJjkvNXVvmPXhcWEcNo0NMponfEubr4hOyOmCJlDhIBHcPFHp-LZZqTp0RYZvCbx1CAUSAE1Pf5HBEl_-bTcHNBRCdV5Ynuuy-q_pkL_XHu_vjA0ue1&af=[APIFRAMEWORKS]&vv=[VASTVERSIONS]&mm=[MEDIAMIME]&pbm=[PLAYBACKMETHODS]",
+    "ad_error_url": "https://dmxleo.dailymotion.com/cdn/manifest/video/x8n6e3a.m3u8?auth=1792497138-2688-05273yho-35fb6c14a569e3994ed5823014f74fe2Z875ej2Uzpkp5tuPGN1ID4kKOMq6s2oHMFyMZ__icNBefT6H7X-UzEzG84Mx5_tbwjl4cvdI9se_JK1o8mrIVVoMxMhu3J6a20yJD5NjRYXFFdSS0DogeSuK8H5e0KenQ8TGV6vLpgLjCpI9aYaam9EAhSiPerznhpSPnqn571eKG76l2rscGFnToHdQrmeUYryPeeUcBvTdvRe5i9V1nxh6mJSmtdd43VCuOcQP3X0Per3D06K-_FlZxoyniXsEklF2TN7jLrazhTjQ0LcsYdofxz0uVCixuW_t_WKYP_L2Z4U7IyIYOVmezRSlaQYraT8TKup_bmI6VFJIDxlnRsowZ-1FrYTDy8wNLJ_UDdasF_Y80NwsISl5I_7XscIPzj2dVXO4YBCus1G88qWBojuk7sP7ysA0gt_wOHJNWhdo31z2xSpd-xT7w1d44haxH0hlHuUDvEsCJPTz0KJ6jUSimWrlWZkGu302cZOKOTIJkO-285Ht4YJDwmomTJ6QdmulhL_owvGlkPJdPoyUdAGOSfoBmPBmGBgeDFcEWUO8MvMK1ZScmH8JRB79lS7C6X3JfpAsJCYQESFup2bb_JqYxhH8_BWwy1bv6O7wocWcsVw-TBoDtvkeeR72cKhUsagFFSf9kvPqf-u9svMtiYYuXRj1wFzXX6qa9L5_hvhy4AGsKPrdbSMvc53i0mODjIbN2mx0i_-pmWEeKENPUhZg_tylX_eduojlJ2KwcMKBrDQlegT829kzdfTHT0Lb3jq7AbHeldIEj9oTRVOTYPcaAXeo036Zk8Q1KCyABPV97fnDVH1kvFmBpunWYEf0twNMtlopcNkl6nuE6olARWAelLCdjPgaqCqDTQWWq5HnA8gvF3ZtAd3aIDx52oMSSx2POWKQsQNdz08lIa0rRCiT-gAyFD-bI3v06Oz3kIDTUAeVyXdcelxdRDkJpAiM_UAQrMc9zZBl_pm-4vqi4hrpyZAV1Gxsc6lTfnnfhiorHPB98VeNDLlYWN4Fjla23gt1UqPZclbapPcgR0o4MJOLv0dLcWgWmY9n2yCJ27NAqLWT71iHx1qfkwZ7XctwbHZD-eO9Gk_hwfBA7Jce5myslX9lCkvAI7U2hYcWk3XB-X-Cfe3TB_sHlCvx3n7iiYNoOy5-0x8jgUkYoUEOS4CdmYf19DqfM8GLThrAW7Lj_YESSYgIlEz1LGypdtV0Dzlt7S-G2N9c6BwaFB_MLUQ&af=[APIFRAMEWORKS]&vv=[VASTVERSIONS]&mm=[MEDIAMIME]&pbm=[PLAYBACKMETHODS]&error=[ERRORCODE]",
+    "ad_sync_script_url": "https://dmxleo.dailymotion.com/cdn/manifest/video/x8n6e3a.m3u8?auth=1792497138-2688-vkcvgrzj-cfa5d974ae5f07d2bc784593c1574cf5CfIxWHB0ipOkDn_a_zTxGoGXwjYw8oYEXP9rWtsx_8KFMLDWbxlqhrmalqmmNsNsybeRjo3uWMQnaijAFxHAyvwj5hpIZa0bpmPpqgse3_OWYZO8xtXGPxttTqreLPMzJ7i8hIlR-AG1sfNX43vDTEXT9-vXmFBfT7s2oLWoUJqLr4vNI2FQ98KcKtQ-mB40X5zXCTWGVGRkCabYLL5PXSfca4qUXkd3Vkvyakn1iHU3-Vs6crwHAuWF1418814q03a6n8RN8s9GXYMg8CY6Z6tp6WmlXlCFhR5-6IwpIP4rtggWOjs59UF25RuHEkldsLJY8wM56aeyqjye4qPRFmmb08oVL-0VDrSMR5GV47btI06xCMUzsAK1PagdFXzcoDP56m3JclCDgZj63kN33aQzGOsstqekPDSQxlEE3uhHssl0kVdYXe4hx3c-2Mmeux9AFk-CQpfYDqfOUxdOBGDWwACislGlZVKcjvJ2Uc2OSC_RJ6RFRdvvph6hJG46dNygCr63G0qoGxdLdUfXtvFcGLjHdLeNeQ9wLyk3KeSMUQbkfdDrpD1JHLv36FQOBuxjCfIxtsvcZqztUI_Ltehqt8HFEflJonW8wHNjSicf24WQEWUQJy8AWWjfkNMW_Mt0q1LMLHTLd4u4Utz_IYnEZim-6KlRtIp1Ty3zY-q0aouuuYqSYuwpaqWePXCwOy-l94iAdDBdjD7fi2kMpjByQZHuX9zepgDYcccwptC_-H70t_tSzcukRigS8lF9QE6cVjQI8bFatTD5ma5drooQoP_2hbqLw3JRZ3xNhQ2vrXmsZyDJ7D35nVcLbRfDI7uW77gqxXJ30vVIXCc3rouGOXKQ0i-vPlWNqRXuy109qMklJfWP9eTVJWS0Kso2JbOMrhg17u1TieXNf_EU2N1q4uodPhccriS7-2yR-_O-d2laB1UV4K2PPoTipwxvrcHsnwORijruQRmYwbfTVbFK1MNGaIrDMZ5TQdtlptHTdwFvtVe5e6LeVdTiGXIYzRf6sA60TGD-lp-_0kZk6RgueR0Vtk1UBtvH70bJ_vw00Pq4AznrDxlGxSOLVRlVneBs7Oayg7z_bLJCO_Lh9YPTv1_iYc6fzC0M4sCpbXceaw5GpFeXGWZH6JdL1XkOHPANAj8LpYGtOk_UWGiLsWgJGODrR8gbjO8pxQk-jcxtdTDLMEB2yem85Yk8ZmpX2&af=[APIFRAMEWORKS]&vv=[VASTVERSIONS]&mm=[MEDIAMIME]&pbm=[PLAYBACKMETHODS]&bs=1",
+    "ima": {
+      "enable": false
+    }
+  },
+  "owner": {
+    "id": "x2f3oct",
+    "parent_id": null,
+    "screenname": "بوابة ماسبيرو",
+    "url": "https://www.dailymotion.com/NMA",
+    "username": "NMA",
+    "avatars": {
+      "60": "https://s1.dmcdn.net/u/8k5KD1gkaJnplm0_d/60x60"
+    },
+    "type": "vpartner",
+    "watermark_image_url": null,
+    "watermark_link_url": null,
+    "country": "EG",
+    "created_time": 1598511242
+  }
+}

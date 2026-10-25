@@ -41,7 +41,7 @@ function readJsonDb() {
   } catch (err) {
     console.error('Error reading JSON DB:', err.message);
   }
-  return { channels: [], radios: [], matches: [], sports_news: [], admin_users: [] };
+  return { channels: [], radios: [], matches: [], sports_news: [], admin_users: [], match_subscriptions: [], site_settings: {} };
 }
 
 function writeJsonDb(data) {
@@ -987,11 +987,11 @@ const DEFAULT_CHANNELS = [
 ];
 
 const DEFAULT_RADIOS = [
-  { id: 'rad-quran-cairo', name: 'إذاعة القرآن الكريم من القاهرة', country: 'مصر', streamUrl: 'https://stream.radiojar.com/8s44vhq97duvv', icon: 'fa-mosque', description: 'تلاوات خاشعة وأحاديث شريفة برواية حفص عن عاصم على مدار 24 ساعة.', sortOrder: 1 },
-  { id: 'rad-quran-makkah', name: 'إذاعة القرآن الكريم - مكة المكرمة', country: 'السعودية', streamUrl: 'https://ssl.live.hawaa.link/listen/quran_makkah/radio.mp3', icon: 'fa-kaaba', description: 'البث الصوتي المباشر للتلاوات والصلوات من الحرم المكي الشريف.', sortOrder: 2 },
-  { id: 'rad-monte-carlo', name: 'إذاعة مونت كارلو الدولية', country: 'فرنسا/عربي', streamUrl: 'https://montecarlo.ice.infomaniak.ch/mc-doualiya-midfi.mp3', icon: 'fa-tower-cell', description: 'أخبار عالمية وتحليلات سياسية وثقافية بلغة عربية راقية ومباشرة.', sortOrder: 3 },
-  { id: 'rad-radio-sawa', name: 'إذاعة راديو سوا', country: 'عربي', streamUrl: 'https://mbn-channel-01.akamaized.net/hls/live/2003501/sawa/master.m3u8', icon: 'fa-radio', description: 'أحدث الأخبار الإقليمية والبرامج الموسيقية والشبابية.', sortOrder: 4 },
-  { id: 'rad-rotana-fm', name: 'إذاعة روتانا إف إم', country: 'السعودية', streamUrl: 'https://stream.radiojar.com/8s44vhq97duvv', icon: 'fa-music', description: 'أشهر الأغاني العربية الحديثة والبرامج الترفيهية الفنية.', sortOrder: 5 }
+  { id: 'rad-quran-cairo', name: 'إذاعة القرآن الكريم من القاهرة', country: 'مصر', streamUrl: 'https://stream.radiojar.com/8s44vhq97duvv', logo: 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=200&auto=format&fit=crop&q=80', icon: 'fa-mosque', description: 'تلاوات خاشعة وأحاديث شريفة برواية حفص عن عاصم على مدار 24 ساعة.', sortOrder: 1 },
+  { id: 'rad-quran-makkah', name: 'إذاعة القرآن الكريم - مكة المكرمة', country: 'السعودية', streamUrl: 'https://ssl.live.hawaa.link/listen/quran_makkah/radio.mp3', logo: 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=200&auto=format&fit=crop&q=80', icon: 'fa-kaaba', description: 'البث الصوتي المباشر للتلاوات والصلوات من الحرم المكي الشريف.', sortOrder: 2 },
+  { id: 'rad-monte-carlo', name: 'إذاعة مونت كارلو الدولية', country: 'فرنسا/عربي', streamUrl: 'https://montecarlo.ice.infomaniak.ch/mc-doualiya-midfi.mp3', logo: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=200&auto=format&fit=crop&q=80', icon: 'fa-tower-cell', description: 'أخبار عالمية وتحليلات سياسية وثقافية بلغة عربية راقية ومباشرة.', sortOrder: 3 },
+  { id: 'rad-radio-sawa', name: 'إذاعة راديو سوا', country: 'عربي', streamUrl: 'https://mbn-channel-01.akamaized.net/hls/live/2003501/sawa/master.m3u8', logo: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&auto=format&fit=crop&q=80', icon: 'fa-radio', description: 'أحدث الأخبار الإقليمية والبرامج الموسيقية والشبابية.', sortOrder: 4 },
+  { id: 'rad-rotana-fm', name: 'إذاعة روتانا إف إم', country: 'السعودية', streamUrl: 'https://stream.radiojar.com/8s44vhq97duvv', logo: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=200&auto=format&fit=crop&q=80', icon: 'fa-music', description: 'أشهر الأغاني العربية الحديثة والبرامج الترفيهية الفنية.', sortOrder: 5 }
 ];
 
 const DEFAULT_MATCHES = [
@@ -1087,7 +1087,7 @@ function initDatabase() {
       );
       CREATE TABLE IF NOT EXISTS radios (
         id TEXT PRIMARY KEY, name TEXT NOT NULL, country TEXT DEFAULT 'عربي',
-        stream_url TEXT NOT NULL DEFAULT '', icon TEXT DEFAULT 'fa-radio', description TEXT DEFAULT '',
+        stream_url TEXT NOT NULL DEFAULT '', logo TEXT DEFAULT '', icon TEXT DEFAULT 'fa-radio', description TEXT DEFAULT '',
         sort_order INTEGER DEFAULT 0, created_at TEXT DEFAULT (datetime('now')), updated_at TEXT DEFAULT (datetime('now'))
       );
       CREATE TABLE IF NOT EXISTS matches (
@@ -1108,14 +1108,42 @@ function initDatabase() {
         id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL,
         password_hash TEXT NOT NULL, created_at TEXT DEFAULT (datetime('now'))
       );
+      CREATE TABLE IF NOT EXISTS match_subscriptions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        match_id TEXT NOT NULL,
+        phone TEXT NOT NULL,
+        whatsapp_number TEXT NOT NULL,
+        team_interest TEXT DEFAULT 'both',
+        created_at TEXT DEFAULT (datetime('now')),
+        is_active INTEGER DEFAULT 1
+      );
+      CREATE TABLE IF NOT EXISTS site_settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL,
+        updated_at TEXT DEFAULT (datetime('now'))
+      );
     `);
     try {
       db.exec('ALTER TABLE channels ADD COLUMN is_default INTEGER DEFAULT 0;');
     } catch (e) {}
     try {
+      db.exec('ALTER TABLE matches ADD COLUMN date_iso TEXT DEFAULT "";');
+    } catch (e) {}
+    try {
+      db.exec('ALTER TABLE radios ADD COLUMN logo TEXT DEFAULT "";');
+    } catch (e) {}
+    try {
       const defCheck = db.prepare('SELECT COUNT(*) as cnt FROM channels WHERE is_default = 1').get();
       if (defCheck && defCheck.cnt === 0) {
         db.prepare('UPDATE channels SET is_default = 1 WHERE sort_order = 1 OR id = (SELECT id FROM channels ORDER BY sort_order ASC LIMIT 1)').run();
+      }
+    } catch (e) {}
+    try {
+      const updateLogo = db.prepare("UPDATE radios SET logo = ? WHERE id = ? AND (logo IS NULL OR logo = '')");
+      for (const r of DEFAULT_RADIOS) {
+        if (r.logo) {
+          updateLogo.run(r.logo, r.id);
+        }
       }
     } catch (e) {}
     seedDefaultData();
@@ -1146,6 +1174,14 @@ function initDatabase() {
     }
     if (!data.admin_users) {
       data.admin_users = [];
+      updated = true;
+    }
+    if (!data.match_subscriptions) {
+      data.match_subscriptions = [];
+      updated = true;
+    }
+    if (!data.site_settings) {
+      data.site_settings = {};
       updated = true;
     }
     if (updated) writeJsonDb(data);
@@ -1184,8 +1220,8 @@ function seedDefaultData() {
   const radCount = db.prepare('SELECT COUNT(*) as cnt FROM radios').get();
   if (radCount.cnt === 0) {
     const insert = db.prepare(`
-      INSERT OR IGNORE INTO radios (id, name, country, stream_url, icon, description, sort_order)
-      VALUES (@id, @name, @country, @streamUrl, @icon, @description, @sortOrder)
+      INSERT OR IGNORE INTO radios (id, name, country, stream_url, logo, icon, description, sort_order)
+      VALUES (@id, @name, @country, @streamUrl, @logo, @icon, @description, @sortOrder)
     `);
     for (const r of DEFAULT_RADIOS) {
       insert.run({
@@ -1193,6 +1229,7 @@ function seedDefaultData() {
         name: r.name || '',
         country: r.country || 'عربي',
         streamUrl: r.streamUrl || '',
+        logo: r.logo || '',
         icon: r.icon || 'fa-radio',
         description: r.description || '',
         sortOrder: r.sortOrder || 0
@@ -1419,7 +1456,8 @@ function mapRadio(r) {
     name: r.name,
     country: r.country,
     streamUrl: r.stream_url || r.streamUrl || '',
-    icon: r.icon,
+    logo: r.logo || r.image || '',
+    icon: r.icon || 'fa-radio',
     description: r.description,
     sortOrder: r.sort_order !== undefined ? r.sort_order : (r.sortOrder || 0)
   };
@@ -1438,13 +1476,22 @@ function createRadio(r) {
   const id = r.id || 'rad-' + Date.now();
   if (useSqlite) {
     db.prepare(`
-      INSERT INTO radios (id, name, country, stream_url, icon, description, sort_order)
-      VALUES (@id, @name, @country, @streamUrl, @icon, @description, @sortOrder)
-    `).run({ id, ...r, streamUrl: r.streamUrl || '', sortOrder: r.sortOrder || 0 });
+      INSERT INTO radios (id, name, country, stream_url, logo, icon, description, sort_order)
+      VALUES (@id, @name, @country, @streamUrl, @logo, @icon, @description, @sortOrder)
+    `).run({
+      id,
+      name: r.name || '',
+      country: r.country || 'عربي',
+      streamUrl: r.streamUrl || '',
+      logo: r.logo || r.image || '',
+      icon: r.icon || 'fa-radio',
+      description: r.description || '',
+      sortOrder: r.sortOrder || 0
+    });
     return mapRadio(db.prepare('SELECT * FROM radios WHERE id = ?').get(id));
   }
   const data = readJsonDb();
-  const newR = { id, ...r, streamUrl: r.streamUrl || '' };
+  const newR = { id, ...r, streamUrl: r.streamUrl || '', logo: r.logo || r.image || '', sortOrder: r.sortOrder || 0 };
   data.radios.push(newR);
   writeJsonDb(data);
   return newR;
@@ -1453,16 +1500,21 @@ function createRadio(r) {
 function updateRadio(id, r) {
   if (useSqlite) {
     db.prepare(`
-      UPDATE radios SET name = @name, country = @country, stream_url = @streamUrl,
-        icon = @icon, description = @description, updated_at = datetime('now')
+      UPDATE radios SET
+        name = @name, country = @country, stream_url = @streamUrl,
+        logo = @logo, icon = @icon, description = @description,
+        sort_order = COALESCE(@sortOrder, sort_order),
+        updated_at = datetime('now')
       WHERE id = @id
     `).run({
       id,
       name: r.name || '',
       country: r.country || 'عربي',
       streamUrl: r.streamUrl || '',
+      logo: r.logo !== undefined ? r.logo : (r.image !== undefined ? r.image : ''),
       icon: r.icon || 'fa-radio',
-      description: r.description || ''
+      description: r.description || '',
+      sortOrder: r.sortOrder !== undefined ? r.sortOrder : null
     });
     return mapRadio(db.prepare('SELECT * FROM radios WHERE id = ?').get(id));
   }
@@ -1486,8 +1538,199 @@ function deleteRadio(id) {
   }
 }
 
+function reorderRadios(orderedIds) {
+  if (useSqlite) {
+    const updateStmt = db.prepare('UPDATE radios SET sort_order = ? WHERE id = ?');
+    const trx = db.transaction((ids) => {
+      ids.forEach((id, index) => {
+        updateStmt.run(index + 1, id);
+      });
+    });
+    trx(orderedIds);
+    return getAllRadios();
+  } else {
+    const data = readJsonDb();
+    if (data.radios) {
+      orderedIds.forEach((id, index) => {
+        const r = data.radios.find(x => x.id === id);
+        if (r) r.sortOrder = index + 1;
+      });
+      data.radios.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+      writeJsonDb(data);
+    }
+    return getAllRadios();
+  }
+}
+
 // ========================== MATCHES CRUD ==========================
+
+const ARABIC_MONTHS_MAP = {
+  'يناير': 1, 'كانون الثاني': 1,
+  'فبراير': 2, 'شباط': 2,
+  'مارس': 3, 'آذار': 3, 'اذار': 3,
+  'أبريل': 4, 'ابريل': 4, 'نيسان': 4,
+  'مايو': 5, 'أيار': 5, 'ايار': 5,
+  'يونيو': 6, 'حزيران': 6,
+  'يوليو': 7, 'تموز': 7,
+  'أغسطس': 8, 'اغسطس': 8, 'آب': 8, 'اب': 8,
+  'سبتمبر': 9, 'أيلول': 9, 'ايلول': 9,
+  'أكتوبر': 10, 'اكتوبر': 10, 'تشرين الأول': 10, 'تشرين الاول': 10,
+  'نوفمبر': 11, 'تشرين الثاني': 11,
+  'ديسمبر': 12, 'كانون الأول': 12, 'كانون الاول': 12
+};
+
+function getTodayIsoDate() {
+  const d = new Date();
+  try {
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Riyadh',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    return formatter.format(d);
+  } catch (_) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+}
+
+function normalizeArabicDigits(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+    .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+}
+
+function computeMatchDateIso(dateStr, explicitIso, createdAt) {
+  if (explicitIso && /^\d{4}-\d{2}-\d{2}$/.test(String(explicitIso).trim())) {
+    return String(explicitIso).trim();
+  }
+
+  const todayIso = getTodayIsoDate();
+
+  if (!dateStr || dateStr.trim() === '' || dateStr.trim() === 'اليوم') {
+    if (createdAt) {
+      if (typeof createdAt === 'string' && /^\d{4}-\d{2}-\d{2}/.test(createdAt)) {
+        return createdAt.slice(0, 10);
+      }
+      try {
+        const d = new Date(createdAt);
+        if (!isNaN(d.getTime())) {
+          return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh' }).format(d);
+        }
+      } catch (_) {}
+    }
+    return todayIso;
+  }
+
+  // Normalize Eastern Arabic numerals: ١٥ -> 15
+  const s = normalizeArabicDigits(dateStr).trim();
+
+  // Check if string contains standard YYYY-MM-DD
+  const isoMatch = s.match(/\b(\d{4})-(\d{1,2})-(\d{1,2})\b/);
+  if (isoMatch) {
+    return `${isoMatch[1]}-${isoMatch[2].padStart(2, '0')}-${isoMatch[3].padStart(2, '0')}`;
+  }
+
+  // Check DD/MM/YYYY or DD-MM-YYYY
+  const dmyMatch = s.match(/\b(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})\b/);
+  if (dmyMatch) {
+    return `${dmyMatch[3]}-${dmyMatch[2].padStart(2, '0')}-${dmyMatch[1].padStart(2, '0')}`;
+  }
+
+  // Check tomorrow: غداً / غدا
+  if (s.includes('غداً') || s.includes('غدا')) {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    try {
+      return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh' }).format(d);
+    } catch (_) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+  }
+
+  // Check day after tomorrow: بعد غد
+  if (s.includes('بعد غد')) {
+    const d = new Date();
+    d.setDate(d.getDate() + 2);
+    try {
+      return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh' }).format(d);
+    } catch (_) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+  }
+
+  // Check Arabic month names: e.g. "الخميس، 15 أكتوبر" or "15 أكتوبر"
+  for (const [mName, mNum] of Object.entries(ARABIC_MONTHS_MAP)) {
+    if (s.includes(mName)) {
+      const dayMatch = s.match(/\b(\d{1,2})\b/);
+      if (dayMatch) {
+        const day = parseInt(dayMatch[1], 10);
+        const yearMatch = s.match(/\b(20\d{2})\b/);
+        const curYear = parseInt(todayIso.slice(0, 4), 10);
+        const year = yearMatch ? parseInt(yearMatch[1], 10) : curYear;
+        return `${year}-${String(mNum).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      }
+    }
+  }
+
+  return todayIso;
+}
+
+// Automatically eliminate/delete matches from the previous day(s) when the calendar begins a new day
+function cleanupPreviousDaysMatches() {
+  const todayIso = getTodayIsoDate();
+  if (useSqlite) {
+    try {
+      // 1. Ensure all rows have valid and strictly computed date_iso
+      const allRows = db.prepare("SELECT id, date, date_iso, created_at FROM matches").all();
+      if (allRows && allRows.length > 0) {
+        const updateIso = db.prepare('UPDATE matches SET date_iso = ? WHERE id = ?');
+        for (const r of allRows) {
+          const comp = computeMatchDateIso(r.date, null, r.created_at);
+          if (comp && comp !== r.date_iso) {
+            updateIso.run(comp, r.id);
+          }
+        }
+      }
+      // 2. Delete matches strictly before today's calendar date
+      const info = db.prepare("DELETE FROM matches WHERE date_iso IS NOT NULL AND date_iso != '' AND date_iso < ?").run(todayIso);
+      return info.changes;
+    } catch (err) {
+      console.error('cleanupPreviousDaysMatches error:', err.message);
+      return 0;
+    }
+  } else {
+    const data = readJsonDb();
+    if (!data.matches) return 0;
+    const countBefore = data.matches.length;
+    data.matches = data.matches.filter(m => {
+      const iso = m.dateIso || m.date_iso || computeMatchDateIso(m.date, null, m.createdAt || m.created_at);
+      if (iso && iso < todayIso) return false;
+      return true;
+    });
+    if (data.matches.length !== countBefore) {
+      writeJsonDb(data);
+    }
+    return countBefore - data.matches.length;
+  }
+}
+
 function getAllMatches() {
+  // Always clean up previous day's matches as soon as new calendar day starts
+  try {
+    cleanupPreviousDaysMatches();
+  } catch (_) {}
+
   if (useSqlite) {
     return db.prepare('SELECT * FROM matches ORDER BY sort_order ASC, created_at DESC').all().map(mapMatch);
   }
@@ -1497,17 +1740,38 @@ function getAllMatches() {
 
 function createMatch(m) {
   const id = m.id || 'match-' + Date.now();
+  const dateIso = computeMatchDateIso(m.date, m.dateIso || m.date_iso);
   if (useSqlite) {
+    const payload = {
+      id,
+      league: m.league || '',
+      leagueFlag: m.leagueFlag || '🏆',
+      homeTeam: m.homeTeam || '',
+      homeLogo: m.homeLogo || '⚽',
+      awayTeam: m.awayTeam || '',
+      awayLogo: m.awayLogo || '⚽',
+      time: m.time || '',
+      date: m.date || 'اليوم',
+      dateIso,
+      status: m.status || 'upcoming',
+      channelName: m.channelName || '',
+      channelId: m.channelId || '',
+      commentator: m.commentator || 'غير محدد',
+      stadium: m.stadium || 'الملعب الرئيسي',
+      score: m.score || 'vs',
+      servers: JSON.stringify(m.servers || []),
+      sortOrder: m.sortOrder || 0
+    };
     db.prepare(`
       INSERT INTO matches
-        (id, league, league_flag, home_team, home_logo, away_team, away_logo, time, date, status, channel_name, channel_id, commentator, stadium, score, servers, sort_order)
+        (id, league, league_flag, home_team, home_logo, away_team, away_logo, time, date, date_iso, status, channel_name, channel_id, commentator, stadium, score, servers, sort_order)
       VALUES
-        (@id, @league, @leagueFlag, @homeTeam, @homeLogo, @awayTeam, @awayLogo, @time, @date, @status, @channelName, @channelId, @commentator, @stadium, @score, @servers, @sortOrder)
-    `).run({ id, ...m, servers: JSON.stringify(m.servers || []), sortOrder: m.sortOrder || 0 });
+        (@id, @league, @leagueFlag, @homeTeam, @homeLogo, @awayTeam, @awayLogo, @time, @date, @dateIso, @status, @channelName, @channelId, @commentator, @stadium, @score, @servers, @sortOrder)
+    `).run(payload);
     return mapMatch(db.prepare('SELECT * FROM matches WHERE id = ?').get(id));
   }
   const data = readJsonDb();
-  const newM = { id, ...m, servers: m.servers || [] };
+  const newM = { id, ...m, dateIso, servers: m.servers || [] };
   data.matches.push(newM);
   writeJsonDb(data);
   return newM;
@@ -1518,17 +1782,19 @@ function updateMatch(id, m) {
     const existing = db.prepare('SELECT * FROM matches WHERE id = ?').get(id);
     if (!existing) return null;
     const existingMapped = mapMatch(existing);
+    const dateIso = m.dateIso || m.date_iso || (m.date ? computeMatchDateIso(m.date) : existingMapped.dateIso);
     const updated = {
       ...existingMapped,
       ...m,
       id,
+      dateIso,
       sortOrder: m.sortOrder !== undefined ? m.sortOrder : null,
       servers: m.servers !== undefined ? m.servers : existingMapped.servers
     };
     db.prepare(`
       UPDATE matches SET
         league = @league, league_flag = @leagueFlag, home_team = @homeTeam, home_logo = @homeLogo,
-        away_team = @awayTeam, away_logo = @awayLogo, time = @time, date = @date,
+        away_team = @awayTeam, away_logo = @awayLogo, time = @time, date = @date, date_iso = @dateIso,
         status = @status, channel_name = @channelName, channel_id = @channelId,
         commentator = @commentator, stadium = @stadium, score = @score, servers = @servers,
         sort_order = COALESCE(@sortOrder, sort_order),
@@ -1540,7 +1806,8 @@ function updateMatch(id, m) {
   const data = readJsonDb();
   const idx = data.matches.findIndex(x => x.id === id);
   if (idx !== -1) {
-    data.matches[idx] = { ...data.matches[idx], ...m, id };
+    const dateIso = m.dateIso || m.date_iso || (m.date ? computeMatchDateIso(m.date) : data.matches[idx].dateIso);
+    data.matches[idx] = { ...data.matches[idx], ...m, id, dateIso };
     writeJsonDb(data);
     return data.matches[idx];
   }
@@ -1619,7 +1886,8 @@ function mapMatch(row) {
     id: row.id, league: row.league, leagueFlag: row.league_flag,
     homeTeam: row.home_team, homeLogo: row.home_logo,
     awayTeam: row.away_team, awayLogo: row.away_logo,
-    time: row.time, date: row.date, status: row.status,
+    time: row.time, date: row.date, dateIso: row.date_iso || '',
+    status: row.status,
     channelName: row.channel_name, channelId: row.channel_id,
     commentator: row.commentator, stadium: row.stadium,
     score: row.score, servers: JSON.parse(row.servers || '[]'),
@@ -1699,15 +1967,198 @@ function adminUserExists() {
   return (data.admin_users || []).length > 0;
 }
 
+// ========================== WHATSAPP NOTIFICATIONS & SUBSCRIBERS ==========================
+
+function normalizeWhatsAppNumber(phone) {
+  if (!phone) return '';
+  let clean = String(phone).replace(/[^\d]/g, '');
+  if (clean.startsWith('00')) clean = clean.slice(2);
+  // Egyptian local mobile numbers: 010..., 011..., 012..., 015... (11 digits starting with 0)
+  if (clean.startsWith('0') && clean.length === 11) {
+    clean = '20' + clean.slice(1);
+  } else if (clean.startsWith('0') && clean.length === 10) {
+    // Saudi, Gulf local mobile: 05... (10 digits)
+    clean = '966' + clean.slice(1);
+  }
+  return clean;
+}
+
+function subscribeMatch(matchId, phone, teamInterest = 'both') {
+  const normPhone = normalizeWhatsAppNumber(phone);
+  if (!normPhone || normPhone.length < 8) {
+    throw new Error('رقم الواتساب غير صالح');
+  }
+
+  if (useSqlite) {
+    const existing = db.prepare('SELECT * FROM match_subscriptions WHERE match_id = ? AND whatsapp_number = ?').get(matchId, normPhone);
+    if (existing) {
+      db.prepare("UPDATE match_subscriptions SET is_active = 1, team_interest = ?, phone = ?, created_at = datetime('now') WHERE id = ?")
+        .run(teamInterest, phone, existing.id);
+      return db.prepare('SELECT * FROM match_subscriptions WHERE id = ?').get(existing.id);
+    }
+    const info = db.prepare(`
+      INSERT INTO match_subscriptions (match_id, phone, whatsapp_number, team_interest, is_active)
+      VALUES (?, ?, ?, ?, 1)
+    `).run(matchId, phone, normPhone, teamInterest);
+    return db.prepare('SELECT * FROM match_subscriptions WHERE id = ?').get(info.lastInsertRowid);
+  }
+
+  const data = readJsonDb();
+  if (!data.match_subscriptions) data.match_subscriptions = [];
+  const existing = data.match_subscriptions.find(s => s.match_id === matchId && s.whatsapp_number === normPhone);
+  if (existing) {
+    existing.is_active = 1;
+    existing.team_interest = teamInterest;
+    existing.phone = phone;
+    existing.created_at = new Date().toISOString();
+    writeJsonDb(data);
+    return existing;
+  }
+  const newSub = {
+    id: Date.now(),
+    match_id: matchId,
+    phone,
+    whatsapp_number: normPhone,
+    team_interest: teamInterest,
+    created_at: new Date().toISOString(),
+    is_active: 1
+  };
+  data.match_subscriptions.push(newSub);
+  writeJsonDb(data);
+  return newSub;
+}
+
+function unsubscribeMatch(matchId, phone) {
+  const normPhone = normalizeWhatsAppNumber(phone);
+  if (useSqlite) {
+    db.prepare('UPDATE match_subscriptions SET is_active = 0 WHERE match_id = ? AND whatsapp_number = ?').run(matchId, normPhone);
+  } else {
+    const data = readJsonDb();
+    if (data.match_subscriptions) {
+      data.match_subscriptions.forEach(s => {
+        if (s.match_id === matchId && s.whatsapp_number === normPhone) {
+          s.is_active = 0;
+        }
+      });
+      writeJsonDb(data);
+    }
+  }
+}
+
+function getSubscribersForMatch(matchId) {
+  if (useSqlite) {
+    return db.prepare('SELECT * FROM match_subscriptions WHERE match_id = ? AND is_active = 1').all(matchId);
+  }
+  const data = readJsonDb();
+  return (data.match_subscriptions || []).filter(s => s.match_id === matchId && s.is_active === 1);
+}
+
+function getAllSubscriptions() {
+  const allMatches = getAllMatches();
+  const matchMap = {};
+  allMatches.forEach(m => { matchMap[m.id] = m; });
+
+  let subs = [];
+  if (useSqlite) {
+    subs = db.prepare('SELECT * FROM match_subscriptions ORDER BY id DESC').all();
+  } else {
+    const data = readJsonDb();
+    subs = [...(data.match_subscriptions || [])].reverse();
+  }
+
+  return subs.map(s => {
+    const m = matchMap[s.match_id] || null;
+    return {
+      ...s,
+      matchTitle: m ? `${m.homeTeam} vs ${m.awayTeam}` : `مباراة (${s.match_id})`,
+      matchLeague: m ? m.league : '',
+      matchTime: m ? m.time : '',
+      matchDate: m ? m.date : ''
+    };
+  });
+}
+
+function deleteSubscription(id) {
+  if (useSqlite) {
+    db.prepare('DELETE FROM match_subscriptions WHERE id = ?').run(id);
+  } else {
+    const data = readJsonDb();
+    if (data.match_subscriptions) {
+      data.match_subscriptions = data.match_subscriptions.filter(s => String(s.id) !== String(id));
+      writeJsonDb(data);
+    }
+  }
+}
+
+// ========================== SITE SETTINGS ==========================
+
+function getSiteSetting(key, defaultValue = null) {
+  if (useSqlite) {
+    const row = db.prepare('SELECT value FROM site_settings WHERE key = ?').get(key);
+    if (!row) return defaultValue;
+    try {
+      return JSON.parse(row.value);
+    } catch (_) {
+      return row.value;
+    }
+  }
+  const data = readJsonDb();
+  if (data.site_settings && data.site_settings[key] !== undefined) {
+    return data.site_settings[key];
+  }
+  return defaultValue;
+}
+
+function setSiteSetting(key, value) {
+  const valStr = typeof value === 'string' ? value : JSON.stringify(value);
+  if (useSqlite) {
+    db.prepare(`
+      INSERT INTO site_settings (key, value, updated_at)
+      VALUES (?, ?, datetime('now'))
+      ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = datetime('now')
+    `).run(key, valStr);
+  } else {
+    const data = readJsonDb();
+    if (!data.site_settings) data.site_settings = {};
+    data.site_settings[key] = value;
+    writeJsonDb(data);
+  }
+}
+
+function getWhatsAppConfig() {
+  const defaultConfig = {
+    enabled: true,
+    provider: 'greenapi', // 'simulator', 'ultramsg', 'greenapi', 'twilio'
+    instanceId: '710722774712',
+    token: 'f01deb2a2e6e4358be23f86283d72b392442ca1281234184a1',
+    senderPhone: '',
+    customTemplate: '⚽ هدف جديد في مباراة {match}!\nالنتيجة الحالية: {score}\nشاهد البث المباشر الآن: {link}',
+    sentCount: 0
+  };
+  const saved = getSiteSetting('whatsapp_config', defaultConfig);
+  return { ...defaultConfig, ...(saved || {}) };
+}
+
+function saveWhatsAppConfig(cfg) {
+  const current = getWhatsAppConfig();
+  const merged = { ...current, ...cfg };
+  setSiteSetting('whatsapp_config', merged);
+  return merged;
+}
+
 // Auto init on load
 initDatabase();
 
 module.exports = {
   getAllChannels, getChannelById, createChannel, updateChannel, deleteChannel,
   setDefaultChannel, reorderChannels,
-  getAllRadios, createRadio, updateRadio, deleteRadio,
+  getAllRadios, createRadio, updateRadio, deleteRadio, reorderRadios,
   getAllMatches, createMatch, updateMatch, deleteMatch, updateMatchScore, deleteEndedMatches, reorderMatches,
+  cleanupPreviousDaysMatches, computeMatchDateIso, getTodayIsoDate,
   getAllNews, createNews, deleteNews,
   getAdminUser, createAdminUser, adminUserExists,
+  normalizeWhatsAppNumber, subscribeMatch, unsubscribeMatch,
+  getSubscribersForMatch, getAllSubscriptions, deleteSubscription,
+  getSiteSetting, setSiteSetting, getWhatsAppConfig, saveWhatsAppConfig,
   db
 };

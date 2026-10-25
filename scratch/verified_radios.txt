@@ -1,0 +1,54 @@
+[ONLINE] إذاعة القرآن الكريم من القاهرة
+URL: http://n12.radiojar.com/8s5u5tpdtwzuv
+
+[OFFLINE: HTTP Error 502: Bad Gateway] إذاعة القرآن الكريم (السعودية - MBC)
+URL: https://quraanfm-radio.mbc.net/quraanfm-radio.m3u8
+
+[ONLINE] راديو 9090 مصر
+URL: http://9090streaming.mobtada.com/9090FMEGYPT
+
+[ONLINE] أون سبورت إف إم (On Sport FM)
+URL: https://carina.streamerr.co:2020/stream/OnSportFM
+
+[ONLINE] مونت كارلو الدولية (Monte Carlo Doualiya)
+URL: http://montecarlodoualiya128k.ice.infomaniak.ch/mc-doualiya.mp3
+
+[ONLINE] العربية إف إم (Al Arabiya FM)
+URL: https://fm.alarabiya.net/fm/myStream/playlist.m3u8
+
+[OFFLINE: HTTP Error 502: Bad Gateway] إم بي سي إف إم (MBC FM)
+URL: https://mbcfm-radio.mbc.net/mbcfm-radio.m3u8
+
+[OFFLINE: HTTP Error 404: Not Found] روتانا إف إم (Rotana FM)
+URL: http://stream.radiojar.com/rotanafm
+
+[ONLINE] راديو مارس الرياضي المغربي (Radio Mars)
+URL: https://radiomars.ice.infomaniak.ch/radiomars-128.mp3
+
+[ONLINE] إذاعة مشاري العفاسي
+URL: https://qurango.net/radio/mishary_alafasi
+
+[ONLINE] إذاعة محمود خليل الحصري
+URL: https://qurango.net/radio/mahmoud_khalil_alhussary_warsh
+
+[OFFLINE: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)>] شام إف إم (Sham FM سوريا)
+URL: https://radioshamfm.grtvstream.com:8400/stream
+
+[OFFLINE: HTTP Error 404: Not Found] ميدي 1 طرب (Medi 1 Tarab)
+URL: http://live.medi1.com/Tarab
+
+[ONLINE] راديو أصوات (Radio Aswat المغرب)
+URL: http://broadcast.ice.infomaniak.ch/aswat-high.mp3?.mp3
+
+[ONLINE] تسعينات إف إم (Tes3enat FM)
+URL: http://178.33.135.244:20095/;
+
+[ONLINE] هيت راديو (Hit Radio Maroc)
+URL: https://stream.zeno.fm/une3a02mb
+
+[ONLINE] فيروزيات (Fayroz Radio)
+URL: https://stream.zeno.fm/zv3e5wykprhvv.mp3
+
+[ONLINE] عمرو دياب إف إم (Amr Diab Radio)
+URL: https://stream-40.zeno.fm/xa4yhh4k838uv
+

@@ -14,6 +14,7 @@ logs/
 altv_database.db
 altv_database.db-shm
 altv_database.db-wal
+*.db
 
 # Python
 __pycache__/
@@ -21,6 +22,7 @@ __pycache__/
 *.pyo
 
 # Large personal/media files (not part of the web app)
+*.xlsx
 *.pptx
 *.mp3
 *.wav

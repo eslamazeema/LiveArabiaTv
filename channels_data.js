@@ -1085,6 +1085,7 @@ const DEFAULT_RADIOS = [
     "name": "إذاعة القرآن الكريم من القاهرة",
     "country": "مصر",
     "streamUrl": "https://stream.radiojar.com/8s44vhq97duvv",
+    "logo": "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=200&auto=format&fit=crop&q=80",
     "icon": "fa-mosque",
     "description": "تلاوات خاشعة وأحاديث شريفة برواية حفص عن عاصم على مدار 24 ساعة.",
     "sortOrder": 1
@@ -1094,6 +1095,7 @@ const DEFAULT_RADIOS = [
     "name": "إذاعة القرآن الكريم - مكة المكرمة",
     "country": "السعودية",
     "streamUrl": "https://ssl.live.hawaa.link/listen/quran_makkah/radio.mp3",
+    "logo": "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=200&auto=format&fit=crop&q=80",
     "icon": "fa-kaaba",
     "description": "البث الصوتي المباشر للتلاوات والصلوات من الحرم المكي الشريف.",
     "sortOrder": 2
@@ -1103,6 +1105,7 @@ const DEFAULT_RADIOS = [
     "name": "إذاعة مونت كارلو الدولية",
     "country": "فرنسا/عربي",
     "streamUrl": "https://montecarlo.ice.infomaniak.ch/mc-doualiya-midfi.mp3",
+    "logo": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=200&auto=format&fit=crop&q=80",
     "icon": "fa-tower-cell",
     "description": "أخبار عالمية وتحليلات سياسية وثقافية بلغة عربية راقية ومباشرة.",
     "sortOrder": 3
@@ -1112,6 +1115,7 @@ const DEFAULT_RADIOS = [
     "name": "إذاعة راديو سوا",
     "country": "عربي",
     "streamUrl": "https://mbn-channel-01.akamaized.net/hls/live/2003501/sawa/master.m3u8",
+    "logo": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&auto=format&fit=crop&q=80",
     "icon": "fa-radio",
     "description": "أحدث الأخبار الإقليمية والبرامج الموسيقية والشبابية.",
     "sortOrder": 4
@@ -1121,6 +1125,7 @@ const DEFAULT_RADIOS = [
     "name": "إذاعة روتانا إف إم",
     "country": "السعودية",
     "streamUrl": "https://stream.radiojar.com/8s44vhq97duvv",
+    "logo": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=200&auto=format&fit=crop&q=80",
     "icon": "fa-music",
     "description": "أشهر الأغاني العربية الحديثة والبرامج الترفيهية الفنية.",
     "sortOrder": 5

@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Favorites stored in localStorage (per-browser preference, not shared data)
   let favorites = JSON.parse(localStorage.getItem('altv_favorites')) || [];
+  let radioFavorites = JSON.parse(localStorage.getItem('altv_radio_favorites')) || [];
 
   // Categories remain static
   let categories = (typeof DEFAULT_CATEGORIES !== 'undefined') ? DEFAULT_CATEGORIES : [
@@ -65,7 +66,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (chData.success) channels = chData.data;
       if (matchData.success) matches = matchData.data;
       if (newsData.success) sportsNews = newsData.data;
-      if (radData.success) radios = radData.data;
+      if (radData.success) {
+        radios = radData.data;
+        radios.sort((a, b) => (a.sortOrder || a.sort_order || 0) - (b.sortOrder || b.sort_order || 0));
+      }
 
     } catch (err) {
       console.warn('⚠️ API unavailable, falling back to default data:', err.message);
@@ -90,8 +94,26 @@ document.addEventListener('DOMContentLoaded', async () => {
   const categoriesContainer = document.getElementById('categoriesContainer');
   const channelsGrid = document.getElementById('channelsGrid');
   const matchesList = document.getElementById('matchesList');
-  const sportsNewsGrid = document.getElementById('sportsNewsGrid');
   const radioGrid = document.getElementById('radioGrid');
+  const favRadiosWrapper = document.getElementById('favRadiosWrapper');
+  const favRadioGrid = document.getElementById('favRadioGrid');
+  const favRadiosCountSubtitle = document.getElementById('favRadiosCountSubtitle');
+  const channelsSectionHeaderTitle = document.getElementById('channelsSectionHeaderTitle');
+  const favFilterTabsContainer = document.getElementById('favFilterTabsContainer');
+  const favFilterAllBtn = document.getElementById('favFilterAllBtn');
+  const favFilterChannelsBtn = document.getElementById('favFilterChannelsBtn');
+  const favFilterRadiosBtn = document.getElementById('favFilterRadiosBtn');
+  const favTotalCountBadge = document.getElementById('favTotalCountBadge');
+  const favChannelsCountBadge = document.getElementById('favChannelsCountBadge');
+  const favRadiosCountBadge = document.getElementById('favRadiosCountBadge');
+  const favRadiosSubBadge = document.getElementById('favRadiosSubBadge');
+  let currentFavSubFilter = 'all';
+
+  const radioFilterAllBtn = document.getElementById('radioFilterAllBtn');
+  const radioFilterFavsBtn = document.getElementById('radioFilterFavsBtn');
+  const radioFavCountBadge = document.getElementById('radioFavCountBadge');
+  let currentRadioFilter = 'all';
+
   const highlightsGrid = document.getElementById('highlightsGrid');
   const searchInput = document.getElementById('searchInput');
   const showFavsBtn = document.getElementById('showFavsBtn');
@@ -171,9 +193,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   // --- 2. RENDER CATEGORIES ---
   function renderCategories() {
     if (!categoriesContainer) return;
-    categoriesContainer.innerHTML = categories.map(cat => `
-      <button class="category-btn ${cat.id === currentCategory ? 'active' : ''}" data-id="${cat.id}">
-        <i class="fa-solid ${cat.icon}"></i>
+    const totalFavs = (favorites ? favorites.length : 0) + (radioFavorites ? radioFavorites.length : 0);
+    const favCatItem = {
+      id: 'favs',
+      name: `المفضلة (${totalFavs})`,
+      icon: 'fa-heart',
+      isFav: true
+    };
+    const displayCategories = [
+      categories[0], // 'الكل'
+      favCatItem,
+      ...categories.slice(1)
+    ];
+
+    categoriesContainer.innerHTML = displayCategories.map(cat => `
+      <button class="category-btn ${cat.id === currentCategory ? 'active' : ''} ${cat.isFav ? 'fav-category-pill' : ''}" data-id="${cat.id}">
+        <i class="fa-${cat.id === currentCategory && cat.isFav ? 'solid' : (cat.isFav ? 'solid' : 'solid')} ${cat.icon}" ${cat.isFav ? 'style="color: #ff1744;"' : ''}></i>
         <span>${cat.name}</span>
       </button>
     `).join('');
@@ -183,27 +218,122 @@ document.addEventListener('DOMContentLoaded', async () => {
         currentCategory = btn.dataset.id;
         renderCategories();
         filterAndRenderChannels();
+        if (currentCategory === 'favs') {
+          const channelsSection = document.getElementById('channelsSection');
+          if (channelsSection) {
+            channelsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
       });
     });
   }
 
-  // --- 3. UNIVERSAL STREAM PLAYER ---
+  // --- 3. UNIVERSAL STREAM PLAYER & SEO SYSTEM ---
+  function generateSeoSlug(name) {
+    if (!name) return '';
+    return name.trim()
+      .toLowerCase()
+      .replace(/[^\w\u0621-\u064A\u0660-\u0669\- ]+/gu, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+  }
+
+  function updateSeoMetaTags(channel, pageUrl) {
+    if (!channel) return;
+    const title = `${channel.name} - بث مباشر | arabialivetv.com`;
+    const description = `شاهد الآن البث المباشر لقناة ${channel.name} بجودة عالية Full HD وبدون تقطيع على مدار 24 ساعة عبر منصة عربية لايف تي في.`;
+    const imageUrl = channel.logo || 'https://arabialivetv.com/favicon.ico';
+    const keywords = `${channel.name}, بث مباشر ${channel.name}, قناة ${channel.name}, ${channel.country || 'قنوات عربية'}, بث مباشر للقنوات, مباريات اليوم, arabialivetv`;
+
+    document.title = title;
+
+    function setMeta(attr, val, content) {
+      let el = document.querySelector(`meta[${attr}="${val}"]`);
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, val);
+        document.head.appendChild(el);
+      }
+      el.setAttribute('content', content);
+    }
+
+    setMeta('name', 'description', description);
+    setMeta('name', 'keywords', keywords);
+
+    // OpenGraph Meta Tags
+    setMeta('property', 'og:title', title);
+    setMeta('property', 'og:description', description);
+    setMeta('property', 'og:image', imageUrl);
+    setMeta('property', 'og:url', pageUrl);
+    setMeta('property', 'og:type', 'video.other');
+    setMeta('property', 'og:site_name', 'بث مباشر للقنوات الفضائية');
+
+    // Twitter Card Meta Tags
+    setMeta('name', 'twitter:card', 'summary_large_image');
+    setMeta('name', 'twitter:title', title);
+    setMeta('name', 'twitter:description', description);
+    setMeta('name', 'twitter:image', imageUrl);
+
+    // Canonical link tag
+    let canon = document.querySelector('link[rel="canonical"]');
+    if (!canon) {
+      canon = document.createElement('link');
+      canon.setAttribute('rel', 'canonical');
+      document.head.appendChild(canon);
+    }
+    canon.setAttribute('href', pageUrl);
+
+    // Real-time Schema.org JSON-LD Structured Data
+    let schemaEl = document.getElementById('schemaStructuredData');
+    if (schemaEl) {
+      try {
+        schemaEl.textContent = JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BroadcastEvent",
+          "name": `بث مباشر ${channel.name}`,
+          "description": channel.description || description,
+          "isLiveBroadcast": true,
+          "startDate": new Date().toISOString(),
+          "broadcastOfEvent": {
+            "@type": "Event",
+            "name": `البث الفضائي لقناة ${channel.name}`,
+            "location": {
+              "@type": "Place",
+              "name": channel.country || "الوطن العربي"
+            }
+          },
+          "video": {
+            "@type": "VideoObject",
+            "name": `${channel.name} بث مباشر`,
+            "description": description,
+            "thumbnailUrl": imageUrl,
+            "uploadDate": "2024-01-01T00:00:00Z"
+          }
+        });
+      } catch (_) {}
+    }
+  }
+
   function playChannel(channel, shouldScroll = true) {
     if (!channel) return;
     activeChannel = channel;
     const streamUrl = channel.streamUrl || channel.fallbackUrl;
 
-    // Update browser URL query to this channel's unique ID dynamically without full page reload
+    // Update browser URL query to this channel's unique ID & SEO-friendly Arabic title
+    const slug = generateSeoSlug(channel.name);
+    let channelUrl = `${window.location.origin}/?ch=${encodeURIComponent(channel.id)}&title=${encodeURIComponent(slug)}`;
     if (typeof window !== 'undefined' && window.history && window.history.replaceState) {
       let cleanPath = window.location.pathname;
       if (cleanPath.endsWith('/index.html')) {
         cleanPath = cleanPath.slice(0, -10) || '/';
       }
-      window.history.replaceState({ chId: channel.id }, '', `${cleanPath}?ch=${encodeURIComponent(channel.id)}`);
+      const relativeUrl = `${cleanPath}?ch=${encodeURIComponent(channel.id)}&title=${encodeURIComponent(slug)}`;
+      window.history.replaceState({ chId: channel.id }, '', relativeUrl);
     }
 
-    // Dynamic document title with channel name
-    document.title = `${channel.name} - بث مباشر | arabialivetv.com`;
+    // Dynamic document title & comprehensive SEO meta tags (description, OpenGraph, Twitter, Schema)
+    updateSeoMetaTags(channel, channelUrl);
 
     // Update player details
     playerChannelLogo.src = channel.logo;
@@ -337,7 +467,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       shareModalText.textContent = `انشر رابط بث قناة "${channel.name}" مباشرة لأصدقائك في شبكات التواصل الاجتماعي:`;
     }
 
-    const shareUrl = `${window.location.origin}/?ch=${encodeURIComponent(channel.id)}`;
+    const slug = generateSeoSlug(channel.name);
+    const shareUrl = `${window.location.origin}/?ch=${encodeURIComponent(channel.id)}&title=${encodeURIComponent(slug)}`;
     const shareText = `شاهد الآن بث حي ومباشر لقناة "${channel.name}" بجودة عالية عبر منصة arabialivetv.com 📺:`;
 
     if (shareWhatsapp) shareWhatsapp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
@@ -360,7 +491,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       shareModalText.textContent = `انشر رابط بث إذاعة "${radio.name}" مباشرة لأصدقائك في شبكات التواصل الاجتماعي:`;
     }
 
-    const shareUrl = `${window.location.origin}/?radio=${encodeURIComponent(radio.id)}`;
+    const slug = generateSeoSlug(radio.name);
+    const shareUrl = `${window.location.origin}/?radio=${encodeURIComponent(radio.id)}&title=${encodeURIComponent(slug)}`;
     const shareText = `استمع الآن إلى بث حي ومباشر لإذاعة "${radio.name}" بصوت نقي عبر منصة arabialivetv.com 🎙️📻:`;
 
     if (shareWhatsapp) shareWhatsapp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
@@ -423,15 +555,80 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function filterAndRenderChannels() {
+    if (channelsSectionHeaderTitle) {
+      if (currentCategory === 'favs') {
+        channelsSectionHeaderTitle.innerHTML = `<i class="fa-solid fa-heart" style="color: #ff1744;"></i> قائمتي المفضلة`;
+      } else {
+        channelsSectionHeaderTitle.innerHTML = `<i class="fa-solid fa-satellite-dish" style="color: var(--primary);"></i> القنوات الفضائية المباشرة`;
+      }
+    }
+
+    if (favFilterTabsContainer) {
+      favFilterTabsContainer.style.display = (currentCategory === 'favs') ? 'flex' : 'none';
+      if (currentCategory === 'favs') {
+        const totalFavCount = (favorites ? favorites.length : 0) + (radioFavorites ? radioFavorites.length : 0);
+        if (favTotalCountBadge) favTotalCountBadge.textContent = totalFavCount;
+        if (favChannelsCountBadge) favChannelsCountBadge.textContent = favorites ? favorites.length : 0;
+        if (favRadiosCountBadge) favRadiosCountBadge.textContent = radioFavorites ? radioFavorites.length : 0;
+        if (favRadiosSubBadge) favRadiosSubBadge.textContent = radioFavorites ? radioFavorites.length : 0;
+      }
+    }
+
     renderChannelsGrid(getFilteredChannels());
+    renderFavRadiosSubsection();
   }
 
   function renderChannelsGrid(channelList) {
     if (!channelsGrid) return;
     const channelsCountSubtitle = document.getElementById('channelsCountSubtitle');
     if (channelsCountSubtitle) {
-      channelsCountSubtitle.textContent = `معروض (${channelList.length}) قناة من إجمالي (${channels.length}) قناة فضائية عربية ومباشرة`;
+      if (currentCategory === 'favs') {
+        channelsCountSubtitle.textContent = `لديك (${favorites.length}) قناة فضائية و (${radioFavorites.length}) إذاعة راديو في المفضلة`;
+      } else {
+        channelsCountSubtitle.textContent = `معروض (${channelList.length}) قناة من إجمالي (${channels.length}) قناة فضائية عربية ومباشرة`;
+      }
     }
+
+    if (currentCategory === 'favs') {
+      if (currentFavSubFilter === 'radios') {
+        channelsGrid.style.display = 'none';
+        return;
+      }
+
+      if (channelList.length === 0) {
+        if (currentFavSubFilter === 'channels') {
+          channelsGrid.style.display = 'grid';
+          channelsGrid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: var(--text-muted);">
+              <i class="fa-solid fa-heart-crack" style="font-size: 2.8rem; margin-bottom: 12px; color: #ff1744; opacity: 0.6;"></i>
+              <h3 style="color: #fff; margin-bottom: 6px;">لا توجد قنوات فضائية في المفضلة حالياً</h3>
+              <p>اضغط على أيقونة القلب (❤️) بجوار أي قناة لإضافتها إلى قائمتك المفضلة.</p>
+            </div>
+          `;
+          return;
+        }
+
+        // 'all' subfilter:
+        if (radioFavorites.length > 0) {
+          channelsGrid.style.display = 'none';
+          return;
+        } else {
+          channelsGrid.style.display = 'grid';
+          channelsGrid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 45px 20px; color: var(--text-muted);">
+              <i class="fa-solid fa-heart-crack" style="font-size: 3rem; margin-bottom: 12px; color: #ff1744; opacity: 0.7;"></i>
+              <h3 style="color: #fff; margin-bottom: 8px;">قائمة المفضلة فارغة حالياً</h3>
+              <p>لم تقم بإضافة أي قنوات فضائية أو إذاعات راديو إلى المفضلة بعد.<br>اضغط على رمز القلب (❤️) في أي قناة أو إذاعة لحفظها والوصول السريع إليها هنا في أي وقت.</p>
+            </div>
+          `;
+          return;
+        }
+      }
+    }
+
+    // Normal or Has Favorite Channels
+    channelsGrid.style.display = 'grid';
+
     if (channelList.length === 0) {
       channelsGrid.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
@@ -448,7 +645,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       return `
         <div class="channel-card ${isPlaying ? 'active-playing' : ''}" data-id="${ch.id}">
-          <button class="fav-btn ${isFav ? 'is-fav' : ''}" data-fav-id="${ch.id}" title="إضافة للمفضلة">
+          <button class="fav-btn ${isFav ? 'is-fav' : ''}" data-fav-id="${ch.id}" title="${isFav ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}">
             <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
           </button>
           <button class="card-share-btn" data-share-id="${ch.id}" title="مشاركة رابط هذه القناة">
@@ -503,16 +700,284 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
       favorites.push(chId);
     }
-    // Favorites are per-browser preference (intentional — each viewer has their own)
     localStorage.setItem('altv_favorites', JSON.stringify(favorites));
+    renderCategories();
     filterAndRenderChannels();
     if (activeChannel && activeChannel.id === chId) {
       playChannel(activeChannel, false);
     }
   }
 
+  function toggleRadioFavorite(radioId) {
+    if (radioFavorites.includes(radioId)) {
+      radioFavorites = radioFavorites.filter(id => id !== radioId);
+    } else {
+      radioFavorites.push(radioId);
+    }
+    localStorage.setItem('altv_radio_favorites', JSON.stringify(radioFavorites));
+    updateRadioFavBadge();
+    renderCategories();
+    renderRadios();
+    renderFavRadiosSubsection();
+    if (currentCategory === 'favs') {
+      filterAndRenderChannels();
+    }
+  }
+
+  function updateRadioFavBadge() {
+    if (radioFavCountBadge) {
+      radioFavCountBadge.textContent = radioFavorites.length;
+    }
+    if (favRadiosCountBadge) {
+      favRadiosCountBadge.textContent = radioFavorites.length;
+    }
+    if (favRadiosSubBadge) {
+      favRadiosSubBadge.textContent = radioFavorites.length;
+    }
+    if (favTotalCountBadge) {
+      favTotalCountBadge.textContent = (favorites ? favorites.length : 0) + (radioFavorites ? radioFavorites.length : 0);
+    }
+  }
+
+  function renderFavRadiosSubsection() {
+    if (!favRadiosWrapper || !favRadioGrid) return;
+    if (currentCategory !== 'favs') {
+      favRadiosWrapper.style.display = 'none';
+      return;
+    }
+    if (currentFavSubFilter === 'channels') {
+      favRadiosWrapper.style.display = 'none';
+      return;
+    }
+
+    const favList = radios.filter(r => radioFavorites.includes(r.id));
+    if (favList.length === 0) {
+      if (currentFavSubFilter === 'radios') {
+        favRadiosWrapper.style.display = 'block';
+        if (favRadiosCountSubtitle) {
+          favRadiosCountSubtitle.textContent = `المحطات الإذاعية التي قمت بحفظها في المفضلة`;
+        }
+        favRadioGrid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: var(--text-muted);">
+            <i class="fa-solid fa-heart-crack" style="font-size: 2.8rem; margin-bottom: 12px; color: #ff1744; opacity: 0.6;"></i>
+            <h3 style="color: #fff; margin-bottom: 6px;">لا توجد إذاعات في المفضلة حالياً</h3>
+            <p>اضغط على أيقونة القلب (❤️) بجوار أي إذاعة لإضافتها إلى قائمتك المفضلة.</p>
+          </div>
+        `;
+      } else {
+        favRadiosWrapper.style.display = 'none';
+      }
+      return;
+    }
+
+    favRadiosWrapper.style.display = 'block';
+    if (favRadiosCountSubtitle) {
+      favRadiosCountSubtitle.textContent = `لديك (${favList.length}) إذاعة راديو مضافة إلى قائمة المفضلة`;
+    }
+    if (favRadiosSubBadge) {
+      favRadiosSubBadge.textContent = favList.length;
+    }
+
+    favRadioGrid.innerHTML = favList.map(r => `
+      <div class="radio-card ${activeRadio && activeRadio.id === r.id ? 'playing' : ''}" data-id="${r.id}">
+        <div class="radio-icon">
+          ${r.logo ? `
+            <img src="${r.logo}" alt="${r.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+            <i class="fa-solid ${r.icon || 'fa-radio'}" style="display: none;"></i>
+          ` : `
+            <i class="fa-solid ${r.icon || 'fa-radio'}"></i>
+          `}
+        </div>
+        <div class="radio-info" style="flex: 1;">
+          <h4 style="font-size: 1.05rem; font-weight: 800; color: #fff;">${r.name}</h4>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">${r.description || 'بث صوّتي حي ومباشر'}</p>
+        </div>
+        <div class="radio-actions">
+          <button class="fav-btn fav-radio-btn is-fav" data-fav-radio-id="${r.id}" title="إزالة من المفضلة">
+            <i class="fa-solid fa-heart"></i>
+          </button>
+          <button class="btn-icon share-radio-btn" data-radio-id="${r.id}" title="مشاركة بث إذاعة الراديو">
+            <i class="fa-solid fa-share-nodes"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    favRadioGrid.querySelectorAll('.radio-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.radio-actions')) return;
+        const rId = card.dataset.id;
+        const selectedRadio = radios.find(r => r.id === rId);
+        if (selectedRadio) playRadio(selectedRadio);
+      });
+    });
+
+    favRadioGrid.querySelectorAll('.fav-radio-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const rId = btn.dataset.favRadioId;
+        toggleRadioFavorite(rId);
+      });
+    });
+
+    favRadioGrid.querySelectorAll('.share-radio-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const rId = btn.dataset.radioId;
+        const targetRad = radios.find(r => r.id === rId);
+        if (targetRad) openRadioShareModal(targetRad);
+      });
+    });
+  }
+
+  // Favorite Subfilter Tab Listeners
+  if (favFilterAllBtn) {
+    favFilterAllBtn.addEventListener('click', () => {
+      currentFavSubFilter = 'all';
+      favFilterAllBtn.classList.add('active');
+      if (favFilterChannelsBtn) favFilterChannelsBtn.classList.remove('active');
+      if (favFilterRadiosBtn) favFilterRadiosBtn.classList.remove('active');
+      filterAndRenderChannels();
+    });
+  }
+
+  if (favFilterChannelsBtn) {
+    favFilterChannelsBtn.addEventListener('click', () => {
+      currentFavSubFilter = 'channels';
+      favFilterChannelsBtn.classList.add('active');
+      if (favFilterAllBtn) favFilterAllBtn.classList.remove('active');
+      if (favFilterRadiosBtn) favFilterRadiosBtn.classList.remove('active');
+      filterAndRenderChannels();
+    });
+  }
+
+  if (favFilterRadiosBtn) {
+    favFilterRadiosBtn.addEventListener('click', () => {
+      currentFavSubFilter = 'radios';
+      favFilterRadiosBtn.classList.add('active');
+      if (favFilterAllBtn) favFilterAllBtn.classList.remove('active');
+      if (favFilterChannelsBtn) favFilterChannelsBtn.classList.remove('active');
+      filterAndRenderChannels();
+    });
+  }
+
   // --- 8. RENDER DAILY MATCH CENTER & LIVE STREAM MODAL ---
-  let activeMatchFilter = 'all';
+  let activeMatchFilter = 'today'; // Default: show today's matches
+
+  const ARABIC_MONTHS = {
+    'يناير': 1, 'فبراير': 2, 'مارس': 3, 'أبريل': 4, 'ابريل': 4,
+    'مايو': 5, 'يونيو': 6, 'يوليو': 7, 'أغسطس': 8, 'اغسطس': 8,
+    'سبتمبر': 9, 'أكتوبر': 10, 'اكتوبر': 10, 'نوفمبر': 11, 'ديسمبر': 12
+  };
+
+  // Helper: return today's ISO date (YYYY-MM-DD) according to client's local calendar
+  function getTodayIsoString() {
+    const d = new Date();
+    try {
+      return new Intl.DateTimeFormat('en-CA', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).format(d);
+    } catch (_) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+  }
+
+  function normalizeArabicDigits(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+      .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+  }
+
+  // Helper: compute ISO date for any match with full Arabic numeral support
+  function getMatchIso(m) {
+    if (m.dateIso && /^\d{4}-\d{2}-\d{2}$/.test(m.dateIso)) return m.dateIso;
+    const str = normalizeArabicDigits(m.date || '').trim();
+    const todayIso = getTodayIsoString();
+
+    if (!str || str === 'اليوم') {
+      if (m.created_at || m.createdAt) {
+        const c = String(m.created_at || m.createdAt);
+        if (/^\d{4}-\d{2}-\d{2}/.test(c)) return c.slice(0, 10);
+      }
+      return todayIso;
+    }
+
+    const isoM = str.match(/\b(\d{4})-(\d{1,2})-(\d{1,2})\b/);
+    if (isoM) return `${isoM[1]}-${isoM[2].padStart(2, '0')}-${isoM[3].padStart(2, '0')}`;
+
+    const dmyMatch = str.match(/\b(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})\b/);
+    if (dmyMatch) return `${dmyMatch[3]}-${dmyMatch[2].padStart(2, '0')}-${dmyMatch[1].padStart(2, '0')}`;
+
+    if (str.includes('غداً') || str.includes('غدا')) {
+      const tom = new Date();
+      tom.setDate(tom.getDate() + 1);
+      return getTodayIsoString(tom);
+    }
+
+    if (str.includes('بعد غد')) {
+      const aft = new Date();
+      aft.setDate(aft.getDate() + 2);
+      return getTodayIsoString(aft);
+    }
+
+    for (const [mName, mNum] of Object.entries(ARABIC_MONTHS)) {
+      if (str.includes(mName)) {
+        const dM = str.match(/\b(\d{1,2})\b/);
+        if (dM) {
+          const day = parseInt(dM[1], 10);
+          const yM = str.match(/\b(20\d{2})\b/);
+          const year = yM ? parseInt(yM[1], 10) : new Date().getFullYear();
+          return `${year}-${String(mNum).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        }
+      }
+    }
+    return todayIso;
+  }
+
+  // Helper: generate all Arabic date strings that represent "today"
+  function getTodayArabicStrings() {
+    const now = new Date();
+    const strs = new Set();
+    // Variant 1: ar-EG full format e.g. "الثلاثاء 14 أكتوبر"
+    try {
+      strs.add(now.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' }));
+    } catch (_) {}
+    // Variant 2: ar full format e.g. "الثلاثاء، 14 أكتوبر 2026"
+    try {
+      strs.add(now.toLocaleDateString('ar', { weekday: 'long', day: 'numeric', month: 'long' }));
+    } catch (_) {}
+    // Also accept literal keyword
+    strs.add('اليوم');
+    return strs;
+  }
+
+  // Automatic midnight rollover watcher:
+  // When the user's calendar begins a new day, immediately eliminate yesterday's matches
+  let lastObservedDay = getTodayIsoString();
+  setInterval(() => {
+    const currentDay = getTodayIsoString();
+    if (currentDay !== lastObservedDay) {
+      lastObservedDay = currentDay;
+      console.log('📅 Calendar day changed to:', currentDay, '— auto-refreshing matches.');
+      fetch(`${API_BASE}/api/matches`)
+        .then(r => r.json())
+        .then(res => {
+          if (res && res.success && Array.isArray(res.data)) {
+            matches = res.data;
+          }
+          renderMatches();
+        })
+        .catch(() => {
+          renderMatches();
+        });
+    }
+  }, 20000);
 
   const matchTabsContainer = document.getElementById('matchTabsContainer');
   if (matchTabsContainer) {
@@ -543,7 +1008,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  function renderMatches() {
+  function renderMatches(filterQuery = '') {
     if (!matchesList) return;
 
     let sorted = [...matches];
@@ -554,13 +1019,66 @@ document.addEventListener('DOMContentLoaded', async () => {
       sorted.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
     }
 
-    const filtered = sorted.filter(m => {
-      if (activeMatchFilter === 'all') return true;
-      if (activeMatchFilter === 'live') return m.status === 'live';
-      if (activeMatchFilter === 'upcoming') return m.status === 'upcoming' || (m.date && m.date !== 'اليوم');
-      if (activeMatchFilter === 'today') return (!m.date || m.date === 'اليوم' || m.date.includes('اليوم'));
+    const todayIso = getTodayIsoString();
+    const todayStrings = getTodayArabicStrings();
+
+    // 1. ELIMINATE matches from the previous day(s) when the calendar begins a new day
+    const nonPastMatches = sorted.filter(m => {
+      // Live matches are always kept active
+      if (m.status === 'live') return true;
+      const mIso = getMatchIso(m);
+      if (mIso < todayIso) {
+        return false; // Eliminated: yesterday or earlier
+      }
       return true;
     });
+
+    // 2. Strict calendar filtering for active tab:
+    // Future matches (mIso > todayIso) MUST NEVER be displayed under today's schedule!
+    let filtered = nonPastMatches.filter(m => {
+      const mIso = getMatchIso(m);
+
+      if (activeMatchFilter === 'all') return true;
+      if (activeMatchFilter === 'live') return m.status === 'live';
+
+      if (activeMatchFilter === 'today') {
+        // Always show live matches under today
+        if (m.status === 'live') return true;
+
+        // STRICT REQUIREMENT: If the match has a future/advanced date, DO NOT display it today!
+        if (mIso > todayIso) return false;
+
+        // If it strictly matches today's calendar date:
+        if (mIso === todayIso) return true;
+
+        // No date = assume today
+        const rawDate = normalizeArabicDigits(m.date || '').trim();
+        if (!rawDate || rawDate === 'اليوم') return true;
+
+        // Exact match with today's Arabic strings
+        if (todayStrings.has(rawDate)) return true;
+
+        return false;
+      }
+
+      if (activeMatchFilter === 'upcoming') {
+        if (m.status === 'ended') return false;
+        // Strictly future calendar dates
+        return mIso > todayIso;
+      }
+
+      return true;
+    });
+
+    const q = (filterQuery || '').trim().toLowerCase();
+    if (q) {
+      filtered = filtered.filter(m => 
+        (m.homeTeam && m.homeTeam.toLowerCase().includes(q)) ||
+        (m.awayTeam && m.awayTeam.toLowerCase().includes(q)) ||
+        (m.league && m.league.toLowerCase().includes(q)) ||
+        (m.commentator && m.commentator.toLowerCase().includes(q))
+      );
+    }
 
     if (filtered.length === 0) {
       matchesList.innerHTML = `
@@ -582,7 +1100,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         statusHtml = `${m.date || 'اليوم'} • ${m.time}`;
       }
 
-      const scoreDisplay = m.score ? m.score : (m.status === 'live' ? '0 - 0' : (m.time || 'VS'));
+      let scoreDisplayHtml = '';
+      const hasScore = m.score && m.score !== 'vs';
+      const isLive = m.status === 'live';
+      const isEnded = m.status === 'ended';
+
+      if (hasScore || isLive || isEnded) {
+        const parts = String(m.score || '0-0').split(/[-–:]/).map(x => x.trim()).filter(Boolean);
+        const homeScore = (!isNaN(parts[0]) && parts[0] !== '') ? parts[0] : '0';
+        const awayScore = (!isNaN(parts[1]) && parts[1] !== '') ? parts[1] : '0';
+
+        scoreDisplayHtml = `
+          <div class="match-dual-score ${isLive ? 'is-live' : (isEnded ? 'is-ended' : '')}">
+            <div class="team-score-box score-home" title="أهداف: ${m.homeTeam} (صاحب الأرض - اليمين)">
+              <span class="score-digit">${homeScore}</span>
+            </div>
+            <span class="score-divider">:</span>
+            <div class="team-score-box score-away" title="أهداف: ${m.awayTeam} (الضيف - اليسار)">
+              <span class="score-digit">${awayScore}</span>
+            </div>
+          </div>
+        `;
+      } else {
+        scoreDisplayHtml = `<div class="match-time-pill">${m.time || 'VS'}</div>`;
+      }
 
       return `
         <div class="match-item" data-match-id="${m.id}">
@@ -596,7 +1137,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div class="match-team team-home">
               <span class="team-name">${m.homeTeam}</span>
             </div>
-            <div class="match-score-pill ${m.status === 'live' ? 'score-live' : ''}">${scoreDisplay}</div>
+            ${scoreDisplayHtml}
             <div class="match-team team-away">
               <span class="team-name">${m.awayTeam}</span>
             </div>
@@ -606,16 +1147,31 @@ document.addEventListener('DOMContentLoaded', async () => {
               <span><i class="fa-solid fa-tv"></i> ${m.channelName || 'قناة رياضية'}</span>
               ${m.commentator ? `<span><i class="fa-solid fa-microphone-lines"></i> ${m.commentator}</span>` : ''}
             </div>
-            <button class="match-watch-btn">
-              <i class="fa-solid fa-circle-play"></i> مشاهدة
-            </button>
+            <div class="match-action-btns-group">
+              <button class="match-wa-bell-btn" data-match-id="${m.id}" title="تفعيل تنبيهات الأهداف عبر واتساب (اضغط للاشتراك)">
+                <i class="fa-brands fa-whatsapp"></i> <span>تنبيه الأهداف</span>
+              </button>
+              <button class="match-watch-btn">
+                <i class="fa-solid fa-circle-play"></i> مشاهدة
+              </button>
+            </div>
           </div>
         </div>
       `;
     }).join('');
 
+    matchesList.querySelectorAll('.match-wa-bell-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const mId = btn.dataset.matchId;
+        const targetMatch = matches.find(m => m.id === mId);
+        if (targetMatch) openWhatsAppModal(targetMatch);
+      });
+    });
+
     matchesList.querySelectorAll('.match-item').forEach(item => {
-      item.addEventListener('click', () => {
+      item.addEventListener('click', (e) => {
+        if (e.target.closest('.match-wa-bell-btn')) return;
         const mId = item.dataset.matchId;
         const targetMatch = matches.find(m => m.id === mId);
         if (targetMatch) openMatchModal(targetMatch);
@@ -710,6 +1266,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     });
 
+    const modalWhatsAppAlertBtn = document.getElementById('modalWhatsAppAlertBtn');
+    if (modalWhatsAppAlertBtn) {
+      modalWhatsAppAlertBtn.onclick = () => {
+        openWhatsAppModal(match);
+      };
+    }
+
     matchModalBackdrop.classList.add('active');
   }
 
@@ -725,10 +1288,197 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // ==================== WHATSAPP GOAL ALERT LOGIC ====================
+  const whatsappModalBackdrop = document.getElementById('whatsappModalBackdrop');
+  const closeWhatsAppModalBtn = document.getElementById('closeWhatsAppModalBtn');
+  const whatsappSubscribeForm = document.getElementById('whatsappSubscribeForm');
+  const waMatchIdInput = document.getElementById('waMatchId');
+  const waModalMatchTitle = document.getElementById('waModalMatchTitle');
+  const waModalMatchMeta = document.getElementById('waModalMatchMeta');
+  const waCountryCodeSelect = document.getElementById('waCountryCode');
+  const waPhoneInput = document.getElementById('waPhoneInput');
+  const waTeamHomeLabel = document.getElementById('waTeamHomeLabel');
+  const waTeamAwayLabel = document.getElementById('waTeamAwayLabel');
+  const waSubscribeStatus = document.getElementById('waSubscribeStatus');
+  const waSubmitBtn = document.getElementById('waSubmitBtn');
+  const waUnsubBtn = document.getElementById('waUnsubBtn');
+
+  function openWhatsAppModal(match) {
+    if (!whatsappModalBackdrop || !match) return;
+
+    if (waMatchIdInput) waMatchIdInput.value = match.id;
+    if (waModalMatchTitle) waModalMatchTitle.textContent = `${match.homeTeam} 🆚 ${match.awayTeam}`;
+    if (waModalMatchMeta) waModalMatchMeta.textContent = `🏆 ${match.league} • 📅 ${match.date || 'اليوم'} • ⏱️ ${match.time || 'مباشر'}`;
+    if (waTeamHomeLabel) waTeamHomeLabel.textContent = match.homeTeam;
+    if (waTeamAwayLabel) waTeamAwayLabel.textContent = match.awayTeam;
+
+    const waHomeName = document.getElementById('waModalHomeTeamName');
+    const waAwayName = document.getElementById('waModalAwayTeamName');
+    const waLeague = document.getElementById('waModalMatchLeague');
+    const waTime = document.getElementById('waModalMatchTime');
+    if (waHomeName) waHomeName.textContent = match.homeTeam;
+    if (waAwayName) waAwayName.textContent = match.awayTeam;
+    if (waLeague) waLeague.innerHTML = `<i class="fa-solid fa-trophy"></i> ${match.league}`;
+    if (waTime) waTime.textContent = match.status === 'live' ? '🔴 مباشر الآن' : (match.time ? `⏱️ ${match.time}` : 'اليوم');
+
+    // Reset status
+    if (waSubscribeStatus) {
+      waSubscribeStatus.style.display = 'none';
+      waSubscribeStatus.textContent = '';
+      waSubscribeStatus.style.background = 'transparent';
+    }
+
+    if (waSubmitBtn) {
+      waSubmitBtn.disabled = false;
+      waSubmitBtn.innerHTML = '<i class="fa-brands fa-whatsapp" style="font-size: 1.25rem;"></i> تفعيل تنبيهات الأهداف عبر الواتساب';
+    }
+
+    // Pre-fill phone if previously saved
+    const savedPhone = localStorage.getItem('altv_user_whatsapp');
+    if (savedPhone && waPhoneInput) {
+      waPhoneInput.value = savedPhone;
+    }
+
+    whatsappModalBackdrop.classList.add('active');
+  }
+
+  function closeWhatsAppModal() {
+    if (whatsappModalBackdrop) whatsappModalBackdrop.classList.remove('active');
+  }
+
+  if (closeWhatsAppModalBtn) {
+    closeWhatsAppModalBtn.addEventListener('click', closeWhatsAppModal);
+  }
+
+  if (whatsappModalBackdrop) {
+    whatsappModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === whatsappModalBackdrop) closeWhatsAppModal();
+    });
+  }
+
+  if (whatsappSubscribeForm) {
+    whatsappSubscribeForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const matchId = waMatchIdInput ? waMatchIdInput.value : '';
+      let rawPhone = waPhoneInput ? waPhoneInput.value.trim() : '';
+      const countryCode = waCountryCodeSelect ? waCountryCodeSelect.value : '20';
+      const teamRadio = document.querySelector('input[name="waTeamInterest"]:checked');
+      const teamInterest = teamRadio ? teamRadio.value : 'both';
+
+      if (!matchId || !rawPhone) {
+        showWaStatus('يرجى إدخال رقم الهاتف بشكل صحيح', 'error');
+        return;
+      }
+
+      // Prepend country code if not 'other' and phone doesn't already have it
+      let fullPhone = rawPhone.replace(/[^\d]/g, '');
+      if (countryCode !== 'other') {
+        if (fullPhone.startsWith('0')) fullPhone = fullPhone.slice(1);
+        if (!fullPhone.startsWith(countryCode)) {
+          fullPhone = countryCode + fullPhone;
+        }
+      }
+
+      if (waSubmitBtn) {
+        waSubmitBtn.disabled = true;
+        waSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري ربط وتفعيل التنبيهات...';
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/api/matches/${encodeURIComponent(matchId)}/subscribe`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: fullPhone, teamInterest })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          // Save for convenience
+          localStorage.setItem('altv_user_whatsapp', rawPhone);
+          showWaStatus(`✅ ${data.message}`, 'success');
+          if (waSubmitBtn) {
+            waSubmitBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> تم التفعيل بنجاح!';
+            waSubmitBtn.style.background = '#00e676';
+          }
+          setTimeout(() => {
+            closeWhatsAppModal();
+          }, 2400);
+        } else {
+          showWaStatus(data.message || 'تعذر الاشتراك، يرجى المحاولة لاحقاً', 'error');
+          if (waSubmitBtn) {
+            waSubmitBtn.disabled = false;
+            waSubmitBtn.innerHTML = '<i class="fa-brands fa-whatsapp"></i> إعادة المحاولة';
+          }
+        }
+      } catch (err) {
+        showWaStatus('حدث خطأ أثناء الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت.', 'error');
+        if (waSubmitBtn) {
+          waSubmitBtn.disabled = false;
+          waSubmitBtn.innerHTML = '<i class="fa-brands fa-whatsapp"></i> إعادة المحاولة';
+        }
+      }
+    });
+  }
+
+  if (waUnsubBtn) {
+    waUnsubBtn.addEventListener('click', async () => {
+      const matchId = waMatchIdInput ? waMatchIdInput.value : '';
+      let rawPhone = waPhoneInput ? waPhoneInput.value.trim() : '';
+      if (!matchId || !rawPhone) {
+        showWaStatus('يرجى كتابة رقم هاتفك أولاً لإلغاء الاشتراك', 'error');
+        return;
+      }
+      try {
+        const res = await fetch(`${API_BASE}/api/matches/${encodeURIComponent(matchId)}/unsubscribe`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: rawPhone })
+        });
+        const data = await res.json();
+        showWaStatus(data.message || 'تم إلغاء الاشتراك بنجاح', 'success');
+      } catch (e) {
+        showWaStatus('تعذر إلغاء الاشتراك حالياً', 'error');
+      }
+    });
+  }
+
+  function showWaStatus(msg, type = 'info') {
+    if (!waSubscribeStatus) return;
+    waSubscribeStatus.style.display = 'block';
+    waSubscribeStatus.textContent = msg;
+    if (type === 'success') {
+      waSubscribeStatus.style.background = 'rgba(0, 230, 118, 0.18)';
+      waSubscribeStatus.style.color = '#00e676';
+      waSubscribeStatus.style.border = '1px solid #00e676';
+    } else {
+      waSubscribeStatus.style.background = 'rgba(255, 23, 68, 0.18)';
+      waSubscribeStatus.style.color = '#ff5252';
+      waSubscribeStatus.style.border = '1px solid #ff1744';
+    }
+  }
+
   // --- 9. RENDER REALTIME SPORTS NEWS GRID & FULL ARTICLE MODAL ---
-  function renderSportsNews() {
+  function renderSportsNews(filterQuery = '') {
     if (!sportsNewsGrid) return;
-    sportsNewsGrid.innerHTML = sportsNews.map(news => `
+    const q = (filterQuery || '').trim().toLowerCase();
+    let list = sportsNews;
+    if (q) {
+      list = sportsNews.filter(n => 
+        (n.title && n.title.toLowerCase().includes(q)) || 
+        (n.summary && n.summary.toLowerCase().includes(q)) ||
+        (n.category && n.category.toLowerCase().includes(q))
+      );
+    }
+    if (list.length === 0) {
+      sportsNewsGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+          <i class="fa-regular fa-newspaper" style="font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4;"></i>
+          <p>لا توجد أخبار مطابقة لبحثك حالياً.</p>
+        </div>
+      `;
+      return;
+    }
+    sportsNewsGrid.innerHTML = list.map(news => `
       <div class="sports-news-card" data-news-id="${news.id}" style="cursor: pointer;">
         <div class="news-img-wrapper">
           <img src="${news.image}" alt="${news.title}">
@@ -793,30 +1543,74 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // --- 10. RENDER RADIO STATIONS WITH SOCIAL SHARE BUTTON ---
-  function renderRadios() {
+  // --- 10. RENDER RADIO STATIONS WITH SOCIAL SHARE BUTTON & FAVORITES ---
+  function renderRadios(filterQuery = '') {
     if (!radioGrid) return;
-    radioGrid.innerHTML = radios.map(r => `
+    const q = (filterQuery || '').trim().toLowerCase();
+    let list = radios;
+    if (currentRadioFilter === 'favs') {
+      list = list.filter(r => radioFavorites.includes(r.id));
+    }
+    if (q) {
+      list = list.filter(r => 
+        (r.name && r.name.toLowerCase().includes(q)) || 
+        (r.description && r.description.toLowerCase().includes(q))
+      );
+    }
+
+    updateRadioFavBadge();
+
+    if (list.length === 0) {
+      radioGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+          <i class="fa-solid ${currentRadioFilter === 'favs' ? 'fa-heart-crack' : 'fa-radio'}" style="font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; color: ${currentRadioFilter === 'favs' ? 'var(--gold)' : 'inherit'};"></i>
+          <p>${currentRadioFilter === 'favs' ? 'لم تقم بإضافة أي إذاعات إلى المفضلة بعد.<br>اضغط على أيقونة القلب (❤️) بجوار أي إذاعة لحفظها هنا.' : 'لا توجد إذاعات مطابقة للبحث الحالي.'}</p>
+        </div>
+      `;
+      return;
+    }
+    radioGrid.innerHTML = list.map(r => {
+      const isFav = radioFavorites.includes(r.id);
+      return `
       <div class="radio-card ${activeRadio && activeRadio.id === r.id ? 'playing' : ''}" data-id="${r.id}">
         <div class="radio-icon">
-          <i class="fa-solid ${r.icon || 'fa-radio'}"></i>
+          ${r.logo ? `
+            <img src="${r.logo}" alt="${r.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+            <i class="fa-solid ${r.icon || 'fa-radio'}" style="display: none;"></i>
+          ` : `
+            <i class="fa-solid ${r.icon || 'fa-radio'}"></i>
+          `}
         </div>
         <div class="radio-info" style="flex: 1;">
           <h4 style="font-size: 1.05rem; font-weight: 800; color: #fff;">${r.name}</h4>
           <p style="font-size: 0.82rem; color: var(--text-muted);">${r.description || 'بث صوّتي حي ومباشر'}</p>
         </div>
-        <button class="btn-icon share-radio-btn" data-radio-id="${r.id}" style="padding: 6px 14px; font-size: 0.8rem; border-radius: 50px; color: var(--gold); border-color: rgba(255,215,0,0.4);" title="مشاركة بث إذاعة الراديو">
-          <i class="fa-solid fa-share-nodes"></i> مشاركة
-        </button>
+        <div class="radio-actions">
+          <button class="fav-btn fav-radio-btn ${isFav ? 'is-fav' : ''}" data-fav-radio-id="${r.id}" title="${isFav ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}">
+            <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+          </button>
+          <button class="btn-icon share-radio-btn" data-radio-id="${r.id}" title="مشاركة بث إذاعة الراديو">
+            <i class="fa-solid fa-share-nodes"></i>
+          </button>
+        </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
 
     radioGrid.querySelectorAll('.radio-card').forEach(card => {
       card.addEventListener('click', (e) => {
-        if (e.target.closest('.share-radio-btn')) return;
+        if (e.target.closest('.radio-actions')) return;
         const rId = card.dataset.id;
         const selectedRadio = radios.find(r => r.id === rId);
         if (selectedRadio) playRadio(selectedRadio);
+      });
+    });
+
+    radioGrid.querySelectorAll('.fav-radio-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const rId = btn.dataset.favRadioId;
+        toggleRadioFavorite(rId);
       });
     });
 
@@ -827,6 +1621,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         const targetRad = radios.find(r => r.id === rId);
         if (targetRad) openRadioShareModal(targetRad);
       });
+    });
+  }
+
+  if (radioFilterAllBtn) {
+    radioFilterAllBtn.addEventListener('click', () => {
+      currentRadioFilter = 'all';
+      radioFilterAllBtn.classList.add('active');
+      if (radioFilterFavsBtn) radioFilterFavsBtn.classList.remove('active');
+      renderRadios();
+    });
+  }
+
+  if (radioFilterFavsBtn) {
+    radioFilterFavsBtn.addEventListener('click', () => {
+      currentRadioFilter = 'favs';
+      radioFilterFavsBtn.classList.add('active');
+      if (radioFilterAllBtn) radioFilterAllBtn.classList.remove('active');
+      renderRadios();
     });
   }
 
@@ -931,19 +1743,162 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
-  // Search Listener
-  if (searchInput) {
-    searchInput.addEventListener('input', () => {
-      filterAndRenderChannels();
-    });
-  }
-
   // Favorites Filter Button
   if (showFavsBtn) {
     showFavsBtn.addEventListener('click', () => {
       currentCategory = 'favs';
+      currentFavSubFilter = 'all';
+      if (favFilterAllBtn) favFilterAllBtn.classList.add('active');
+      if (favFilterChannelsBtn) favFilterChannelsBtn.classList.remove('active');
+      if (favFilterRadiosBtn) favFilterRadiosBtn.classList.remove('active');
       renderCategories();
       filterAndRenderChannels();
+      const channelsSection = document.getElementById('channelsSection');
+      if (channelsSection) {
+        channelsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  }
+
+  // --- ANDROID SMARTPHONE 4-SECTION VIEW SWITCHER LOGIC ---
+  const androidBottomNav = document.getElementById('androidBottomNav');
+  const androidTabChannels = document.getElementById('androidTabChannels');
+  const androidTabMatches = document.getElementById('androidTabMatches');
+  const androidTabRadio = document.getElementById('androidTabRadio');
+  const androidTabNews = document.getElementById('androidTabNews');
+  const androidTabFavs = document.getElementById('androidTabFavs');
+
+  const siteHeaderTitle = document.getElementById('siteHeaderTitle');
+  const siteHeaderSubtitle = document.getElementById('siteHeaderSubtitle');
+
+  function switchAndroidTab(tabKey) {
+    document.body.dataset.androidTab = tabKey;
+
+    if (androidBottomNav) {
+      androidBottomNav.querySelectorAll('.android-nav-item').forEach(el => el.classList.remove('active'));
+      let activeEl = null;
+      if (tabKey === 'channels') activeEl = androidTabChannels;
+      else if (tabKey === 'matches') activeEl = androidTabMatches;
+      else if (tabKey === 'radio') activeEl = androidTabRadio;
+      else if (tabKey === 'news') activeEl = androidTabNews;
+      else if (tabKey === 'favs') activeEl = androidTabFavs;
+      if (activeEl) activeEl.classList.add('active');
+    }
+
+    // Android tactile haptic vibration
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      try { navigator.vibrate(12); } catch (_) {}
+    }
+
+    // Dynamic Top App Bar Title & Subtitle + Search Placeholder for each section
+    if (tabKey === 'channels') {
+      if (siteHeaderTitle) siteHeaderTitle.textContent = 'بث مباشر للقنوات الفضائية';
+      if (siteHeaderSubtitle) siteHeaderSubtitle.textContent = `arabialivetv.com • ${channels.length} قناة`;
+      if (searchInput) {
+        searchInput.placeholder = 'ابحث عن قناة فضائية، فريق، أو تصنيف...';
+        searchInput.value = '';
+      }
+      if (currentCategory === 'favs') {
+        currentCategory = 'all';
+        renderCategories();
+      }
+      filterAndRenderChannels();
+    } else if (tabKey === 'matches') {
+      if (siteHeaderTitle) siteHeaderTitle.textContent = 'جدول ومواعيد المباريات';
+      if (siteHeaderSubtitle) siteHeaderSubtitle.textContent = 'بث حي وسيرفرات مباشرة للمباريات';
+      if (searchInput) {
+        searchInput.placeholder = 'ابحث عن مباراة، فريق، أو دوري...';
+        searchInput.value = '';
+      }
+      renderMatches();
+    } else if (tabKey === 'radio') {
+      if (siteHeaderTitle) siteHeaderTitle.textContent = 'إذاعات الراديو المباشرة';
+      if (siteHeaderSubtitle) siteHeaderSubtitle.textContent = `استمع لأشهر المحطات العربية (${radios.length} إذاعة)`;
+      if (searchInput) {
+        searchInput.placeholder = 'ابحث عن محطة راديو...';
+        searchInput.value = '';
+      }
+      renderRadios();
+    } else if (tabKey === 'news') {
+      if (siteHeaderTitle) siteHeaderTitle.textContent = 'الأخبار الرياضية العاجلة';
+      if (siteHeaderSubtitle) siteHeaderSubtitle.textContent = 'تغطيات حصرية وتقارير موثقة';
+      if (searchInput) {
+        searchInput.placeholder = 'ابحث في الأخبار والتقارير الرياضية...';
+        searchInput.value = '';
+      }
+      renderSportsNews();
+    } else if (tabKey === 'favs') {
+      if (siteHeaderTitle) siteHeaderTitle.textContent = 'قائمتي المفضلة';
+      if (siteHeaderSubtitle) siteHeaderSubtitle.textContent = `لديك (${favorites.length}) قناة و (${radioFavorites.length}) إذاعة مضافة للمفضلة`;
+      if (searchInput) {
+        searchInput.placeholder = 'ابحث في قنواتك وإذاعاتك المفضلة...';
+        searchInput.value = '';
+      }
+      currentCategory = 'favs';
+      currentFavSubFilter = 'all';
+      if (favFilterAllBtn) favFilterAllBtn.classList.add('active');
+      if (favFilterChannelsBtn) favFilterChannelsBtn.classList.remove('active');
+      if (favFilterRadiosBtn) favFilterRadiosBtn.classList.remove('active');
+      renderCategories();
+      filterAndRenderChannels();
+    }
+
+    // Instant top scroll when switching views on mobile
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Set default tab on load
+  document.body.dataset.androidTab = 'channels';
+
+  if (androidTabChannels) {
+    androidTabChannels.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchAndroidTab('channels');
+    });
+  }
+
+  if (androidTabMatches) {
+    androidTabMatches.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchAndroidTab('matches');
+    });
+  }
+
+  if (androidTabRadio) {
+    androidTabRadio.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchAndroidTab('radio');
+    });
+  }
+
+  if (androidTabNews) {
+    androidTabNews.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchAndroidTab('news');
+    });
+  }
+
+  if (androidTabFavs) {
+    androidTabFavs.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchAndroidTab('favs');
+    });
+  }
+
+  // Intelligent Search Listener: searches within whichever section the user is currently viewing!
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      const activeTab = document.body.dataset.androidTab || 'channels';
+      const q = searchInput.value.trim().toLowerCase();
+      if (activeTab === 'matches') {
+        renderMatches(q);
+      } else if (activeTab === 'radio') {
+        renderRadios(q);
+      } else if (activeTab === 'news') {
+        renderSportsNews(q);
+      } else {
+        filterAndRenderChannels();
+      }
     });
   }
 
@@ -967,13 +1922,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // --- DEEP LINKING SUPPORT (?ch= / ?channel= / ?radio= / ?match=) ---
+  // --- DEEP LINKING & SEO ROUTE SUPPORT (?ch= / ?channel= / /channel/:slug) ---
   const urlParams = new URLSearchParams(window.location.search);
-  const requestedChId = urlParams.get('ch') || urlParams.get('channel');
-  let targetChannel = null;
+  let requestedChId = urlParams.get('ch') || urlParams.get('channel');
 
+  // Also support clean path routing: /channel/:slugOrId or /ch/:id
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  if (!requestedChId && pathParts.length >= 2 && (pathParts[0] === 'channel' || pathParts[0] === 'ch')) {
+    const rawParam = decodeURIComponent(pathParts[1]);
+    const m = rawParam.match(/(ch-\d+)/i);
+    requestedChId = m ? m[1] : rawParam;
+  }
+
+  let targetChannel = null;
   if (requestedChId) {
     targetChannel = channels.find(c => c.id === requestedChId) ||
+                    channels.find(c => generateSeoSlug(c.name) === generateSeoSlug(requestedChId)) ||
                     channels.find(c => c.name && c.name.toLowerCase().includes(requestedChId.toLowerCase()));
   }
 

@@ -1,0 +1,170 @@
+[
+  {
+    "name": "إذاعة القرآن الكريم من القاهرة",
+    "country": "Egypt",
+    "url": "http://n12.radiojar.com/8s5u5tpdtwzuv?listening-from-radio-garden=1620219571863&rj-tok=AAABeTyl2zYARSWbLVnrEOlqGw&rj-ttl=5",
+    "codec": "MP3",
+    "bitrate": 0
+  },
+  {
+    "name": "Radio 9090 90.9",
+    "country": "Egypt",
+    "url": "http://9090streaming.mobtada.com/9090FMEGYPT",
+    "codec": "MP3",
+    "bitrate": 64
+  },
+  {
+    "name": "إذاعة محمود خليل الحصري",
+    "country": "Egypt",
+    "url": "https://qurango.net/radio/mahmoud_khalil_alhussary_warsh",
+    "codec": "MP3",
+    "bitrate": 128
+  },
+  {
+    "name": "On sports FM",
+    "country": "Egypt",
+    "url": "https://carina.streamerr.co:2020/stream/OnSportFM",
+    "codec": "MP3",
+    "bitrate": 96
+  },
+  {
+    "name": " إذاعة مشاري العفاسي",
+    "country": "Egypt",
+    "url": "https://qurango.net/radio/mishary_alafasi",
+    "codec": "MP3",
+    "bitrate": 128
+  },
+  {
+    "name": "Tes3enat FM",
+    "country": "Egypt",
+    "url": "http://178.33.135.244:20095/;?DIST=TuneIn&TGT=TuneIn&maxServers=2&partnertok=eyJhbGciOiJIUzI1NiIsImtpZCI6InR1bmVpbiIsInR5cCI6IkpXVCJ9.eyJ0cnVzdGVkX3BhcnRuZXIiOnRydWUsImlhdCI6MTYzNjA1OTE3OCwiaXNzIjoidGlzcnYifQ.Me0snc2PBcQhvlzte9L7zQxa-IHgNinhu3XdNJ6_Xa8",
+    "codec": "MP3",
+    "bitrate": 128
+  },
+  {
+    "name": "إذاعة مصطفى إسماعيل",
+    "country": "Egypt",
+    "url": "https://qurango.net/radio/mustafa_ismail",
+    "codec": "MP3",
+    "bitrate": 128
+  },
+  {
+    "name": "Amr Diab Radio",
+    "country": "Egypt",
+    "url": "https://stream-40.zeno.fm/xa4yhh4k838uv?zs=gojgaFRaRrK1wgGIwdv6xA",
+    "codec": "MP3",
+    "bitrate": 128
+  },
+  {
+    "name": "إذاعة السنة",
+    "country": "Saudi Arabia",
+    "url": "http://andromeda.shoutca.st:8189/live",
+    "codec": "MP3",
+    "bitrate": 32
+  },
+  {
+    "name": "QURAN KAREEM",
+    "country": "Saudi Arabia",
+    "url": "https://quraanfm-radio.mbc.net/quraanfm-radio.m3u8",
+    "codec": "AAC+",
+    "bitrate": 70
+  },
+  {
+    "name": "Mp3Quran Tarateel",
+    "country": "Saudi Arabia",
+    "url": "https://qurango.net/radio/tarateel",
+    "codec": "MP3",
+    "bitrate": 128
+  },
+  {
+    "name": "Al Arabiya FM",
+    "country": "Saudi Arabia",
+    "url": "https://fm.alarabiya.net/fm/myStream/playlist.m3u8",
+    "codec": "AAC",
+    "bitrate": 128
+  },
+  {
+    "name": "Mp3Quran Main",
+    "country": "Saudi Arabia",
+    "url": "https://qurango.net/radio/mix",
+    "codec": "MP3",
+    "bitrate": 128
+  },
+  {
+    "name": "MBC FM",
+    "country": "Saudi Arabia",
+    "url": "https://mbcfm-radio.mbc.net/mbcfm-radio.m3u8",
+    "codec": "AAC+",
+    "bitrate": 70
+  },
+  {
+    "name": "AlifAlif FM",
+    "country": "Saudi Arabia",
+    "url": "https://alifalifjobs.com/radio/8000/AlifAlifLive.mp3",
+    "codec": "MP3",
+    "bitrate": 128
+  },
+  {
+    "name": "Saudi Quran",
+    "country": "Saudi Arabia",
+    "url": "http://stream.radiojar.com/0tpy1h0kxtzuv",
+    "codec": "MP3",
+    "bitrate": 0
+  },
+  {
+    "name": "Mefi1 tarab",
+    "country": "Morocco",
+    "url": "http://live.medi1.com/Tarab",
+    "codec": "MP3",
+    "bitrate": 128
+  },
+  {
+    "name": "Radio Aswat",
+    "country": "Morocco",
+    "url": "http://broadcast.ice.infomaniak.ch/aswat-high.mp3?.mp3",
+    "codec": "MP3",
+    "bitrate": 128
+  },
+  {
+    "name": "bldi",
+    "country": "Morocco",
+    "url": "http://beldifm.hf.ma/radio/8000/radio.mp3",
+    "codec": "MP3",
+    "bitrate": 64
+  },
+  {
+    "name": "Only rai",
+    "country": "Morocco",
+    "url": "http://onlyrai.ice.infomaniak.ch/onlyrai-high.mp3",
+    "codec": "MP3",
+    "bitrate": 128
+  },
+  {
+    "name": "Medi 1 Radio Andalouse",
+    "country": "Morocco",
+    "url": "http://live.medi1.com/Andalouse",
+    "codec": "MP3",
+    "bitrate": 128
+  },
+  {
+    "name": "MA:-Hit Radio Maroc",
+    "country": "Morocco",
+    "url": "https://stream.zeno.fm/une3a02mb",
+    "codec": "MP3",
+    "bitrate": 128
+  },
+  {
+    "name": "Fayroz",
+    "country": "Morocco",
+    "url": "https://stream.zeno.fm/zv3e5wykprhvv.mp3",
+    "codec": "MP3",
+    "bitrate": 128
+  },
+  {
+    "name": "Radio Mars",
+    "country": "Morocco",
+    "url": "https://radiomars.ice.infomaniak.ch/radiomars-128.mp3",
+    "codec": "MP3",
+    "bitrate": 128
+  }
+]

@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KX3NX7RLEN"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-KX3NX7RLEN');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>لوحة التحكم والإدارة بـ الأقسام المستقلة | Arabia Live TV Control Panel</title>
   <meta name="description" content="لوحة إدراة منصة Arabia Live TV المقسمة إلى أقسام مستقلة لإدارة القنوات، الراديو، الأخبار، والمباريات.">
   <meta name="referrer" content="no-referrer">
   
-  <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="./style.css">
+  <!-- CSS Stylesheet V3 -->
+  <link rel="stylesheet" href="./style.css?v=3.6.0">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -95,6 +103,9 @@
         </button>
         <button class="btn-icon dept-btn" data-dept="dept-matches" style="padding: 12px 24px; border-radius: 50px;">
           <i class="fa-solid fa-trophy" style="color: #00e676;"></i> 4. قسم جدول المباريات والبث المباشر
+        </button>
+        <button class="btn-icon dept-btn" data-dept="dept-whatsapp" style="padding: 12px 24px; border-radius: 50px;">
+          <i class="fa-brands fa-whatsapp" style="color: #25D366;"></i> 5. تنبيهات الواتساب والمشتركين
         </button>
         <button class="btn-icon dept-btn" data-dept="all" style="padding: 12px 24px; border-radius: 50px;">
           <i class="fa-solid fa-border-all"></i> عرض جميع الأقسام
@@ -198,7 +209,12 @@
             </div>
 
             <div class="form-group">
-              <label>أيقونة الراديو (FontAwesome Icon Class)</label>
+              <label><i class="fa-solid fa-image"></i> رابط صورة / لوجو الإذاعة (Image/Logo URL)</label>
+              <input type="text" id="editRadLogo" class="form-control" placeholder="https://example.com/logo.png أو صورة من الويب">
+            </div>
+
+            <div class="form-group">
+              <label>أيقونة بديلة (FontAwesome Icon Class)</label>
               <input type="text" id="editRadIcon" class="form-control" placeholder="fa-radio أو fa-mosque أو fa-music">
             </div>
 
@@ -368,7 +384,12 @@
             </div>
 
             <div class="form-group">
-              <label>رمز الأيقونة (Icon Class)</label>
+              <label><i class="fa-solid fa-image"></i> رابط صورة / لوجو الإذاعة (Image/Logo URL)</label>
+              <input type="text" id="radLogo" class="form-control" placeholder="https://example.com/logo.png أو صورة من الويب">
+            </div>
+
+            <div class="form-group">
+              <label>أيقونة بديلة (Icon Class)</label>
               <input type="text" id="radIcon" class="form-control" placeholder="fa-mosque أو fa-radio أو fa-music">
             </div>
 
@@ -385,14 +406,31 @@
           </form>
         </section>
 
+        <!-- Radio Stations Reorder Banner -->
+        <div class="radios-reorder-banner" style="background: linear-gradient(135deg, rgba(0,176,255,0.12), rgba(14,18,30,0.85)); border: 1px solid rgba(0,176,255,0.3); border-radius: var(--radius-md); padding: 18px 22px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+          <div>
+            <h4 style="color: var(--secondary); font-size: 1.05rem; font-weight: 800; margin-bottom: 4px;">
+              <i class="fa-solid fa-arrows-up-down"></i> ترتيب ظهور محطات الراديو
+            </h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0;">
+              استخدم أزرار الأسهم (⬆ / ⬇) أو السحب والإفلات لترتيب المحطات كما تظهر للمستخدم في الموقع. يتم الحفظ تلقائياً!
+            </p>
+          </div>
+          <button class="btn-icon" id="saveRadiosOrderBtn" onclick="window.saveRadioOrder && window.saveRadioOrder(true)" style="background: linear-gradient(135deg, var(--secondary), #0288d1); color: #fff; padding: 10px 20px; font-weight: 700;">
+            <i class="fa-solid fa-arrow-down-short-wide"></i> حفظ ترتيب محطات الراديو
+          </button>
+        </div>
+
         <div style="overflow-x: auto;">
           <table class="data-table">
             <thead>
               <tr>
+                <th style="width: 60px; text-align: center;">الصورة</th>
                 <th>محطة الراديو</th>
                 <th>الدولة</th>
                 <th>رابط البث الصوتي</th>
                 <th>الوصف</th>
+                <th style="text-align: center; width: 110px;">الترتيب</th>
                 <th>إجراءات الإدارة</th>
               </tr>
             </thead>
@@ -542,9 +580,21 @@
               <input type="text" id="mTime" class="form-control" placeholder="21:00" required>
             </div>
 
-            <div class="form-group">
-              <label>النتيجة الحالية</label>
-              <input type="text" id="mScore" class="form-control" placeholder="0 - 0 أو vs">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label style="color: #00e676; font-weight: 700; margin-bottom: 6px; display: block;">
+                <i class="fa-solid fa-futbol"></i> النتيجة الأولية (مطابقة تماماً لاتجاه كارت المباراة بالفرونت إند):
+              </label>
+              <div style="display: flex; gap: 14px; align-items: center; max-width: 400px; direction: rtl; background: rgba(0,0,0,0.45); padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-glass);">
+                <div style="flex: 1; text-align: center;">
+                  <span id="addHomeTeamLabel" style="display: block; font-size: 0.8rem; font-weight: 800; color: #00e676; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">الفريق الأول (اليمين)</span>
+                  <input type="number" id="mHomeScore" class="form-control" style="text-align: center; font-size: 1.3rem; font-weight: 900; color: #ffeb3b; background: #080d16; border: 2px solid #00e676; padding: 6px;" min="0" value="0">
+                </div>
+                <span style="font-size: 1.6rem; font-weight: 900; color: var(--text-muted); margin-top: 18px;">-</span>
+                <div style="flex: 1; text-align: center;">
+                  <span id="addAwayTeamLabel" style="display: block; font-size: 0.8rem; font-weight: 800; color: var(--secondary); margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">الفريق الثاني (اليسار)</span>
+                  <input type="number" id="mAwayScore" class="form-control" style="text-align: center; font-size: 1.3rem; font-weight: 900; color: #ffeb3b; background: #080d16; border: 2px solid var(--secondary); padding: 6px;" min="0" value="0">
+                </div>
+              </div>
             </div>
 
             <div class="form-group">
@@ -610,6 +660,160 @@
         </div>
       </div>
 
+      <!-- ==================== DEPARTMENT 5: WHATSAPP NOTIFICATIONS & SUBSCRIBERS ==================== -->
+      <div class="dept-section" id="dept-whatsapp" style="margin-bottom: 50px; display: none;">
+        <div style="border-bottom: 2px solid #25D366; padding-bottom: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h2 style="font-size: 1.4rem; font-weight: 900; color: #25D366;">
+              <i class="fa-brands fa-whatsapp"></i> 5. قسم تنبيهات الواتساب والمشتركين
+            </h2>
+            <span style="color: var(--text-muted); font-size: 0.85rem;">ربط بوابات الواتساب، إرسال إشعارات الأهداف اللحظية للمشتركين، وإدارة أرقام الهواتف</span>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <button id="refreshWaSubscribersBtn" class="btn-icon" style="color: #25D366; border-color: rgba(37,211,102,0.4);">
+              <i class="fa-solid fa-arrows-rotate"></i> تحديث المشتركين
+            </button>
+          </div>
+        </div>
+
+        <!-- WhatsApp Gateway Config Form -->
+        <section class="form-card" style="margin-bottom: 28px; border: 1px solid rgba(37, 211, 102, 0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-glass); padding-bottom: 12px;">
+            <h3 style="color: #25D366; font-weight: 800; margin: 0;">
+              <i class="fa-solid fa-gear"></i> إعدادات بوابة خدمة الواتساب (WhatsApp Gateway API)
+            </h3>
+            <span id="waConfigBadge" style="background: rgba(37, 211, 102, 0.15); color: #25D366; border: 1px solid rgba(37, 211, 102, 0.4); padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700;">
+              وضع المحاكاة (Simulator) جاهز
+            </span>
+          </div>
+
+          <form id="whatsappConfigForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+            <div class="form-group">
+              <label>حالة الخدمة</label>
+              <select id="waCfgEnabled" class="form-control">
+                <option value="true">✅ مفعّلة ونشطة</option>
+                <option value="false">❌ معطلة مؤقتاً</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>مزود بوابة الواتساب (Provider)</label>
+              <select id="waCfgProvider" class="form-control">
+                <option value="simulator">🧪 وضع المحاكاة الداخلي (Simulator / Logs - لا يحتاج اشتراك)</option>
+                <option value="ultramsg">🚀 UltraMsg Gateway (الأشهر والأسهل)</option>
+                <option value="greenapi">🌿 Green-API Gateway</option>
+                <option value="twilio">📞 Twilio WhatsApp Business</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>معرف الجلسة / Instance ID / Account SID</label>
+              <input type="text" id="waCfgInstanceId" class="form-control" placeholder="instanceXXXXX أو ACxxxx">
+            </div>
+
+            <div class="form-group">
+              <label>رمز الدخول / API Token / Auth Token</label>
+              <input type="password" id="waCfgToken" class="form-control" placeholder="رمز الـ Token السري الخاص بحسابك">
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>رقم المرسل (Sender Phone - مطلوب لـ Twilio فقط أو للعرض)</label>
+              <input type="text" id="waCfgSenderPhone" class="form-control" placeholder="+14155238886">
+            </div>
+
+            <div style="grid-column: 1 / -1; display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px;">
+              <button type="submit" class="btn-icon btn-primary" style="background: #25D366; color: #000; font-weight: 800; padding: 12px 28px;">
+                <i class="fa-solid fa-floppy-disk"></i> حفظ إعدادات البوابة
+              </button>
+            </div>
+          </form>
+
+          <!-- Green-API Live QR & Connection Status Box -->
+          <div id="waQrBox" style="margin-top: 24px; padding: 20px; background: rgba(14,24,38,0.85); border: 1px solid rgba(37,211,102,0.3); border-radius: var(--radius-md); display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-qrcode" style="color: #25D366; font-size: 1.4rem;"></i>
+                <h4 style="color: #fff; margin: 0; font-size: 1.05rem; font-weight: 800;">ربط رقم الواتساب عبر رمز الـ QR (Green-API)</h4>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" id="refreshWaStatusBtn" class="btn-sm" style="background: rgba(37,211,102,0.15); border: 1px solid rgba(37,211,102,0.4); color: #25D366; border-radius: 6px; padding: 6px 14px; font-weight: 700; cursor: pointer;">
+                  <i class="fa-solid fa-arrows-rotate"></i> تحديث رمز الـ QR والحالة
+                </button>
+              </div>
+            </div>
+
+            <div id="waStatusAlert" style="padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+              <!-- Populated by JS -->
+            </div>
+
+            <div id="waQrContainer" style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap;">
+              <div style="background: #fff; padding: 12px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); display: inline-block;">
+                <img id="waQrImg" src="" alt="WhatsApp QR Code" style="width: 200px; height: 200px; display: block; object-fit: contain;">
+              </div>
+              <div style="flex: 1; min-width: 260px;">
+                <h5 style="color: #25D366; font-size: 0.95rem; margin-bottom: 10px; font-weight: 800;">
+                  <i class="fa-solid fa-mobile-screen"></i> خطوات ربط هاتفك بالمنصة:
+                </h5>
+                <ol style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.8; padding-right: 20px; margin: 0;">
+                  <li>افتح تطبيق <strong>WhatsApp</strong> على هاتفك المحمول.</li>
+                  <li>اضغط على قائمة <strong>الخيارات (الثلاث نقاط)</strong> أو <strong>الإعدادات (Settings)</strong>.</li>
+                  <li>اختر <strong>الأجهزة المرتبطة (Linked Devices)</strong> ثم <strong>ربط جهاز (Link a Device)</strong>.</li>
+                  <li>وجّه كاميرا الهاتف نحو رمز الـ QR الظاهر ليتم الربط فوراً!</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Test WhatsApp Message Box -->
+          <div style="margin-top: 24px; padding-top: 20px; border-top: 1px dashed var(--border-glass);">
+            <h4 style="color: var(--gold); font-size: 0.95rem; margin-bottom: 12px;">
+              <i class="fa-solid fa-paper-plane"></i> إرسال رسالة واتساب تجريبية للتأكد من الربط:
+            </h4>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <input type="text" id="waTestPhone" class="form-control" placeholder="أدخل رقمك للتجربة (مثال: 01012345678 أو 2010...)" style="flex: 1; min-width: 220px;">
+              <button type="button" id="sendWaTestBtn" class="btn-icon" style="background: rgba(255,215,0,0.15); color: var(--gold); border-color: rgba(255,215,0,0.4); font-weight: 700; padding: 10px 20px;">
+                <i class="fa-solid fa-paper-plane"></i> إرسال تجربة الآن
+              </button>
+            </div>
+            <div id="waTestResult" style="display: none; margin-top: 10px; font-size: 0.84rem; padding: 8px 12px; border-radius: 6px;"></div>
+          </div>
+        </section>
+
+        <!-- Subscribers Table -->
+        <section class="form-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+            <div>
+              <h3 style="color: #fff; font-weight: 800; margin: 0;">
+                <i class="fa-solid fa-users"></i> قائمة المشتركين في تنبيهات الأهداف
+              </h3>
+              <span style="color: var(--text-muted); font-size: 0.82rem;">إجمالي المشتركين: <strong id="waSubscribersTotalCount" style="color: #25D366;">0</strong></span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="waSubscriberSearch" class="form-control" placeholder="بحث برقم الهاتف أو المباراة..." style="width: 240px; font-size: 0.85rem;">
+            </div>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 45px; text-align: center;">#</th>
+                  <th>رقم الهاتف / الواتساب</th>
+                  <th>المباراة المتابعة</th>
+                  <th>الفريق المهتم به</th>
+                  <th>تاريخ الاشتراك</th>
+                  <th>الحالة</th>
+                  <th style="text-align: center;">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="waSubscribersTableBody">
+                <!-- Populated dynamically via admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
       <!-- EDIT MATCH MODAL -->
       <div class="modal-backdrop" id="editMatchModalBackdrop" style="z-index: 1500;">
         <div class="form-card" style="width: 100%; max-width: 680px; background: #0c1220; border: 1px solid #00e676; max-height: 90vh; overflow-y: auto;">
@@ -654,9 +858,21 @@
               <input type="text" id="editMatchTime" class="form-control" placeholder="21:00" required>
             </div>
 
-            <div class="form-group">
-              <label>النتيجة الحالية</label>
-              <input type="text" id="editMatchScore" class="form-control" placeholder="2 - 1 أو vs">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label style="color: #00e676; font-weight: 700; margin-bottom: 6px; display: block;">
+                <i class="fa-solid fa-futbol"></i> النتيجة الحالية (مطابقة تماماً لاتجاه كارت المباراة بالفرونت إند):
+              </label>
+              <div style="display: flex; gap: 14px; align-items: center; max-width: 400px; direction: rtl; background: rgba(0,0,0,0.45); padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-glass);">
+                <div style="flex: 1; text-align: center;">
+                  <span id="editHomeTeamLabel" style="display: block; font-size: 0.8rem; font-weight: 800; color: #00e676; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">الفريق الأول (اليمين)</span>
+                  <input type="number" id="editMatchHomeScore" class="form-control" style="text-align: center; font-size: 1.3rem; font-weight: 900; color: #ffeb3b; background: #080d16; border: 2px solid #00e676; padding: 6px;" min="0" value="0">
+                </div>
+                <span style="font-size: 1.6rem; font-weight: 900; color: var(--text-muted); margin-top: 18px;">-</span>
+                <div style="flex: 1; text-align: center;">
+                  <span id="editAwayTeamLabel" style="display: block; font-size: 0.8rem; font-weight: 800; color: var(--secondary); margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">الضيف (اليسار)</span>
+                  <input type="number" id="editMatchAwayScore" class="form-control" style="text-align: center; font-size: 1.3rem; font-weight: 900; color: #ffeb3b; background: #080d16; border: 2px solid var(--secondary); padding: 6px;" min="0" value="0">
+                </div>
+              </div>
             </div>
 
             <div class="form-group">
@@ -704,11 +920,54 @@
         </div>
       </div>
 
+      <!-- MANUAL GOAL NOTIFICATION MODAL -->
+      <div class="modal-backdrop" id="manualGoalModalBackdrop" style="z-index: 1600;">
+        <div class="form-card" style="width: 100%; max-width: 520px; background: #0c1220; border: 1px solid #25D366;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 style="color: #25D366; font-weight: 800;">
+              <i class="fa-brands fa-whatsapp"></i> إرسال إشعار هدف مباشر للمشتركين
+            </h3>
+            <button class="modal-close-btn" id="closeManualGoalModalBtn"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <div style="background: rgba(37,211,102,0.1); border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+            <h4 id="mgModalMatchTitle" style="color: #fff; margin: 0 0 4px 0;">الأهلي vs الزمالك</h4>
+            <span id="mgModalSubscribersCount" style="color: var(--gold); font-size: 0.82rem;">عدد المشتركين: 0 مشترك</span>
+          </div>
+          <form id="manualGoalForm">
+            <input type="hidden" id="mgMatchId">
+            <div style="background: rgba(0,0,0,0.35); border: 1px solid var(--border-glass); border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+              <label style="display: block; text-align: center; color: var(--gold); font-size: 0.9rem; font-weight: 800; margin-bottom: 10px;">
+                <i class="fa-solid fa-futbol"></i> حدد أهداف كل فريق بدقة:
+              </label>
+              <div style="display: flex; gap: 14px; align-items: center; justify-content: center; direction: rtl;">
+                <div style="flex: 1; text-align: center;">
+                  <span id="mgHomeTeamName" style="display: block; font-size: 0.88rem; font-weight: 800; color: #00e676; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">الفريق الأول (اليمين)</span>
+                  <input type="number" id="mgHomeScore" class="form-control" style="text-align: center; font-size: 1.4rem; font-weight: 900; padding: 8px; color: #ffeb3b; background: #080d16; border: 2px solid #00e676;" min="0" value="0" required>
+                </div>
+                <span style="font-size: 1.8rem; font-weight: 900; color: var(--text-muted); margin-top: 20px;">-</span>
+                <div style="flex: 1; text-align: center;">
+                  <span id="mgAwayTeamName" style="display: block; font-size: 0.88rem; font-weight: 800; color: var(--secondary); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">الفريق الثاني (اليسار)</span>
+                  <input type="number" id="mgAwayScore" class="form-control" style="text-align: center; font-size: 1.4rem; font-weight: 900; padding: 8px; color: #ffeb3b; background: #080d16; border: 2px solid var(--secondary);" min="0" value="0" required>
+                </div>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 20px;">
+              <label>اسم مسجل الهدف (اختياري)</label>
+              <input type="text" id="mgScorerName" class="form-control" placeholder="مثال: إمام عاشور د '35">
+            </div>
+            <div id="mgStatus" style="display: none; padding: 10px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 14px;"></div>
+            <button type="submit" id="mgSubmitBtn" class="btn-icon btn-primary" style="width: 100%; justify-content: center; background: #25D366; color: #000; font-weight: 800; padding: 12px;">
+              <i class="fa-solid fa-paper-plane"></i> إرسال إشعار الهدف الآن لجميع المشتركين
+            </button>
+          </form>
+        </div>
+      </div>
+
     </main>
   </div>
 
-  <!-- Scripts -->
-  <script src="./channels_data.js?v=2.5"></script>
-  <script src="./admin.js?v=2.5"></script>
+  <!-- Scripts V3 -->
+  <script src="./channels_data.js?v=3.6.0"></script>
+  <script src="./admin.js?v=3.6.0"></script>
 </body>
 </html>

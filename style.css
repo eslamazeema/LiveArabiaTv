@@ -507,12 +507,11 @@ body {
   background: linear-gradient(180deg, rgba(18, 25, 42, 0.96) 0%, rgba(10, 14, 24, 0.98) 100%);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
-  padding: 16px 18px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 100%;
-  max-height: 100%;
+  max-height: 690px;
   box-sizing: border-box;
   box-shadow: var(--shadow-main);
   backdrop-filter: blur(25px);
@@ -536,6 +535,7 @@ body {
   margin-bottom: 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
 }
 .match-center-title-group {
   display: flex;
@@ -579,40 +579,63 @@ body {
 .matches-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  flex: 1;
+  gap: 7px;
+  flex: 1 1 auto;
   min-height: 0;
+  max-height: 580px;
   overflow-y: auto;
-  padding: 10px 4px 6px 2px;
+  overflow-x: hidden;
+  padding: 4px 4px 6px 2px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 82, 0, 0.4) transparent;
+  scrollbar-color: rgba(0, 230, 118, 0.6) rgba(0, 0, 0, 0.25);
+  overscroll-behavior: contain;
 }
 .matches-list::-webkit-scrollbar {
   width: 6px;
 }
 .matches-list::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.25);
   border-radius: 4px;
 }
 .matches-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 82, 0, 0.4);
+  background: linear-gradient(180deg, var(--primary), #00e676);
   border-radius: 4px;
 }
 .matches-list::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  background: #00e676;
+}
+
+@media (max-width: 1024px) {
+  .match-center-card {
+    max-height: 540px;
+    height: auto;
+  }
+  .matches-list {
+    max-height: 440px;
+  }
+}
+
+@media (max-width: 640px) {
+  .match-center-card {
+    max-height: 500px;
+    padding: 12px 14px;
+  }
+  .matches-list {
+    max-height: 390px;
+  }
 }
 
 .match-item {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-md);
-  padding: 10px 13px;
+  padding: 7px 11px;
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   cursor: pointer;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 .match-item:hover {
   background: linear-gradient(135deg, rgba(255, 82, 0, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
@@ -709,6 +732,78 @@ body {
   display: none !important;
 }
 
+/* Dual Score Boxes (One box for each team) */
+.match-dual-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex-shrink: 0;
+  direction: rtl;
+}
+
+.team-score-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 30px;
+  padding: 0 6px;
+  background: #080d16;
+  border-radius: 7px;
+  font-weight: 900;
+  font-size: 1.1rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.7);
+  transition: all 0.2s ease;
+}
+
+/* Home team score box (Right side): Green accent */
+.team-score-box.score-home {
+  border: 1.5px solid #00e676;
+  color: #00e676;
+}
+
+/* Away team score box (Left side): Blue accent */
+.team-score-box.score-away {
+  border: 1.5px solid var(--secondary);
+  color: var(--secondary);
+}
+
+/* When the match is Live: glowing gold/accent */
+.match-dual-score.is-live .team-score-box {
+  background: rgba(10, 14, 24, 0.95);
+  color: #ffeb3b;
+}
+.match-dual-score.is-live .team-score-box.score-home {
+  border-color: #00e676;
+  box-shadow: 0 0 10px rgba(0, 230, 118, 0.35);
+}
+.match-dual-score.is-live .team-score-box.score-away {
+  border-color: var(--secondary);
+  box-shadow: 0 0 10px rgba(0, 176, 255, 0.35);
+}
+
+.match-dual-score.is-ended .team-score-box {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #cfd8dc;
+}
+
+.score-divider {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--text-muted);
+  opacity: 0.7;
+  user-select: none;
+  line-height: 1;
+}
+
+.team-score-box .score-digit {
+  direction: ltr;
+  display: inline-block;
+  line-height: 1;
+}
+
 .match-score-pill {
   background: #04060a;
   border: 1.5px solid var(--border-glass);
@@ -722,6 +817,11 @@ body {
   flex-shrink: 0;
   text-align: center;
   min-width: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  direction: rtl;
+  unicode-bidi: isolate;
 }
 .match-time-pill {
   background: rgba(0, 0, 0, 0.4);
@@ -774,19 +874,498 @@ body {
   transition: var(--transition);
 }
 
-.match-center-footer {
-  margin-top: auto;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 0.72rem;
-  color: var(--text-muted);
+.match-action-btns-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.match-wa-bell-btn {
+  background: rgba(37, 211, 102, 0.18) !important;
+  border: 1px solid #25D366 !important;
+  color: #25D366 !important;
+  padding: 4px 10px !important;
+  border-radius: 20px !important;
+  font-family: inherit !important;
+  font-size: 0.74rem !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  transition: all 0.2s ease !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  box-shadow: 0 0 10px rgba(37, 211, 102, 0.25) !important;
+}
+.match-wa-bell-btn i {
+  font-size: 0.95rem !important;
+  color: #25D366 !important;
+}
+.match-wa-bell-btn:hover {
+  background: #25D366 !important;
+  color: #052613 !important;
+  box-shadow: 0 0 14px rgba(37, 211, 102, 0.6) !important;
+  transform: translateY(-1px) scale(1.05) !important;
+}
+.match-wa-bell-btn:hover i {
+  color: #052613 !important;
+}
+
+/* ==================== WHATSAPP GOAL ALERT SUBSCRIPTION SHEET (NATIVE ANDROID & DESKTOP) ==================== */
+.modal-backdrop.wa-modal-backdrop {
+  z-index: 1800;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(4, 7, 14, 0.88);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wa-subscription-sheet {
+  background: #0b111c;
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95), 0 0 35px rgba(37, 211, 102, 0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+}
+
+/* Pull Handle Bar (visible on Android/mobile) */
+.wa-sheet-drag-handle {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0 2px;
+  cursor: grab;
+}
+.wa-sheet-drag-handle span {
+  width: 44px;
+  height: 4.5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* Header */
+.wa-sheet-header {
+  background: linear-gradient(135deg, #075E54 0%, #0d4d3d 50%, #0f382c 100%);
+  padding: 18px 22px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
 }
-.match-center-footer i {
+.wa-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.wa-brand-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #25D366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.55rem;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.5);
+  position: relative;
+  flex-shrink: 0;
+}
+.wa-header-titles .wa-title {
+  margin: 0;
+  font-size: 1.12rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.2px;
+}
+.wa-header-titles .wa-subtitle {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+.wa-close-btn {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.wa-close-btn:hover {
+  background: rgba(255, 23, 68, 0.8);
+  border-color: #ff1744;
+  transform: rotate(90deg);
+}
+
+/* Body */
+.wa-sheet-body {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+/* Match Ticket Preview Card */
+.wa-match-ticket {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(37, 211, 102, 0.25);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+.ticket-header-pill {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.76rem;
   color: var(--gold);
+  font-weight: 700;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+  padding-bottom: 6px;
 }
+.ticket-time-tag {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: #fff;
+}
+.ticket-teams-matchup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+}
+.ticket-team {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ticket-team.ticket-home {
+  justify-content: flex-start;
+}
+.ticket-team.ticket-away {
+  justify-content: flex-end;
+  text-align: left;
+}
+.team-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.home-dot { background: #00e676; box-shadow: 0 0 6px #00e676; }
+.away-dot { background: var(--secondary); box-shadow: 0 0 6px var(--secondary); }
+.ticket-vs-badge {
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: var(--primary);
+  background: rgba(255, 82, 0, 0.12);
+  border: 1px solid rgba(255, 82, 0, 0.3);
+  padding: 2px 8px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+/* Form Sections */
+.wa-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.wa-field-label {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.wa-field-label i {
+  color: #25D366;
+}
+
+/* Phone Input Combo Box */
+.wa-phone-input-combo {
+  display: flex;
+  direction: ltr;
+  background: #060a12;
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+.wa-phone-input-combo:focus-within {
+  border-color: #25D366;
+  box-shadow: 0 0 16px rgba(37, 211, 102, 0.35);
+}
+.wa-code-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+.wa-country-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 0.86rem;
+  font-weight: 800;
+  padding: 12px 28px 12px 10px;
+  outline: none;
+  cursor: pointer;
+  direction: ltr;
+}
+.wa-country-select option {
+  background: #0c1220;
+  color: #fff;
+}
+.select-chevron {
+  position: absolute;
+  right: 10px;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.wa-number-field-wrap {
+  flex: 1;
+}
+.wa-phone-field {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 800;
+  padding: 12px 14px;
+  outline: none;
+  letter-spacing: 0.5px;
+  direction: ltr;
+}
+.wa-phone-field::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+  font-weight: 500;
+  letter-spacing: normal;
+}
+.wa-field-hint {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Team Selection Segment Cards */
+.wa-team-preference-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.wa-pref-card {
+  cursor: pointer;
+  user-select: none;
+}
+.wa-pref-card input[type="radio"] {
+  display: none;
+}
+.pref-card-inner {
+  padding: 10px 4px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  min-height: 60px;
+}
+.pref-card-inner:active {
+  transform: scale(0.95);
+}
+.pref-card-inner .pref-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+.pref-card-inner .pref-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
+}
+.wa-pref-card input[type="radio"]:checked + .pref-card-inner {
+  border-color: #25D366;
+  background: rgba(37, 211, 102, 0.15);
+  box-shadow: 0 0 12px rgba(37, 211, 102, 0.25);
+}
+.wa-pref-card input[type="radio"]:checked + .pref-card-inner .pref-title {
+  color: #fff;
+  font-weight: 900;
+}
+.wa-pref-card input[type="radio"]:checked + .home-pref {
+  border-color: #00e676;
+  background: rgba(0, 230, 118, 0.16);
+  box-shadow: 0 0 12px rgba(0, 230, 118, 0.25);
+}
+.wa-pref-card input[type="radio"]:checked + .away-pref {
+  border-color: var(--secondary);
+  background: rgba(0, 176, 255, 0.16);
+  box-shadow: 0 0 12px rgba(0, 176, 255, 0.25);
+}
+
+/* Status Banner */
+.wa-status-banner {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-align: center;
+  animation: fadeIn 0.25s ease;
+}
+
+/* Submit Action Button */
+.wa-submit-action-btn {
+  width: 100%;
+  height: 52px;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.02rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+.wa-submit-action-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 10px rgba(37, 211, 102, 0.5);
+}
+.wa-submit-action-btn i {
+  font-size: 1.35rem;
+}
+
+/* Footer Note */
+.wa-sheet-footer {
+  padding: 12px 22px;
+  background: rgba(0, 0, 0, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.wa-privacy-text {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.wa-unsub-link {
+  background: none;
+  border: none;
+  color: #ff5252;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ==================== ANDROID MOBILE ADAPTATION FOR WHATSAPP MODAL ==================== */
+@media (max-width: 680px) {
+  .modal-backdrop.wa-modal-backdrop {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+  .wa-subscription-sheet {
+    max-width: 100% !important;
+    width: 100% !important;
+    border-radius: 24px 24px 0 0 !important;
+    border-bottom: none !important;
+    max-height: 90vh !important;
+    padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+    animation: waSheetSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  .wa-sheet-drag-handle {
+    display: flex !important;
+  }
+  .wa-sheet-header {
+    padding: 14px 18px !important;
+  }
+  .wa-sheet-body {
+    padding: 16px 18px !important;
+    gap: 14px !important;
+  }
+  .wa-sheet-footer {
+    padding: 10px 18px !important;
+  }
+  .wa-country-select {
+    padding: 11px 24px 11px 8px !important;
+    font-size: 0.8rem !important;
+  }
+  .wa-phone-field {
+    padding: 11px 12px !important;
+    font-size: 1.05rem !important;
+  }
+}
+
+@keyframes waSheetSlideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0.5;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 
 /* ==================== STARZPLAY CONTENT RAILS & SLIDER ARROWS ==================== */
 .main-container {
@@ -1248,16 +1827,30 @@ body {
   transform: translateX(-5px);
 }
 .radio-icon {
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(135deg, var(--primary), #ff9100);
+  width: 54px;
+  height: 54px;
+  background: linear-gradient(135deg, rgba(0, 176, 255, 0.25), rgba(2, 136, 209, 0.4));
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.4rem;
-  color: #000;
-  box-shadow: var(--shadow-orange);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(0, 176, 255, 0.35);
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid rgba(0, 176, 255, 0.4);
+  position: relative;
+}
+.radio-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+.radio-card:hover .radio-icon img {
+  transform: scale(1.1);
 }
 .radio-info h4 {
   font-size: 1.05rem;
@@ -1266,6 +1859,84 @@ body {
 .radio-info p {
   font-size: 0.78rem;
   color: var(--text-muted);
+}
+
+.radio-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.radio-card .fav-btn,
+.fav-radio-btn {
+  background: rgba(14, 18, 30, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(10px);
+}
+
+.radio-card .fav-btn:hover,
+.radio-card .fav-btn.is-fav,
+.fav-radio-btn:hover,
+.fav-radio-btn.is-fav {
+  color: #ff1744 !important;
+  border-color: rgba(255, 23, 68, 0.45) !important;
+  background: rgba(255, 23, 68, 0.18) !important;
+  transform: scale(1.12);
+  box-shadow: 0 0 14px rgba(255, 23, 68, 0.4);
+}
+
+.radio-card .fav-btn.is-fav i,
+.fav-radio-btn.is-fav i {
+  color: #ff1744 !important;
+}
+
+.radio-card .fav-btn:active,
+.fav-radio-btn:active {
+  transform: scale(0.92);
+}
+
+/* Category Bar Favorite Pill */
+.category-btn.fav-category-pill {
+  border-color: rgba(255, 23, 68, 0.35);
+}
+.category-btn.fav-category-pill:hover,
+.category-btn.fav-category-pill.active {
+  background: rgba(255, 23, 68, 0.18) !important;
+  border-color: #ff1744 !important;
+  color: #fff !important;
+  box-shadow: 0 0 15px rgba(255, 23, 68, 0.4);
+}
+
+.radio-tab-btn {
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+.radio-tab-btn.active {
+  background: rgba(255, 82, 0, 0.2) !important;
+  border-color: var(--primary) !important;
+  color: #fff !important;
+  box-shadow: 0 0 12px rgba(255, 82, 0, 0.3) !important;
+}
+
+.radio-tab-btn[data-filter="favs"].active {
+  background: rgba(255, 215, 0, 0.2) !important;
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.35) !important;
 }
 
 /* Floating Audio Player Sticky Bar */
@@ -1830,5 +2501,681 @@ body {
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-muted);
+}
+
+/* ==========================================================================
+   ANDROID & SMARTPHONE NATIVE APP RESPONSIVE DESIGN SYSTEM
+   Optimized for Android (Pixel, Samsung Galaxy, Xiaomi, Oppo) & all smartphones
+   ========================================================================== */
+
+/* Hidden on desktop viewports */
+@media (min-width: 769px) {
+  .android-bottom-nav {
+    display: none !important;
+  }
+}
+
+/* ==================== SMARTPHONE & TABLET (<= 768px) ==================== */
+@media (max-width: 768px) {
+  /* Prevent horizontal scroll bounce & provide Android app feel */
+  html, body {
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: rgba(255, 82, 0, 0.15);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Smooth scroll offset for mobile sticky top bar */
+  #channelsSection,
+  #matchesCard,
+  #radioSection,
+  #sportsHubSection,
+  #playerCard {
+    scroll-margin-top: 75px;
+  }
+
+  /* Compact Android Top App Bar */
+  .top-stars-header {
+    height: 64px !important;
+    padding-top: 0 !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    background: rgba(6, 8, 14, 0.98) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8) !important;
+  }
+  .stars-banner-bg {
+    display: none !important;
+  }
+  .stars-banner-overlay {
+    display: none !important;
+  }
+  .stars-banner-content {
+    padding: 0 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+  }
+  .brand-logo {
+    padding: 4px 12px !important;
+    gap: 10px !important;
+    border-radius: 30px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+  .logo-icon {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 1.1rem !important;
+  }
+  .brand-text h1 {
+    font-size: 1.05rem !important;
+    line-height: 1.2 !important;
+  }
+  .brand-text span {
+    font-size: 0.65rem !important;
+    margin-top: -2px !important;
+  }
+
+  /* Sticky Android Search Bar */
+  .sub-nav-bar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 95 !important;
+    padding: 8px 12px !important;
+    background: rgba(8, 11, 20, 0.96) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+  .sub-nav-container {
+    gap: 0 !important;
+    width: 100% !important;
+  }
+  .search-box {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  .search-box input {
+    padding: 10px 42px 10px 16px !important;
+    font-size: 0.88rem !important;
+    border-radius: 14px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+  .search-box i {
+    right: 14px !important;
+    font-size: 0.95rem !important;
+  }
+  /* Desktop action buttons hidden on mobile -> replaced by Android Bottom Nav */
+  .nav-actions {
+    display: none !important;
+  }
+
+  /* News Ticker Mobile Styling */
+  .news-ticker-bar {
+    height: 32px !important;
+    font-size: 0.76rem !important;
+  }
+  .ticker-title {
+    padding: 0 10px !important;
+    font-size: 0.72rem !important;
+    gap: 5px !important;
+  }
+  .ticker-content {
+    gap: 28px !important;
+  }
+
+  /* Single Column Android Hero Section */
+  .hero-section {
+    margin: 12px auto !important;
+    padding: 0 12px !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* ==========================================================================
+     ANDROID 4-SECTION VIEW SWITCHER (CHANNELS - MATCHES - RADIO - NEWS) + FAVS
+     ========================================================================== */
+
+  /* 1. CHANNELS TAB (Default View):
+     Shows: Live Player + Categories Bar + Channels Grid + Highlights
+     Hides: Matches Card, Radio Section, Sports News Hub */
+  body:not([data-android-tab]) #matchesCard,
+  body[data-android-tab="channels"] #matchesCard,
+  body:not([data-android-tab]) #radioSection,
+  body[data-android-tab="channels"] #radioSection,
+  body:not([data-android-tab]) #sportsHubSection,
+  body[data-android-tab="channels"] #sportsHubSection {
+    display: none !important;
+  }
+  body:not([data-android-tab]) #playerCard,
+  body[data-android-tab="channels"] #playerCard {
+    display: block !important;
+  }
+  body:not([data-android-tab]) #categoriesContainer,
+  body[data-android-tab="channels"] #categoriesContainer {
+    display: flex !important;
+  }
+  body:not([data-android-tab]) #channelsSection,
+  body[data-android-tab="channels"] #channelsSection {
+    display: block !important;
+  }
+
+  /* 2. MATCHES TAB (Dedicated Match Center View):
+     Shows: Match Center Card (Expanded full height)
+     Hides: Channels Player, Categories, Channels Grid, Radio, News, Highlights */
+  body[data-android-tab="matches"] #playerCard,
+  body[data-android-tab="matches"] #categoriesContainer,
+  body[data-android-tab="matches"] #channelsSection,
+  body[data-android-tab="matches"] #radioSection,
+  body[data-android-tab="matches"] #sportsHubSection,
+  body[data-android-tab="matches"] #highlightsSection {
+    display: none !important;
+  }
+  body[data-android-tab="matches"] .hero-section {
+    display: block !important;
+    margin: 8px auto !important;
+    padding: 0 10px !important;
+  }
+  body[data-android-tab="matches"] #matchesCard {
+    display: flex !important;
+    width: 100% !important;
+    max-height: none !important;
+    min-height: calc(100vh - 190px) !important;
+    border-radius: 16px !important;
+    padding: 12px !important;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.7) !important;
+  }
+  body[data-android-tab="matches"] .matches-list {
+    max-height: none !important;
+    flex: 1 !important;
+  }
+
+  /* 3. RADIO TAB (Dedicated Radio Stations View):
+     Shows: Radio Section (Expanded full height)
+     Hides: Hero (Player & Matches), Categories, Channels, News, Highlights */
+  body[data-android-tab="radio"] .hero-section,
+  body[data-android-tab="radio"] #categoriesContainer,
+  body[data-android-tab="radio"] #channelsSection,
+  body[data-android-tab="radio"] #sportsHubSection,
+  body[data-android-tab="radio"] #highlightsSection {
+    display: none !important;
+  }
+  body[data-android-tab="radio"] #radioSection {
+    display: block !important;
+    margin: 12px 0 24px !important;
+    min-height: calc(100vh - 190px) !important;
+    border-radius: 16px !important;
+    padding: 16px 14px !important;
+  }
+
+  /* 4. NEWS TAB (Dedicated Sports News View):
+     Shows: Sports Hub Section (Expanded full height)
+     Hides: Hero (Player & Matches), Categories, Channels, Radio, Highlights */
+  body[data-android-tab="news"] .hero-section,
+  body[data-android-tab="news"] #categoriesContainer,
+  body[data-android-tab="news"] #channelsSection,
+  body[data-android-tab="news"] #radioSection,
+  body[data-android-tab="news"] #highlightsSection {
+    display: none !important;
+  }
+  body[data-android-tab="news"] #sportsHubSection {
+    display: block !important;
+    margin: 12px 0 24px !important;
+    min-height: calc(100vh - 190px) !important;
+    border-radius: 16px !important;
+    padding: 16px 14px !important;
+  }
+
+  /* 5. FAVORITES TAB (Dedicated Favorites View):
+     Shows: Player Card + Categories (favs active) + Filtered Channels Grid
+     Hides: Matches, Radio, News, Highlights */
+  body[data-android-tab="favs"] #matchesCard,
+  body[data-android-tab="favs"] #radioSection,
+  body[data-android-tab="favs"] #sportsHubSection,
+  body[data-android-tab="favs"] #highlightsSection {
+    display: none !important;
+  }
+  body[data-android-tab="favs"] #playerCard {
+    display: block !important;
+  }
+  body[data-android-tab="favs"] #categoriesContainer {
+    display: flex !important;
+  }
+  body[data-android-tab="favs"] #channelsSection {
+    display: block !important;
+    min-height: calc(100vh - 350px) !important;
+  }
+
+  /* Mobile Video Player */
+  .player-card {
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9) !important;
+  }
+  .player-overlay-badge {
+    top: 10px !important;
+    right: 10px !important;
+    padding: 4px 10px !important;
+    font-size: 0.72rem !important;
+  }
+  .player-details {
+    padding: 12px 14px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  .player-channel-info {
+    gap: 12px !important;
+  }
+  .player-channel-logo {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .player-channel-title h2 {
+    font-size: 1.08rem !important;
+  }
+  .player-channel-title p {
+    font-size: 0.75rem !important;
+  }
+  .player-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+  .player-actions .btn-icon {
+    padding: 7px 12px !important;
+    font-size: 0.78rem !important;
+    border-radius: 20px !important;
+  }
+  .viewers-badge {
+    padding: 5px 10px !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* Match Center Mobile Android Layout */
+  .match-center-card {
+    border-radius: 16px !important;
+    padding: 12px !important;
+  }
+  .card-header h3 {
+    font-size: 1.02rem !important;
+  }
+  .matches-filter-tabs {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    padding: 6px 4px !important;
+    gap: 6px !important;
+  }
+  .matches-filter-tabs::-webkit-scrollbar {
+    display: none !important;
+  }
+  .match-tab-btn {
+    padding: 6px 10px !important;
+    font-size: 0.74rem !important;
+    white-space: nowrap !important;
+    border-radius: 8px !important;
+  }
+  .match-card {
+    padding: 10px 10px !important;
+    border-radius: 12px !important;
+  }
+  .team-name {
+    font-size: 0.8rem !important;
+  }
+  .team-logo {
+    width: 26px !important;
+    height: 26px !important;
+  }
+  .match-meta-time {
+    font-size: 0.72rem !important;
+  }
+
+  /* Categories Bar Mobile Chips */
+  .main-container {
+    padding: 0 12px !important;
+    margin-bottom: 30px !important;
+  }
+  .categories-bar {
+    padding: 6px 0 14px !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+  .categories-bar::-webkit-scrollbar {
+    display: none !important;
+  }
+  .category-btn {
+    padding: 8px 16px !important;
+    font-size: 0.82rem !important;
+    gap: 6px !important;
+    border-radius: 25px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Section Titles */
+  .section-title {
+    margin: 20px 0 12px !important;
+  }
+  .section-title h2 {
+    font-size: 1.15rem !important;
+    gap: 8px !important;
+  }
+  .section-title h2::before {
+    height: 18px !important;
+    width: 4px !important;
+  }
+
+  /* Android 2-Column Responsive Channels Grid (2 Cards Side-by-Side per Row) */
+  .channels-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    padding: 4px 0 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+  .channel-card {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 10px 6px !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    transition: transform 0.15s ease, background-color 0.15s ease !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .channel-card:active {
+    transform: scale(0.96) !important;
+    background: rgba(255, 82, 0, 0.15) !important;
+  }
+  .channel-logo-wrapper {
+    width: 46px !important;
+    height: 46px !important;
+    margin-bottom: 6px !important;
+    padding: 2px !important;
+    border-radius: 50% !important;
+    flex-shrink: 0 !important;
+  }
+  .channel-logo-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    border-radius: 50% !important;
+  }
+  .channel-name {
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 0.78rem !important;
+    font-weight: 800 !important;
+    margin-bottom: 3px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
+    padding: 0 4px !important;
+    box-sizing: border-box !important;
+    display: block !important;
+  }
+  .channel-meta {
+    font-size: 0.68rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+  }
+  .channel-card .fav-btn {
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 0.72rem !important;
+    top: 6px !important;
+    left: 6px !important;
+  }
+  .channel-card .card-share-btn {
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 0.7rem !important;
+    top: 6px !important;
+    right: 6px !important;
+  }
+  .slider-arrow {
+    display: none !important;
+  }
+
+  /* Sports News Hub Mobile */
+  .sports-hub-section {
+    padding: 16px 14px !important;
+    margin: 24px 0 !important;
+    border-radius: 16px !important;
+  }
+  .sports-news-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+  .news-img-wrapper {
+    height: 150px !important;
+  }
+  .news-content {
+    padding: 14px !important;
+  }
+  .news-title {
+    font-size: 0.98rem !important;
+  }
+
+  /* Radio Section Mobile */
+  .radio-section {
+    padding: 16px 14px !important;
+    margin: 24px 0 !important;
+    border-radius: 16px !important;
+  }
+  .radio-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .radio-card {
+    padding: 12px 14px !important;
+    border-radius: 12px !important;
+  }
+  .fav-radio-btn {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.82rem !important;
+  }
+  .share-radio-btn {
+    padding: 5px 10px !important;
+    font-size: 0.74rem !important;
+  }
+  .radio-icon {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 1.15rem !important;
+  }
+  .radio-info h4 {
+    font-size: 0.92rem !important;
+  }
+
+  /* Modals Mobile Adaptation */
+  .match-modal {
+    padding: 16px !important;
+    border-radius: 16px !important;
+    max-height: 94vh !important;
+  }
+  .server-btn {
+    padding: 10px 14px !important;
+    font-size: 0.82rem !important;
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Floating Audio Player Bar docked safely above Bottom Nav */
+  .audio-player-bar {
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    padding: 10px 16px !important;
+    border-radius: 16px 16px 0 0 !important;
+    border-top: 1.5px solid var(--secondary) !important;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.95) !important;
+    z-index: 990 !important;
+  }
+  .audio-station-title {
+    gap: 10px !important;
+  }
+  #audioRadioName {
+    font-size: 0.86rem !important;
+    max-width: 170px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  #audioRadioDesc {
+    display: none !important;
+  }
+
+  /* Footer Mobile */
+  .footer {
+    padding: 30px 16px 20px !important;
+    margin-top: 30px !important;
+  }
+  .footer-links {
+    gap: 14px 18px !important;
+    justify-content: center !important;
+  }
+}
+
+/* ==================== ANDROID BOTTOM NAVIGATION BAR ==================== */
+.android-bottom-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(64px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: 6px;
+  padding-right: 6px;
+  background: rgba(10, 14, 24, 0.96);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+}
+
+.android-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 6px 0;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  font-family: inherit;
+}
+
+.android-nav-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 28px;
+  border-radius: 16px;
+  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+  font-size: 1.15rem;
+}
+
+.android-nav-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.android-nav-item:active {
+  transform: scale(0.92);
+}
+
+.android-nav-item.active {
+  color: var(--primary);
+}
+
+.android-nav-item.active .android-nav-icon-wrapper {
+  background: rgba(255, 82, 0, 0.18);
+  color: var(--primary);
+  box-shadow: 0 0 15px rgba(255, 82, 0, 0.35);
+}
+
+.android-nav-item.active .android-nav-label {
+  color: var(--primary);
+  font-weight: 900;
+}
+
+.android-nav-badge {
+  position: absolute;
+  top: -3px;
+  right: 2px;
+  background: #ff1744;
+  color: #fff;
+  font-size: 0.58rem;
+  font-weight: 900;
+  padding: 1px 5px;
+  border-radius: 8px;
+  line-height: 1.2;
+  box-shadow: 0 0 8px rgba(255, 23, 68, 0.8);
+  animation: pulse-red 1.5s infinite;
+}
+
+/* ==================== COMPACT PHONES (<= 380px) ==================== */
+@media (max-width: 380px) {
+  .android-nav-label {
+    font-size: 0.65rem;
+  }
+  .android-nav-icon-wrapper {
+    width: 42px;
+    font-size: 1.05rem;
+  }
+  .channels-grid {
+    gap: 8px !important;
+  }
+  .channel-card {
+    padding: 10px 6px !important;
+  }
+  .channel-logo-wrapper {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .channel-name {
+    font-size: 0.78rem !important;
+  }
 }
 

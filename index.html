@@ -1,12 +1,74 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KX3NX7RLEN"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-KX3NX7RLEN');
+  </script>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <!-- Android & Mobile App Native Meta Tags -->
+  <meta name="theme-color" content="#06080e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
   <title>بث مباشر للقنوات الفضائية | البث المباشر ودليل المباريات والأخبار الرياضية</title>
   <meta name="description" content="منصة بث مباشر للقنوات الفضائية الفاخرة للبث المباشر للقنوات العربية والرياضية، مشاهدة المباريات اليومية بث مباشر، والأخبار الرياضية العاجلة لحظة بلحظة.">
   <meta name="keywords" content="بث مباشر للقنوات الفضائية, بث مباشر للمباريات, مشاهدة المباريات مباشر, أخبار الرياضة, جدول المباريات اليومية, قنوات عربية">
   
+  <!-- SEO Canonical & Robots -->
+  <link rel="canonical" href="https://arabialivetv.com/">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+  <!-- OpenGraph Meta Tags (Social & Search SEO) -->
+  <meta property="og:locale" content="ar_AR">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="بث مباشر للقنوات الفضائية | البث المباشر ودليل المباريات والأخبار الرياضية">
+  <meta property="og:description" content="منصة بث مباشر للقنوات الفضائية الفاخرة للبث المباشر للقنوات العربية والرياضية، مشاهدة المباريات اليومية بث مباشر، والأخبار الرياضية العاجلة لحظة بلحظة.">
+  <meta property="og:url" content="https://arabialivetv.com/">
+  <meta property="og:site_name" content="بث مباشر للقنوات الفضائية">
+  <meta property="og:image" content="https://arabialivetv.com/favicon.ico">
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="بث مباشر للقنوات الفضائية | البث المباشر ودليل المباريات">
+  <meta name="twitter:description" content="منصة بث مباشر للقنوات الفضائية العربية والرياضية والمباريات اليومية">
+  <meta name="twitter:image" content="https://arabialivetv.com/favicon.ico">
+
+  <!-- Schema.org JSON-LD Structured Data for Search Engine Crawlers -->
+  <script type="application/ld+json" id="schemaStructuredData">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://arabialivetv.com/#website",
+        "url": "https://arabialivetv.com/",
+        "name": "بث مباشر للقنوات الفضائية",
+        "description": "منصة البث المباشر للقنوات الفضائية العربية والرياضية والمباريات اليومية",
+        "inLanguage": "ar",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://arabialivetv.com/?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://arabialivetv.com/#organization",
+        "name": "Arabia Live TV",
+        "url": "https://arabialivetv.com/",
+        "logo": "https://arabialivetv.com/favicon.ico"
+      }
+    ]
+  }
+  </script>
+
   <!-- Referrer Policy for video stream compatibility -->
   <meta name="referrer" content="no-referrer">
 
@@ -14,8 +76,9 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7968296998324704"
      crossorigin="anonymous"></script>
 
-  <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="./style.css?v=2.5">
+
+  <!-- CSS Stylesheet V3 -->
+  <link rel="stylesheet" href="./style.css?v=3.6.0">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- HLS.js Library for HLS .m3u8 Live Streams Support -->
@@ -35,8 +98,8 @@
           <i class="fa-solid fa-tv"></i>
         </div>
         <div class="brand-text">
-          <h1>بث مباشر للقنوات الفضائية</h1>
-          <span>arabialivetv.com</span>
+          <h1 id="siteHeaderTitle">بث مباشر للقنوات الفضائية</h1>
+          <span id="siteHeaderSubtitle">arabialivetv.com</span>
         </div>
       </a>
     </div>
@@ -167,19 +230,14 @@
 
         <!-- Match Filter Tabs (All / Live / Today / Upcoming) -->
         <div class="matches-filter-tabs" id="matchTabsContainer" style="display: flex; gap: 6px; padding: 8px 14px; border-bottom: 1px solid var(--border-glass); background: rgba(0,0,0,0.25);">
-          <button class="match-tab-btn active" data-filter="all" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--primary); background: rgba(0,230,118,0.15); color: #00e676; cursor: pointer; transition: all 0.2s ease;">الكل</button>
+          <button class="match-tab-btn" data-filter="all" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;">الكل</button>
           <button class="match-tab-btn" data-filter="live" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;">🔴 مباشر</button>
-          <button class="match-tab-btn" data-filter="today" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;">اليوم</button>
-          <button class="match-tab-btn" data-filter="upcoming" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;">📅 القادمة</button>
+          <button class="match-tab-btn active" data-filter="today" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--primary); background: rgba(0,230,118,0.15); color: #00e676; cursor: pointer; transition: all 0.2s ease;">📅 اليوم</button>
+          <button class="match-tab-btn" data-filter="upcoming" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;">📆 القادمة</button>
         </div>
 
         <div class="matches-list" id="matchesList">
           <!-- Populated dynamically via JS -->
-        </div>
-
-        <div class="match-center-footer">
-          <span><i class="fa-solid fa-bolt"></i> تحديث تلقائي للمباريات</span>
-          <span><i class="fa-solid fa-server"></i> سيرفرات عالية الدقة</span>
         </div>
       </aside>
     </section>
@@ -195,12 +253,36 @@
       <!-- Live Channels Grid Section -->
       <section id="channelsSection">
         <div class="section-title">
-          <h2><i class="fa-solid fa-satellite-dish" style="color: var(--primary);"></i> القنوات الفضائية المباشرة</h2>
+          <h2 id="channelsSectionHeaderTitle"><i class="fa-solid fa-satellite-dish" style="color: var(--primary);"></i> القنوات الفضائية المباشرة</h2>
           <span id="channelsCountSubtitle" style="color: var(--text-muted); font-size: 0.85rem;">أكثر من 45+ قناة فضائية مباشرة عالية الجودة - اختر القناة للمشاهدة المباشرة</span>
+        </div>
+
+        <!-- Dedicated Filter Tabs when in Favorites View -->
+        <div id="favFilterTabsContainer" style="display: none; margin-bottom: 20px; gap: 8px; flex-wrap: wrap;">
+          <button class="radio-tab-btn active" data-fav-filter="all" id="favFilterAllBtn" style="padding: 7px 16px; font-size: 0.84rem; font-weight: 700; border-radius: 20px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.08); color: #fff; cursor: pointer; transition: all 0.2s ease;">
+            <i class="fa-solid fa-heart" style="color: #ff1744;"></i> جميع المفضلة (<span id="favTotalCountBadge">0</span>)
+          </button>
+          <button class="radio-tab-btn" data-fav-filter="channels" id="favFilterChannelsBtn" style="padding: 7px 16px; font-size: 0.84rem; font-weight: 700; border-radius: 20px; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;">
+            <i class="fa-solid fa-satellite-dish"></i> القنوات الفضائية (<span id="favChannelsCountBadge">0</span>)
+          </button>
+          <button class="radio-tab-btn" data-fav-filter="radios" id="favFilterRadiosBtn" style="padding: 7px 16px; font-size: 0.84rem; font-weight: 700; border-radius: 20px; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;">
+            <i class="fa-solid fa-radio"></i> إذاعات الراديو (<span id="favRadiosCountBadge">0</span>)
+          </button>
         </div>
 
         <div class="channels-grid" id="channelsGrid">
           <!-- Populated via JS -->
+        </div>
+
+        <!-- Favorite Radios Subsection when in Favorites View -->
+        <div id="favRadiosWrapper" style="display: none; margin-top: 36px; padding-top: 24px; border-top: 1px dashed rgba(255,255,255,0.15);">
+          <div class="section-title">
+            <h2><i class="fa-solid fa-radio" style="color: var(--secondary);"></i> إذاعات الراديو المفضلة (<span id="favRadiosSubBadge">0</span>)</h2>
+            <span id="favRadiosCountSubtitle" style="color: var(--text-muted); font-size: 0.85rem;">المحطات الإذاعية التي قمت بحفظها في المفضلة للوصول السريع</span>
+          </div>
+          <div class="radio-grid" id="favRadioGrid">
+            <!-- Populated dynamically via JS -->
+          </div>
         </div>
       </section>
 
@@ -218,9 +300,15 @@
 
       <!-- Live Arabic Radios Section -->
       <section class="radio-section" id="radioSection">
-        <div class="section-title">
-          <h2><i class="fa-solid fa-radio" style="color: var(--secondary);"></i> إذاعات الراديو المباشرة</h2>
-          <span style="color: var(--text-muted); font-size: 0.85rem;">استمع لأشهر المحطات العربية بصوت نقي</span>
+        <div class="section-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h2><i class="fa-solid fa-radio" style="color: var(--secondary);"></i> إذاعات الراديو المباشرة</h2>
+            <span style="color: var(--text-muted); font-size: 0.85rem;">استمع لأشهر المحطات العربية بصوت نقي</span>
+          </div>
+          <div class="radio-filter-tabs" id="radioFilterTabs" style="display: flex; gap: 8px;">
+            <button class="radio-tab-btn active" data-filter="all" id="radioFilterAllBtn" style="padding: 6px 14px; font-size: 0.82rem; font-weight: 700; border-radius: 20px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.08); color: #fff; cursor: pointer; transition: all 0.2s ease;">جميع الإذاعات</button>
+            <button class="radio-tab-btn" data-filter="favs" id="radioFilterFavsBtn" style="padding: 6px 14px; font-size: 0.82rem; font-weight: 700; border-radius: 20px; border: 1px solid rgba(255,215,0,0.3); background: transparent; color: var(--gold); cursor: pointer; transition: all 0.2s ease;"><i class="fa-solid fa-heart" style="color: var(--gold);"></i> المفضلة (<span id="radioFavCountBadge">0</span>)</button>
+          </div>
         </div>
 
         <div class="radio-grid" id="radioGrid">
@@ -229,7 +317,7 @@
       </section>
 
       <!-- Trending Highlights / VOD Section -->
-      <section>
+      <section id="highlightsSection">
         <div class="section-title">
           <h2><i class="fa-solid fa-circle-play" style="color: var(--gold);"></i> ملخصات ومقاطع رائجة</h2>
           <span style="color: var(--text-muted); font-size: 0.85rem;">أبرز الأهداف والتغطيات الخاصة</span>
@@ -362,12 +450,153 @@
         <iframe id="modalPlayerFrame" src="" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" referrerpolicy="no-referrer" allowfullscreen allow="autoplay; encrypted-media"></iframe>
       </div>
 
-      <div style="padding: 16px 24px; background: rgba(18, 26, 43, 0.95); display: flex; align-items: center; justify-content: space-between;">
-        <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700;">
-          🔴 البث يعمل الآن عبر السيرفر الرئيسي
-        </span>
+      <div style="padding: 16px 24px; background: rgba(18, 26, 43, 0.95); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700;">
+            🔴 البث يعمل الآن عبر السيرفر الرئيسي
+          </span>
+          <button class="btn-icon" id="modalWhatsAppAlertBtn" style="color: #25D366; border-color: rgba(37,211,102,0.4); background: rgba(37,211,102,0.12); font-weight: 700;">
+            <i class="fa-brands fa-whatsapp"></i> تنبيهات الأهداف عبر واتساب
+          </button>
+        </div>
         <button class="btn-icon" onclick="document.getElementById('matchModalBackdrop').classList.remove('active')">
           إغلاق
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== WHATSAPP GOAL ALERT SUBSCRIPTION MODAL ==================== -->
+  <div class="modal-backdrop wa-modal-backdrop" id="whatsappModalBackdrop" style="z-index: 1800;">
+    <div class="wa-subscription-sheet">
+      <!-- Android Pull Handle Bar -->
+      <div class="wa-sheet-drag-handle"><span></span></div>
+
+      <!-- Header with WhatsApp Branding -->
+      <div class="wa-sheet-header">
+        <div class="wa-header-brand">
+          <div class="wa-brand-icon">
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+          <div class="wa-header-titles">
+            <h3 class="wa-title">تنبيهات أهداف المباراة الفورية</h3>
+            <span class="wa-subtitle"><i class="fa-solid fa-bolt" style="color: #25D366;"></i> إشعارات واتساب لحظية مجانية</span>
+          </div>
+        </div>
+        <button class="wa-close-btn" id="closeWhatsAppModalBtn" title="إغلاق">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="wa-sheet-body">
+        <!-- Match Ticket Preview Card -->
+        <div class="wa-match-ticket">
+          <div class="ticket-header-pill">
+            <span id="waModalMatchLeague"><i class="fa-solid fa-trophy"></i> البطولة</span>
+            <span id="waModalMatchTime" class="ticket-time-tag">⏱️ مباشر</span>
+          </div>
+          <div class="ticket-teams-matchup">
+            <div class="ticket-team ticket-home">
+              <span class="team-dot home-dot"></span>
+              <span id="waModalHomeTeamName">صاحب الأرض</span>
+            </div>
+            <div class="ticket-vs-badge">VS</div>
+            <div class="ticket-team ticket-away">
+              <span id="waModalAwayTeamName">الضيف</span>
+              <span class="team-dot away-dot"></span>
+            </div>
+          </div>
+          <!-- Hidden fallback elements for compatibility with existing JS -->
+          <div style="display:none;" id="waModalMatchTitle"></div>
+          <div style="display:none;" id="waModalMatchMeta"></div>
+        </div>
+
+        <form id="whatsappSubscribeForm">
+          <input type="hidden" id="waMatchId">
+
+          <!-- Phone Number Input Group -->
+          <div class="wa-form-section">
+            <label class="wa-field-label">
+              <i class="fa-solid fa-mobile-screen-button"></i> رقم هاتفك المفعل عليه الواتساب:
+            </label>
+            <div class="wa-phone-input-combo">
+              <div class="wa-code-select-wrap">
+                <select id="waCountryCode" class="wa-country-select">
+                  <option value="20" selected>🇪🇬 +20</option>
+                  <option value="966">🇸🇦 +966</option>
+                  <option value="971">🇦🇪 +971</option>
+                  <option value="965">🇰🇼 +965</option>
+                  <option value="974">🇶🇦 +974</option>
+                  <option value="968">🇴🇲 +968</option>
+                  <option value="973">🇧🇭 +973</option>
+                  <option value="962">🇯🇴 +962</option>
+                  <option value="964">🇮🇶 +964</option>
+                  <option value="212">🇲🇦 +212</option>
+                  <option value="213">🇩🇿 +213</option>
+                  <option value="216">🇹🇳 +216</option>
+                  <option value="249">🇸🇩 +249</option>
+                  <option value="other">🌐 دولي</option>
+                </select>
+                <i class="fa-solid fa-chevron-down select-chevron"></i>
+              </div>
+              <div class="wa-number-field-wrap">
+                <input type="tel" id="waPhoneInput" class="wa-phone-field" placeholder="مثال: 01012345678" inputmode="numeric" autocomplete="tel" required>
+              </div>
+            </div>
+            <span class="wa-field-hint">
+              <i class="fa-solid fa-circle-info"></i> اكتب الرقم مباشرة بالصفر أو بدونه وسيتم ربطه تلقائياً.
+            </span>
+          </div>
+
+          <!-- Team Preference Interactive Cards -->
+          <div class="wa-form-section">
+            <label class="wa-field-label">
+              <i class="fa-solid fa-bell"></i> أرسل لي التنبيه عند تسجيل الأهداف لـ:
+            </label>
+            <div class="wa-team-preference-grid">
+              <label class="wa-pref-card">
+                <input type="radio" name="waTeamInterest" value="both" checked>
+                <div class="pref-card-inner">
+                  <span class="pref-icon">⚽</span>
+                  <span class="pref-title">كلا الفريقين</span>
+                </div>
+              </label>
+              <label class="wa-pref-card">
+                <input type="radio" name="waTeamInterest" value="home" id="waTeamHomeRadio">
+                <div class="pref-card-inner home-pref">
+                  <span class="pref-icon">🟢</span>
+                  <span id="waTeamHomeLabel" class="pref-title">الفريق 1</span>
+                </div>
+              </label>
+              <label class="wa-pref-card">
+                <input type="radio" name="waTeamInterest" value="away" id="waTeamAwayRadio">
+                <div class="pref-card-inner away-pref">
+                  <span class="pref-icon">🔵</span>
+                  <span id="waTeamAwayLabel" class="pref-title">الفريق 2</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Status Message Box -->
+          <div id="waSubscribeStatus" class="wa-status-banner" style="display: none;"></div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="waSubmitBtn" class="wa-submit-action-btn">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span>تفعيل تنبيهات الأهداف عبر الواتساب</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Footer Security Note -->
+      <div class="wa-sheet-footer">
+        <span class="wa-privacy-text">
+          <i class="fa-solid fa-shield-halved"></i> خصوصيتك محمية 100%، لن نرسل سوى أهداف مباراتك.
+        </span>
+        <button type="button" id="waUnsubBtn" class="wa-unsub-link">
+          إلغاء الاشتراك
         </button>
       </div>
     </div>
@@ -423,8 +652,47 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
-  <script src="./channels_data.js?v=2.5"></script>
-  <script src="./app.js?v=2.5"></script>
+  <!-- ==================== ANDROID NATIVE SMARTPHONE BOTTOM NAVIGATION ==================== -->
+  <nav class="android-bottom-nav" id="androidBottomNav" aria-label="شريط التنقل السفلي للأجهزة الذكية">
+    <a href="#channelsSection" class="android-nav-item active" id="androidTabChannels">
+      <div class="android-nav-icon-wrapper">
+        <i class="fa-solid fa-satellite-dish"></i>
+      </div>
+      <span class="android-nav-label">القنوات</span>
+    </a>
+
+    <a href="#matchesCard" class="android-nav-item" id="androidTabMatches">
+      <div class="android-nav-icon-wrapper">
+        <i class="fa-solid fa-trophy"></i>
+        <span class="android-nav-badge">مباشر</span>
+      </div>
+      <span class="android-nav-label">المباريات</span>
+    </a>
+
+    <a href="#radioSection" class="android-nav-item" id="androidTabRadio">
+      <div class="android-nav-icon-wrapper">
+        <i class="fa-solid fa-radio"></i>
+      </div>
+      <span class="android-nav-label">الراديو</span>
+    </a>
+
+    <a href="#sportsHubSection" class="android-nav-item" id="androidTabNews">
+      <div class="android-nav-icon-wrapper">
+        <i class="fa-solid fa-newspaper"></i>
+      </div>
+      <span class="android-nav-label">الأخبار</span>
+    </a>
+
+    <button type="button" class="android-nav-item" id="androidTabFavs">
+      <div class="android-nav-icon-wrapper">
+        <i class="fa-solid fa-heart"></i>
+      </div>
+      <span class="android-nav-label">المفضلة</span>
+    </button>
+  </nav>
+
+  <!-- Scripts V3 -->
+  <script src="./channels_data.js?v=3.6.0"></script>
+  <script src="./app.js?v=3.6.0"></script>
 </body>
 </html>
