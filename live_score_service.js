@@ -357,10 +357,160 @@ async function syncLiveScores(db, notifyGoalFn = null) {
   };
 }
 
+const LEAGUE_META = {
+  'eng.1': { name: 'الدوري الإنجليزي الممتاز', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', channel: 'بي إن سبورتس 1 HD' },
+  'esp.1': { name: 'الدوري الإسباني - La Liga', flag: '🇪🇸', channel: 'بي إن سبورتس 1 HD' },
+  'ita.1': { name: 'الدوري الإيطالي - Serie A', flag: '🇮🇹', channel: 'أبوظبي الرياضية بريميوم 1' },
+  'ger.1': { name: 'الدوري الألماني - Bundesliga', flag: '🇩🇪', channel: 'بي إن سبورتس 2 HD' },
+  'fra.1': { name: 'الدوري الفرنسي - Ligue 1', flag: '🇫🇷', channel: 'بي إن سبورتس 4 HD' },
+  'uefa.champions': { name: 'دوري أبطال أوروبا', flag: '🇪🇺', channel: 'بي إن سبورتس 1 HD' },
+  'uefa.europa': { name: 'الدوري الأوروبي', flag: '🇪🇺', channel: 'بي إن سبورتس 2 HD' },
+  'caf.champions': { name: 'دوري أبطال إفريقيا', flag: '🌍', channel: 'بي إن سبورتس 6 HD' },
+  'ksa.1': { name: 'دوري روشن السعودي', flag: '🇸🇦', channel: 'SSC 1 HD' },
+  'afc.champions': { name: 'دوري أبطال آسيا', flag: '🌏', channel: 'beIN AFC HD' }
+};
+
+function findArabicTeamName(englishName) {
+  if (!englishName) return '';
+  const eNorm = normalizeStr(englishName);
+  for (const [arName, aliases] of Object.entries(TEAM_ALIASES)) {
+    for (const al of aliases) {
+      const alNorm = normalizeStr(al);
+      if (eNorm === alNorm || eNorm.includes(alNorm) || alNorm.includes(eNorm)) {
+        return arName;
+      }
+    }
+  }
+  return englishName;
+}
+
+function slugify(text) {
+  return String(text || '')
+    .toLowerCase()
+    .replace(/[^\w\u0621-\u064A]+/gu, '-')
+    .replace(/^-+|-+$/g, '') || 'match';
+}
+
+/**
+ * Fetch and automatically add today's major match fixtures into the database
+ * @param {Object} db - Database module
+ * @returns {Promise<Object>} Added fixtures summary
+ */
+async function fetchAndAddTodayFixtures(db) {
+  if (!db || typeof db.getAllMatches !== 'function') {
+    throw new Error('Database instance is required');
+  }
+
+  const currentMatches = db.getAllMatches();
+  const events = await fetchAllLiveEvents();
+  const today = new Date();
+  const todayIso = today.toISOString().split('T')[0];
+
+  const addedMatches = [];
+  let existingCount = 0;
+
+  for (const ev of events) {
+    const comps = ev.competitions && ev.competitions[0] && ev.competitions[0].competitors;
+    if (!comps || comps.length < 2) continue;
+
+    // Check if event is scheduled for today (or currently in/post today)
+    const evDateStr = ev.date ? String(ev.date).slice(0, 10) : '';
+    const st = ev.status && ev.status.type ? ev.status.type.state : '';
+    const isTodayEvent = evDateStr === todayIso || st === 'in';
+
+    if (!isTodayEvent) continue;
+
+    const rawHome = comps[0].team.displayName || comps[0].team.name || 'الفريق الأول';
+    const rawAway = comps[1].team.displayName || comps[1].team.name || 'الفريق الثاني';
+
+    const homeArabic = findArabicTeamName(rawHome);
+    const awayArabic = findArabicTeamName(rawAway);
+
+    // Check if match already exists in DB
+    const alreadyExists = currentMatches.some(m => {
+      return (teamMatches(m.homeTeam, rawHome) && teamMatches(m.awayTeam, rawAway)) ||
+             (teamMatches(m.homeTeam, rawAway) && teamMatches(m.awayTeam, rawHome)) ||
+             (m.homeTeam === homeArabic && m.awayTeam === awayArabic);
+    });
+
+    if (alreadyExists) {
+      existingCount++;
+      continue;
+    }
+
+    // Format local time (HH:mm)
+    let matchTimeStr = '20:00';
+    try {
+      if (ev.date) {
+        const d = new Date(ev.date);
+        const hours = String(d.getHours()).padStart(2, '0');
+        const mins = String(d.getMinutes()).padStart(2, '0');
+        matchTimeStr = `${hours}:${mins}`;
+      }
+    } catch (_) {}
+
+    const lgCode = ev._leagueCode || 'eng.1';
+    const lgMeta = LEAGUE_META[lgCode] || { name: 'مباراة دولية', flag: '⚽', channel: 'قناة رياضية' };
+
+    const homeScore = comps[0].score !== undefined ? String(comps[0].score) : '0';
+    const awayScore = comps[1].score !== undefined ? String(comps[1].score) : '0';
+
+    let initialStatus = 'upcoming';
+    let initialScore = 'vs';
+    if (st === 'in') {
+      initialStatus = 'live';
+      initialScore = `${homeScore} - ${awayScore}`;
+    } else if (st === 'post') {
+      initialStatus = 'ended';
+      initialScore = `${homeScore} - ${awayScore}`;
+    }
+
+    const newMatch = {
+      id: `match-${slugify(rawHome)}-${slugify(rawAway)}-${Date.now() % 100000}`,
+      league: lgMeta.name,
+      leagueFlag: lgMeta.flag,
+      homeTeam: homeArabic,
+      homeLogo: (comps[0].team.logo || ''),
+      awayTeam: awayArabic,
+      awayLogo: (comps[1].team.logo || ''),
+      time: matchTimeStr,
+      date: 'اليوم',
+      dateIso: todayIso,
+      status: initialStatus,
+      channelName: lgMeta.channel,
+      channelId: '',
+      commentator: 'معلق متميز',
+      stadium: (ev.competitions[0].venue ? ev.competitions[0].venue.fullName : 'استاد المباراة'),
+      score: initialScore,
+      servers: [
+        { name: 'سيرفر البث 1 (HD)', url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8' },
+        { name: 'سيرفر البث 2 (سريع)', url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8' }
+      ],
+      sortOrder: (currentMatches.length + addedMatches.length + 1)
+    };
+
+    const created = db.createMatch(newMatch);
+    if (created) {
+      addedMatches.push(created);
+    }
+  }
+
+  return {
+    success: true,
+    addedCount: addedMatches.length,
+    existingCount,
+    addedMatches
+  };
+}
+
 module.exports = {
   syncLiveScores,
   fetchAllLiveEvents,
+  fetchAndAddTodayFixtures,
+  findArabicTeamName,
   teamMatches,
   TEAM_ALIASES,
-  SUPPORTED_LEAGUES
+  SUPPORTED_LEAGUES,
+  LEAGUE_META
 };
+

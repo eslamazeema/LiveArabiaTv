@@ -728,6 +728,23 @@ app.post('/api/admin/matches/auto-sync', requireAuth, async (req, res) => {
   }
 });
 
+// POST /api/admin/matches/fetch-today-fixtures — 1-Click Auto-fetch and add today's major match fixtures
+app.post('/api/admin/matches/fetch-today-fixtures', requireAuth, async (req, res) => {
+  try {
+    const result = await liveScoreService.fetchAndAddTodayFixtures(db);
+    const msg = result.addedCount > 0
+      ? `تم جلب وإضافة ${result.addedCount} مباراة جديدة لجدول اليوم بنجاح!`
+      : (result.existingCount > 0 ? `جميع مباريات اليوم الكبرى مدرجة بالفعل في الجدول (${result.existingCount} مباراة مطابقة).` : 'لم يتم العثور على مباريات جديدة مجدولة لليوم في المصادر الحالية.');
+    res.json({
+      success: true,
+      message: msg,
+      data: result
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // POST /api/matches/clear-ended — Clear / Delete all ended matches
 app.post('/api/matches/clear-ended', requireAuth, (req, res) => {
   try {

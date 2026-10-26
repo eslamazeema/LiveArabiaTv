@@ -1425,6 +1425,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // --- Auto-Fetch & Add Today's Fixtures from Sports Network ---
+  const addTodayFixturesBtn = document.getElementById('addTodayFixturesBtn');
+  if (addTodayFixturesBtn) {
+    addTodayFixturesBtn.addEventListener('click', async () => {
+      addTodayFixturesBtn.disabled = true;
+      const originalHtml = addTodayFixturesBtn.innerHTML;
+      addTodayFixturesBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري جلب مباريات اليوم...';
+      try {
+        const res = await apiCall('POST', '/api/admin/matches/fetch-today-fixtures');
+        if (res && res.success) {
+          const freshRes = await fetch(`${API_BASE}/api/matches`);
+          if (freshRes.ok) {
+            const data = await freshRes.json();
+            matches = data.data || [];
+            renderMatchesTable();
+          }
+          showToast(res.message || 'تم جلب وإضافة مباريات اليوم بنجاح!', 'success');
+        } else {
+          showToast(res?.message || 'فشل جلب مباريات اليوم', 'error');
+        }
+      } catch (err) {
+        showToast('خطأ: ' + err.message, 'error');
+      } finally {
+        addTodayFixturesBtn.disabled = false;
+        addTodayFixturesBtn.innerHTML = originalHtml;
+      }
+    });
+  }
+
   // --- Auto-Sync Live Scores from Internet ---
   const autoSyncLiveScoresBtn = document.getElementById('autoSyncLiveScoresBtn');
   if (autoSyncLiveScoresBtn) {
