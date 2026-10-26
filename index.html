@@ -228,15 +228,13 @@
           </div>
         </div>
 
-        <!-- Match Filter Tabs: (مباشر الآن - مباريات اليوم - مباريات قادمة - مباريات سابقة) -->
+        <!-- Match Filter Tabs: (مباريات سابقة - مباريات اليوم - مباريات قادمة) -->
         <div class="matches-filter-tabs" id="matchTabsContainer">
-          <button class="match-tab-btn active" data-filter="live" id="tabMatchLive" title="عرض المباريات الجارية مباشرة الآن">
-            <span class="tab-live-badge-wrapper">
-              <span class="pulse-dot-red" style="margin-left: 4px;"></span>
-              <span class="tab-label">مباشر الآن</span>
-            </span>
+          <button class="match-tab-btn" data-filter="past" id="tabMatchPast" title="عرض نتائج المباريات السابقة والمنتهية">
+            <i class="fa-solid fa-flag-checkered"></i>
+            <span class="tab-label">مباريات سابقة</span>
           </button>
-          <button class="match-tab-btn" data-filter="today" id="tabMatchToday" title="عرض مباريات اليوم الجارية والمقررة">
+          <button class="match-tab-btn active" data-filter="today" id="tabMatchToday" title="عرض مباريات اليوم الجارية والمقررة">
             <span class="tab-today-label">
               <i class="fa-solid fa-calendar-day"></i>
               <span class="tab-label">مباريات اليوم</span>
@@ -246,10 +244,6 @@
           <button class="match-tab-btn" data-filter="upcoming" id="tabMatchUpcoming" title="عرض جدول المباريات القادمة والمستقبلية">
             <i class="fa-solid fa-calendar-plus"></i>
             <span class="tab-label">مباريات قادمة</span>
-          </button>
-          <button class="match-tab-btn" data-filter="past" id="tabMatchPast" title="عرض نتائج المباريات السابقة والمنتهية">
-            <i class="fa-solid fa-flag-checkered"></i>
-            <span class="tab-label">مباريات سابقة</span>
           </button>
         </div>
 
