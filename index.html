@@ -228,12 +228,23 @@
           </div>
         </div>
 
-        <!-- Match Filter Tabs (All / Live / Today / Upcoming) -->
-        <div class="matches-filter-tabs" id="matchTabsContainer" style="display: flex; gap: 6px; padding: 8px 14px; border-bottom: 1px solid var(--border-glass); background: rgba(0,0,0,0.25);">
-          <button class="match-tab-btn" data-filter="all" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;">الكل</button>
-          <button class="match-tab-btn" data-filter="live" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;">🔴 مباشر</button>
-          <button class="match-tab-btn active" data-filter="today" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--primary); background: rgba(0,230,118,0.15); color: #00e676; cursor: pointer; transition: all 0.2s ease;">📅 اليوم</button>
-          <button class="match-tab-btn" data-filter="upcoming" style="flex: 1; padding: 6px 8px; font-size: 0.78rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--border-glass); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;">📆 القادمة</button>
+        <!-- Match Filter Tabs: (مباريات سابقة - مباريات اليوم - مباريات قادمة) -->
+        <div class="matches-filter-tabs" id="matchTabsContainer">
+          <button class="match-tab-btn" data-filter="past" id="tabMatchPast" title="عرض نتائج المباريات السابقة والمنتهية">
+            <i class="fa-solid fa-flag-checkered"></i>
+            <span class="tab-label">مباريات سابقة</span>
+          </button>
+          <button class="match-tab-btn active" data-filter="today" id="tabMatchToday" title="عرض مباريات اليوم الجارية والمقررة">
+            <span class="tab-today-label">
+              <i class="fa-solid fa-calendar-day"></i>
+              <span class="tab-label">مباريات اليوم</span>
+            </span>
+            <span class="tab-date-badge" id="matchTodayDateBadge">جاري التحديد...</span>
+          </button>
+          <button class="match-tab-btn" data-filter="upcoming" id="tabMatchUpcoming" title="عرض جدول المباريات القادمة والمستقبلية">
+            <i class="fa-solid fa-calendar-plus"></i>
+            <span class="tab-label">مباريات قادمة</span>
+          </button>
         </div>
 
         <div class="matches-list" id="matchesList">

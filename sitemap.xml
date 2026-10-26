@@ -3,13 +3,25 @@
         xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://arabialivetv.com/</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>always</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://arabialivetv.com/channel/قناة-ريد-بل-الرياضية-red-bull-tv-hd-ch-redbull-tv</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <video:video>
+      <video:thumbnail_loc>https://images.pluto.tv/channels/5e7cb84a172a0f0007da69e4/colorLogoPNG.png</video:thumbnail_loc>
+      <video:title>قناة ريد بُل الرياضية (Red Bull TV HD) بث مباشر</video:title>
+      <video:description>البث المباشر لقناة ريد بُل العالمية - أقوى الرياضات الحركية والمغامرات وسباقات السرعة بجودة Full HD 1080p.</video:description>
+      <video:live>yes</video:live>
+    </video:video>
+  </url>
+  <url>
     <loc>https://arabialivetv.com/channel/mix-بالعربي-ch-1791895445789</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -21,7 +33,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/on-tv-live-ch-1791895388545</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -33,7 +45,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/mbc-دراما-ch-1791895352147</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -45,7 +57,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/مجموعة-قنوات-صدي-البلد-بث-مباشر-ch-1791895301431</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -57,7 +69,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/مجموعة-قنوات-القاهرة-والناس-بث-مباشر-ch-1791895269936</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -69,7 +81,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/بث-مباشر-لمجموعة-قنوات-الحياة-ch-1791895235329</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -81,7 +93,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/قناة-المحور-ch-1791895195908</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -93,7 +105,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/القناة-الثانية-الفضائية-المصرية-ch-1791895163194</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -105,7 +117,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/dmc-tv-ch-1791895132319</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -117,7 +129,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/cbc-live-ch-1791895091730</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -129,7 +141,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/مجموعة-قنوات-روتانا-بث-مباشر-ch-1791895007369</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -141,7 +153,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/الشرق-الاخبارية-ch-1791894728928</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -153,7 +165,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/bbc-العربية-ch-1791894401431</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -165,7 +177,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/قناة-أفلام-العربية-aflam-hd-أفلام-عربية-حديثة-ومتنوعة-ch-1791894257562</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -177,7 +189,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/قناة-مسلسلات-باب-الحارة-bab-al-hara-247-hd-ch-1791894050980</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -189,7 +201,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/قناة-مسلسلات-مرايا-maraya-comedy-hd-ch-1791894010956</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -201,7 +213,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/بث-مباشر-لقنوات-النيل-المصرية-ch-1791893960876</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -213,7 +225,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/بث-مباشر-لقنوات-دبي-الرياضية-ch-1791893888677</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -225,7 +237,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/قنوات-السعودية-الرياضية-ch-1791893800758</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -237,7 +249,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/bein-sport-xtra-ch-1791893683256</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -249,7 +261,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/فرانس-24-باللغة-العربية-ch-1791893616032</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -261,7 +273,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/العربية-بيسنس-business-ch-1791893383124</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -273,7 +285,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/الجزيرة-الإخبارية-ch-aljazeera-news</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -285,7 +297,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/قناة-العربية-الفضائية-ch-alarabiya</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -297,7 +309,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/قناة-الحدث-ch-alhadath</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -309,7 +321,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/سكاي-نيوز-عربية-ch-skynews-ar</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -321,7 +333,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/قناة-الإخبارية-السعودية-ch-alekhbariya</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -333,7 +345,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/الشرق-للأخبار-bloomberg-ch-asharq-news</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -345,7 +357,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/trt-عربي-ch-trt-arabi</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -357,7 +369,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/cnbc-عربية-ch-cnbc-arabiya</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -369,7 +381,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/قناة-القرآن-الكريم-مكة-المكرمة-ch-saudi-quran</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -381,7 +393,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/قناة-السنة-النبوية-المدينة-المنورة-ch-saudi-sunnah</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -393,7 +405,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/تلفزيون-قطر-للقرآن-الكريم-ch-qatar-quran</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -405,7 +417,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/نايل-سبورت-hd-nile-sport-ch-nile-sport</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -417,7 +429,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/bein-sports-xtra-hd-ch-bein-sports-xtra</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -429,7 +441,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/الكويت-الرياضية-ktv-sport-hd-ch-ktv-sport</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -441,7 +453,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/الكويت-سبورت-بلس-sport-plus-ch-ktv-sport-plus</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -453,7 +465,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/عمان-الرياضية-oman-sport-ch-oman-sports</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -465,7 +477,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/الأردن-الرياضية-jordan-sport-ch-jordan-sport</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -477,7 +489,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/البحرين-الرياضية-1-hd-ch-bahrain-sports-1</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -489,7 +501,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/البحرين-الرياضية-2-hd-ch-bahrain-sports-2</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -501,7 +513,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/العراقية-الرياضية-al-iraqia-sports-ch-iraqia-sport</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -513,7 +525,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/الهداف-الجزائرية-el-heddaf-tv-ch-elheddaf-sport</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -525,7 +537,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/mbc-1-ch-mbc-1</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -537,7 +549,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/mbc-مصر-ch-mbc-masr</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -549,7 +561,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/mbc-دراما-ch-mbc-drama</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -561,7 +573,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/قناة-الشارقة-الفضائية-ch-sharjah-tv</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -573,7 +585,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/ناشيونال-جيوغرافيك-أبوظبي-nat-geo-ch-natgeo-ad</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -585,7 +597,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/الشرق-الوثائقية-hd-ch-asharq-docu</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -597,7 +609,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/الجزيرة-الوثائقية-hd-ch-aljazeera-docu</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -609,7 +621,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/روتانا-سينما-مصر-rotana-cinema-ch-rotana-cinema-egy</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -621,7 +633,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/روتانا-سينما-السعودية-rotana-cinema-ksa-ch-rotana-cinema-ksa</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -633,7 +645,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/روتانا-كلاسيك-rotana-classic-ch-rotana-classic</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -645,7 +657,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/روتانا-كوميدي-rotana-comedy-ch-rotana-comedy</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -657,7 +669,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/أفلام-عربية-aflam-hd-ch-aflam-fast</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -669,7 +681,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/أفلام-أكشن-movies-action-hd-ch-movies-action</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -681,7 +693,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/أفلام-تشويق-وإثارة-thriller-hd-ch-movies-thriller</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -693,7 +705,7 @@
   </url>
   <url>
     <loc>https://arabialivetv.com/channel/قناة-ذكريات-أفلام-وسهرات-كلاسيكية-ch-thikrayat</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <video:video>
@@ -704,32 +716,218 @@
     </video:video>
   </url>
   <url>
-    <loc>https://arabialivetv.com/?radio=rad-quran-cairo&amp;title=إذاعة-القرآن-الكريم-من-القاهرة</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://arabialivetv.com/?radio=rad-quran-cairo&amp;title=إذاعة-القرآن-الكريم-من-القاهرة-مصر</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://arabialivetv.com/?radio=rad-quran-makkah&amp;title=إذاعة-القرآن-الكريم-مكة-المكرمة</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://arabialivetv.com/?radio=rad-monte-carlo&amp;title=إذاعة-مونت-كارلو-الدولية</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://arabialivetv.com/?radio=rad-9090&amp;title=راديو-9090-مصر-radio-9090</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://arabialivetv.com/?radio=rad-radio-sawa&amp;title=إذاعة-راديو-سوا</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://arabialivetv.com/?radio=rad-onsport-fm&amp;title=أون-سبورت-إف-إم-on-sport-fm</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://arabialivetv.com/?radio=rad-rotana-fm&amp;title=إذاعة-روتانا-إف-إم</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://arabialivetv.com/?radio=rad-hossary&amp;title=إذاعة-الشيخ-محمود-خليل-الحصري</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-afasy&amp;title=إذاعة-الشيخ-مشاري-العفاسي</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-mustafa-ismail&amp;title=إذاعة-الشيخ-مصطفى-إسماعيل</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-sunnah&amp;title=إذاعة-السنة-النبوية</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-mp3quran-tarateel&amp;title=إذاعة-تراتيل-القرآن-mp3quran-tarateel</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-mp3quran-main&amp;title=إذاعة-القرآن-الكريم-العامة-mp3quran-mix</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-saudi-quran&amp;title=إذاعة-القرآن-الكريم-السعودية</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-tes3enat&amp;title=تسعينات-إف-إم-tes3enat-fm</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-amr-diab&amp;title=راديو-عمرو-دياب-amr-diab-radio</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-fayroz&amp;title=إذاعة-فيروزيات-fayroz-radio</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-alifalif-fm&amp;title=ألف-ألف-إف-إم-alifalif-fm</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-alarabiya-fm&amp;title=العربية-إف-إم-al-arabiya-fm</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-mbc-fm&amp;title=إم-بي-سي-إف-إم-mbc-fm</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-rotana-fm&amp;title=إذاعة-روتانا-إف-إم-rotana-fm</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-monte-carlo&amp;title=إذاعة-مونت-كارلو-الدولية-monte-carlo</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-radio-sawa&amp;title=إذاعة-راديو-سوا-radio-sawa</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-radiomars&amp;title=راديو-مارس-الرياضي-radio-mars</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-aswat&amp;title=راديو-أصوات-radio-aswat</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-hitradio&amp;title=هيت-راديو-hit-radio-maroc</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-medi1-tarab&amp;title=ميدي-1-طرب-medi-1-tarab</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-medi1-andalouse&amp;title=ميدي-1-أندلسية-medi-1-andalouse</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-onlyrai&amp;title=راديو-الراي-only-rai</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-bldi&amp;title=راديو-بلدي-radio-beldi</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-abdulbasit-mojawwad&amp;title=إذاعة-الشيخ-عبد-الباسط-عبد-الصمد-المجود</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-minshawi-mojawwad&amp;title=إذاعة-الشيخ-محمد-صديق-المنشاوي-المجود</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-tablawi&amp;title=إذاعة-الشيخ-محمد-محمود-الطبلاوي</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-banna&amp;title=إذاعة-الشيخ-محمود-علي-البنا</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-sudais&amp;title=إذاعة-الشيخ-عبد-الرحمن-السديس</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-shuraim&amp;title=إذاعة-الشيخ-سعود-الشريم</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-mazaj-fm&amp;title=راديو-مزاج-إف-إم-mazaj-fm-الأردن</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-mosaique-fm&amp;title=راديو-موزاييك-إف-إم-mosaique-fm-تونس</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arabialivetv.com/?radio=rad-jawhara-fm&amp;title=راديو-جوهرة-إف-إم-jawhara-fm-تونس</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

@@ -2239,8 +2239,11 @@ function cleanupPreviousDaysMatches() {
           }
         }
       }
-      // 2. Delete matches strictly before today's calendar date
-      const info = db.prepare("DELETE FROM matches WHERE date_iso IS NOT NULL AND date_iso != '' AND date_iso < ?").run(todayIso);
+      // 2. Delete matches strictly older than 7 days (keep previous matches for 'مباريات سابقة' tab)
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      const purgeThresholdIso = sevenDaysAgo.toISOString().split('T')[0];
+      const info = db.prepare("DELETE FROM matches WHERE date_iso IS NOT NULL AND date_iso != '' AND date_iso < ?").run(purgeThresholdIso);
       return info.changes;
     } catch (err) {
       console.error('cleanupPreviousDaysMatches error:', err.message);
@@ -2250,9 +2253,12 @@ function cleanupPreviousDaysMatches() {
     const data = readJsonDb();
     if (!data.matches) return 0;
     const countBefore = data.matches.length;
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const purgeThresholdIso = sevenDaysAgo.toISOString().split('T')[0];
     data.matches = data.matches.filter(m => {
       const iso = m.dateIso || m.date_iso || computeMatchDateIso(m.date, null, m.createdAt || m.created_at);
-      if (iso && iso < todayIso) return false;
+      if (iso && iso < purgeThresholdIso) return false;
       return true;
     });
     if (data.matches.length !== countBefore) {

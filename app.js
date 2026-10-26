@@ -957,43 +957,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     return strs;
   }
 
-  // Automatic midnight rollover watcher:
-  // When the user's calendar begins a new day, immediately eliminate yesterday's matches
+  // Helper: Format and update today's calendar date badge
+  function updateTodayCalendarDate() {
+    const now = new Date();
+    let arabicFormatted = '';
+    try {
+      arabicFormatted = now.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' });
+    } catch (_) {
+      arabicFormatted = now.toLocaleDateString('ar', { weekday: 'long', day: 'numeric', month: 'long' });
+    }
+    const badge = document.getElementById('matchTodayDateBadge');
+    if (badge) {
+      badge.textContent = arabicFormatted;
+    }
+    return arabicFormatted;
+  }
+
+  // Automatic midnight rollover watcher & 60s live score refresher:
   let lastObservedDay = getTodayIsoString();
   setInterval(() => {
     const currentDay = getTodayIsoString();
     if (currentDay !== lastObservedDay) {
       lastObservedDay = currentDay;
-      console.log('📅 Calendar day changed to:', currentDay, '— auto-refreshing matches.');
-      fetch(`${API_BASE}/api/matches`)
-        .then(r => r.json())
-        .then(res => {
-          if (res && res.success && Array.isArray(res.data)) {
-            matches = res.data;
-          }
-          renderMatches();
-        })
-        .catch(() => {
-          renderMatches();
-        });
+      console.log('📅 Calendar day changed to:', currentDay, '— auto-refreshing matches & date badge.');
+      updateTodayCalendarDate();
     }
-  }, 20000);
+    fetch(`${API_BASE}/api/matches`)
+      .then(r => r.json())
+      .then(res => {
+        if (res && res.success && Array.isArray(res.data)) {
+          matches = res.data;
+          renderMatches();
+        }
+      })
+      .catch(() => {});
+  }, 60000);
 
+  // Tab switcher for 3 tabs: past, today, upcoming
   const matchTabsContainer = document.getElementById('matchTabsContainer');
   if (matchTabsContainer) {
     matchTabsContainer.querySelectorAll('.match-tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         matchTabsContainer.querySelectorAll('.match-tab-btn').forEach(b => {
           b.classList.remove('active');
-          b.style.background = 'transparent';
-          b.style.color = 'var(--text-muted)';
-          b.style.borderColor = 'var(--border-glass)';
         });
         btn.classList.add('active');
-        btn.style.background = 'rgba(0,230,118,0.15)';
-        btn.style.color = '#00e676';
-        btn.style.borderColor = 'var(--primary)';
-        activeMatchFilter = btn.dataset.filter || 'all';
+        activeMatchFilter = btn.dataset.filter || 'today';
         renderMatches();
       });
     });
@@ -1011,6 +1020,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   function renderMatches(filterQuery = '') {
     if (!matchesList) return;
 
+    // Update dynamic calendar date
+    updateTodayCalendarDate();
+
     let sorted = [...matches];
     if (activeMatchSort === 'liveFirst') {
       const statusWeight = { 'live': 1, 'upcoming': 2, 'ended': 3 };
@@ -1022,53 +1034,64 @@ document.addEventListener('DOMContentLoaded', async () => {
     const todayIso = getTodayIsoString();
     const todayStrings = getTodayArabicStrings();
 
-    // 1. ELIMINATE matches from the previous day(s) when the calendar begins a new day
-    const nonPastMatches = sorted.filter(m => {
-      // Live matches are always kept active
-      if (m.status === 'live') return true;
+    // Filter strictly by the active 3-tab selection
+    let filtered = sorted.filter(m => {
       const mIso = getMatchIso(m);
-      if (mIso < todayIso) {
-        return false; // Eliminated: yesterday or earlier
+      const isEnded = m.status === 'ended';
+      const isLive = m.status === 'live';
+
+      // ================= TAB 1: مباريات سابقة (Past / Ended matches) =================
+      if (activeMatchFilter === 'past') {
+        // Any match that has ended, or any match from yesterday/earlier that is not live
+        if (isEnded) return true;
+        if (mIso < todayIso && !isLive) return true;
+        return false;
       }
-      return true;
-    });
 
-    // 2. Strict calendar filtering for active tab:
-    // Future matches (mIso > todayIso) MUST NEVER be displayed under today's schedule!
-    let filtered = nonPastMatches.filter(m => {
-      const mIso = getMatchIso(m);
-
-      if (activeMatchFilter === 'all') return true;
-      if (activeMatchFilter === 'live') return m.status === 'live';
-
+      // ================= TAB 2: مباريات اليوم (Today's matches) =================
       if (activeMatchFilter === 'today') {
-        // Always show live matches under today
-        if (m.status === 'live') return true;
+        // Always include currently live matches
+        if (isLive) return true;
 
-        // STRICT REQUIREMENT: If the match has a future/advanced date, DO NOT display it today!
+        // Never show strictly future/advanced dates today
         if (mIso > todayIso) return false;
 
-        // If it strictly matches today's calendar date:
+        // If played today and ended today, keep visible in today's fixtures
+        // Strictly matches today's ISO date:
         if (mIso === todayIso) return true;
 
-        // No date = assume today
+        // Matches raw string "اليوم" or empty date
         const rawDate = normalizeArabicDigits(m.date || '').trim();
         if (!rawDate || rawDate === 'اليوم') return true;
 
-        // Exact match with today's Arabic strings
+        // Matches localized Arabic today strings
         if (todayStrings.has(rawDate)) return true;
 
         return false;
       }
 
+      // ================= TAB 3: مباريات قادمة (Upcoming / Future matches) =================
       if (activeMatchFilter === 'upcoming') {
-        if (m.status === 'ended') return false;
-        // Strictly future calendar dates
-        return mIso > todayIso;
+        // Exclude ended matches
+        if (isEnded) return false;
+
+        // Future calendar date
+        if (mIso > todayIso) return true;
+
+        // Explicit upcoming words like "غداً" or "بعد غد"
+        const rawDate = normalizeArabicDigits(m.date || '').trim();
+        if (rawDate.includes('غد') || rawDate.includes('غدا')) return true;
+
+        return false;
       }
 
       return true;
     });
+
+    // If viewing past matches, sort by date/time descending so latest results are at the top
+    if (activeMatchFilter === 'past' && activeMatchSort === 'custom') {
+      filtered.sort((a, b) => (b.time || '').localeCompare(a.time || ''));
+    }
 
     const q = (filterQuery || '').trim().toLowerCase();
     if (q) {
@@ -1081,10 +1104,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (filtered.length === 0) {
+      let emptyMsg = 'لا توجد مباريات مدرجة في هذا القسم حالياً.';
+      let emptyIcon = 'fa-calendar-xmark';
+      if (activeMatchFilter === 'past') {
+        emptyMsg = 'لا توجد مباريات سابقة مسجلة حالياً.';
+        emptyIcon = 'fa-flag-checkered';
+      } else if (activeMatchFilter === 'today') {
+        const todayDateText = document.getElementById('matchTodayDateBadge')?.textContent || 'اليوم';
+        emptyMsg = `لا توجد مباريات مسجلة لليوم (${todayDateText}).`;
+        emptyIcon = 'fa-calendar-day';
+      } else if (activeMatchFilter === 'upcoming') {
+        emptyMsg = 'لا توجد مباريات قادمة مجدولة حالياً.';
+        emptyIcon = 'fa-calendar-plus';
+      }
+
       matchesList.innerHTML = `
-        <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
-          <i class="fa-regular fa-calendar-xmark" style="font-size: 2rem; margin-bottom: 10px; display: block; opacity: 0.4;"></i>
-          لا توجد مباريات مدرجة في هذا القسم حالياً.
+        <div style="text-align: center; padding: 42px 20px; color: var(--text-muted);">
+          <i class="fa-solid ${emptyIcon}" style="font-size: 2.4rem; margin-bottom: 14px; display: block; opacity: 0.35;"></i>
+          <span style="font-size: 0.92rem; font-weight: 700; color: #cbd5e1;">${emptyMsg}</span>
         </div>
       `;
       return;

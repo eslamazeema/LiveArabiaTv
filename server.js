@@ -61,6 +61,7 @@ try {
 }
 
 const db = require('./database');
+const liveScoreService = require('./live_score_service');
 
 const app = express();
 const PORT = process.env.PORT || 8085;
@@ -708,6 +709,20 @@ app.post('/api/matches/reorder', requireAuth, (req, res) => {
     }
     const updated = db.reorderMatches(orderedIds);
     res.json({ success: true, message: 'تم حفظ وتثبيت ترتيب جدول المباريات بنجاح', data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/matches/auto-sync — Trigger real-time live score sync on-demand
+app.post('/api/admin/matches/auto-sync', requireAuth, async (req, res) => {
+  try {
+    const result = await liveScoreService.syncLiveScores(db, notifyMatchGoal);
+    res.json({
+      success: true,
+      message: `تم فحص وتحديث نتائج المباريات آلياً! (${result.updatedCount} مباراة محدّثة)`,
+      data: result
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -1497,6 +1512,24 @@ initDefaultAdmin().then(() => {
       console.error('[Auto-Cleanup] Error during periodic cleanup:', e.message);
     }
   }, 15 * 60 * 1000);
+
+  // 3. Automated Live Score Sync (runs on startup + every 2 minutes)
+  const runLiveScoreSync = async () => {
+    try {
+      const syncResult = await liveScoreService.syncLiveScores(db, notifyMatchGoal);
+      if (syncResult && syncResult.updatedCount > 0) {
+        console.log(`⚽ [Live-Score-AutoSync] Automatically updated ${syncResult.updatedCount} match(es) with real-time scores!`);
+      }
+    } catch (e) {
+      console.error('⚠️ [Live-Score-AutoSync] Error syncing scores:', e.message);
+    }
+  };
+
+  // Run initial sync 5 seconds after server startup
+  setTimeout(runLiveScoreSync, 5000);
+
+  // Periodic auto-sync every 2 minutes (120,000 ms)
+  setInterval(runLiveScoreSync, 2 * 60 * 1000);
 
   app.listen(PORT, () => {
     console.log('====================================================');

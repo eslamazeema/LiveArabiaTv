@@ -523,6 +523,9 @@
             </div>
           </div>
           <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <button id="autoSyncLiveScoresBtn" class="btn-icon" style="background: linear-gradient(135deg, #00e676, #00b0ff); color: #000; font-weight: 800; padding: 8px 16px; border: none;" title="جلب وتحديث نتائج المباريات لحظياً من الإنترنت وتحديث البث">
+              <i class="fa-solid fa-arrows-rotate"></i> تحديث النتائج آلياً
+            </button>
             <button id="saveMatchesOrderBtn" class="btn-icon" style="background: rgba(0, 230, 118, 0.2); color: #00e676; border-color: rgba(0, 230, 118, 0.5); font-weight: 700; padding: 8px 16px;" title="حفظ الترتيب الحالي وتثبيته في قاعدة البيانات">
               <i class="fa-solid fa-floppy-disk"></i> حفظ ترتيب المباريات
             </button>
@@ -534,11 +537,21 @@
             </button>
             <select id="matchesFilterStatus" class="form-control" style="width: auto; padding: 8px 14px; font-size: 0.85rem;">
               <option value="all">جميع المباريات (الكل)</option>
+              <option value="today">📅 مباريات اليوم</option>
               <option value="live">🔴 مباشر الآن فقط</option>
               <option value="upcoming">⏳ المباريات القادمة</option>
-              <option value="ended">🏁 المباريات المنتهية</option>
+              <option value="ended">🏁 مباريات سابقة ومنتهية</option>
             </select>
           </div>
+        </div>
+
+        <!-- Live Score Auto-Sync Indicator Banner -->
+        <div style="background: rgba(0, 230, 118, 0.08); border: 1px solid rgba(0, 230, 118, 0.25); border-radius: var(--radius-sm); padding: 10px 16px; margin-bottom: 20px; font-size: 0.84rem; color: #cbd5e1; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #00e676; box-shadow: 0 0 10px #00e676;"></span>
+            <span><strong>نظام التحديث الآلي المباشر:</strong> السيرفر يفحص نتائج المباريات الجارية ويسجل الأهداف ويغير الحالة (مباشر / انتهت) تلقائياً كل دقيقتين.</span>
+          </div>
+          <span id="lastAutoSyncTime" style="color: var(--text-muted); font-size: 0.78rem;">آخر فحص: نشط الآن</span>
         </div>
 
         <section class="form-card" style="margin-bottom: 24px;">

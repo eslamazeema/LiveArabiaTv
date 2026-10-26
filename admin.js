@@ -869,6 +869,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const filter = matchesFilterStatus ? matchesFilterStatus.value : 'all';
     const filteredMatches = matches.filter(m => {
       if (filter === 'all') return true;
+      if (filter === 'today') {
+        const raw = (m.date || '').trim();
+        return raw === 'اليوم' || m.status === 'live';
+      }
       return m.status === filter;
     });
 
@@ -1418,6 +1422,39 @@ document.addEventListener('DOMContentLoaded', () => {
       renderMatchesTable();
       await window.saveMatchOrder(true);
       showToast('تم ترتيب المباريات حسب التوقيت وحفظ الترتيب!', 'success');
+    });
+  }
+
+  // --- Auto-Sync Live Scores from Internet ---
+  const autoSyncLiveScoresBtn = document.getElementById('autoSyncLiveScoresBtn');
+  if (autoSyncLiveScoresBtn) {
+    autoSyncLiveScoresBtn.addEventListener('click', async () => {
+      autoSyncLiveScoresBtn.disabled = true;
+      const originalHtml = autoSyncLiveScoresBtn.innerHTML;
+      autoSyncLiveScoresBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري جلب وتحديث النتائج...';
+      try {
+        const res = await apiCall('POST', '/api/admin/matches/auto-sync');
+        if (res && res.success) {
+          const freshRes = await fetch(`${API_BASE}/api/matches`);
+          if (freshRes.ok) {
+            const data = await freshRes.json();
+            matches = data.data || [];
+            renderMatchesTable();
+          }
+          const lastEl = document.getElementById('lastAutoSyncTime');
+          if (lastEl) {
+            lastEl.textContent = `آخر تحديث: ${new Date().toLocaleTimeString('ar-EG')}`;
+          }
+          showToast(res.message || 'تم تحديث نتائج المباريات آلياً بنجاح!', 'success');
+        } else {
+          showToast(res?.message || 'فشل التحديث الآلي', 'error');
+        }
+      } catch (err) {
+        showToast('خطأ: ' + err.message, 'error');
+      } finally {
+        autoSyncLiveScoresBtn.disabled = false;
+        autoSyncLiveScoresBtn.innerHTML = originalHtml;
+      }
     });
   }
 
