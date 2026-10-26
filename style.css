@@ -3223,6 +3223,21 @@ body {
   box-shadow: 0 0 15px rgba(0, 230, 118, 0.25);
 }
 
+.match-tab-btn[data-filter="live"].active {
+  background: linear-gradient(135deg, rgba(255, 23, 68, 0.22), rgba(255, 82, 0, 0.12));
+  border-color: #ff1744;
+  color: #ff5252;
+  box-shadow: 0 0 15px rgba(255, 23, 68, 0.3);
+}
+
+.tab-live-badge-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+
 .match-tab-btn[data-filter="today"] {
   flex: 1.35;
 }

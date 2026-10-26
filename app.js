@@ -862,7 +862,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // --- 8. RENDER DAILY MATCH CENTER & LIVE STREAM MODAL ---
-  let activeMatchFilter = 'today'; // Default: show today's matches
+  let activeMatchFilter = 'live'; // Default: show live matches first upon opening
 
   const ARABIC_MONTHS = {
     'يناير': 1, 'فبراير': 2, 'مارس': 3, 'أبريل': 4, 'ابريل': 4,
@@ -993,7 +993,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       .catch(() => {});
   }, 60000);
 
-  // Tab switcher for 3 tabs: past, today, upcoming
+  // Tab switcher for match tabs
   const matchTabsContainer = document.getElementById('matchTabsContainer');
   if (matchTabsContainer) {
     matchTabsContainer.querySelectorAll('.match-tab-btn').forEach(btn => {
@@ -1002,11 +1002,23 @@ document.addEventListener('DOMContentLoaded', async () => {
           b.classList.remove('active');
         });
         btn.classList.add('active');
-        activeMatchFilter = btn.dataset.filter || 'today';
+        activeMatchFilter = btn.dataset.filter || 'live';
         renderMatches();
       });
     });
   }
+
+  // Global helper to switch match tabs programmatically
+  window.switchMatchTab = function(filterName) {
+    if (!matchTabsContainer) return;
+    const targetBtn = matchTabsContainer.querySelector(`.match-tab-btn[data-filter="${filterName}"]`);
+    if (targetBtn) {
+      targetBtn.click();
+    } else {
+      activeMatchFilter = filterName;
+      renderMatches();
+    }
+  };
 
   let activeMatchSort = 'custom';
   const userMatchSortSelect = document.getElementById('userMatchSortSelect');
@@ -1034,13 +1046,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const todayIso = getTodayIsoString();
     const todayStrings = getTodayArabicStrings();
 
-    // Filter strictly by the active 3-tab selection
+    // Filter strictly by the active tab selection
     let filtered = sorted.filter(m => {
       const mIso = getMatchIso(m);
       const isEnded = m.status === 'ended';
       const isLive = m.status === 'live';
 
-      // ================= TAB 1: مباريات سابقة (Past / Ended matches) =================
+      // ================= TAB: مباشر الآن (Live Now — Default Tab) =================
+      if (activeMatchFilter === 'live') {
+        return isLive;
+      }
+
+      // ================= TAB: مباريات سابقة (Past / Ended matches) =================
       if (activeMatchFilter === 'past') {
         // Any match that has ended, or any match from yesterday/earlier that is not live
         if (isEnded) return true;
@@ -1104,6 +1121,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (filtered.length === 0) {
+      if (activeMatchFilter === 'live') {
+        matchesList.innerHTML = `
+          <div style="text-align: center; padding: 36px 18px; color: var(--text-muted);">
+            <span class="pulse-dot-red" style="display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: #ff1744; box-shadow: 0 0 16px #ff1744; margin-bottom: 12px;"></span>
+            <h4 style="color: #fff; font-size: 1.05rem; font-weight: 800; margin-bottom: 6px;">لا توجد مباريات جارية مباشرة الآن</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px;">
+              يمكنك متابعة جدول مباريات اليوم والمباريات القادمة عبر التابات أعلاه
+            </p>
+            <button type="button" class="btn-icon btn-primary" onclick="window.switchMatchTab('today')" style="display: inline-flex; margin: 0 auto; padding: 8px 18px; font-size: 0.86rem; font-weight: 700; cursor: pointer; justify-content: center;">
+              <i class="fa-solid fa-calendar-day"></i> استعراض مباريات اليوم
+            </button>
+          </div>
+        `;
+        return;
+      }
+
       let emptyMsg = 'لا توجد مباريات مدرجة في هذا القسم حالياً.';
       let emptyIcon = 'fa-calendar-xmark';
       if (activeMatchFilter === 'past') {
