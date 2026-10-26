@@ -2233,7 +2233,7 @@ function cleanupPreviousDaysMatches() {
       if (allRows && allRows.length > 0) {
         const updateIso = db.prepare('UPDATE matches SET date_iso = ? WHERE id = ?');
         for (const r of allRows) {
-          const comp = computeMatchDateIso(r.date, null, r.created_at);
+          const comp = computeMatchDateIso(r.date, r.date_iso, r.created_at);
           if (comp && comp !== r.date_iso) {
             updateIso.run(comp, r.id);
           }
@@ -2257,7 +2257,7 @@ function cleanupPreviousDaysMatches() {
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const purgeThresholdIso = sevenDaysAgo.toISOString().split('T')[0];
     data.matches = data.matches.filter(m => {
-      const iso = m.dateIso || m.date_iso || computeMatchDateIso(m.date, null, m.createdAt || m.created_at);
+      const iso = m.dateIso || m.date_iso || computeMatchDateIso(m.date, m.dateIso || m.date_iso, m.createdAt || m.created_at);
       if (iso && iso < purgeThresholdIso) return false;
       return true;
     });
@@ -2284,6 +2284,7 @@ function getAllMatches() {
 function createMatch(m) {
   const id = m.id || 'match-' + Date.now();
   const dateIso = computeMatchDateIso(m.date, m.dateIso || m.date_iso);
+  const matchDate = (m.date && m.date !== 'اليوم') ? m.date : dateIso;
   if (useSqlite) {
     const payload = {
       id,
@@ -2294,7 +2295,7 @@ function createMatch(m) {
       awayTeam: m.awayTeam || '',
       awayLogo: m.awayLogo || '⚽',
       time: m.time || '',
-      date: m.date || 'اليوم',
+      date: matchDate,
       dateIso,
       status: m.status || 'upcoming',
       channelName: m.channelName || '',

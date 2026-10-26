@@ -1065,6 +1065,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Always include currently live matches
         if (isLive) return true;
 
+        // Never show strictly past dates in today (they have ended and moved to past matches!)
+        if (mIso < todayIso) return false;
+
         // Never show strictly future/advanced dates today
         if (mIso > todayIso) return false;
 
@@ -1072,12 +1075,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Strictly matches today's ISO date:
         if (mIso === todayIso) return true;
 
-        // Matches raw string "اليوم" or empty date
+        // Matches raw string "اليوم" or empty date ONLY if not strictly in past
         const rawDate = normalizeArabicDigits(m.date || '').trim();
-        if (!rawDate || rawDate === 'اليوم') return true;
-
-        // Matches localized Arabic today strings
-        if (todayStrings.has(rawDate)) return true;
+        if ((!rawDate || rawDate === 'اليوم' || todayStrings.has(rawDate)) && mIso >= todayIso) return true;
 
         return false;
       }
@@ -1152,13 +1152,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     matchesList.innerHTML = filtered.map(m => {
+      const mIso = getMatchIso(m);
       let statusHtml = '';
       if (m.status === 'live') {
         statusHtml = '<span class="pulse-dot-red"></span> مباشر';
       } else if (m.status === 'ended') {
-        statusHtml = '<i class="fa-solid fa-flag-checkered"></i> انتهت';
+        const displayDate = (mIso === todayIso) ? 'اليوم' : (m.date || mIso);
+        statusHtml = `<i class="fa-solid fa-flag-checkered"></i> انتهت (${displayDate})`;
       } else {
-        statusHtml = `${m.date || 'اليوم'} • ${m.time}`;
+        const displayDate = (mIso === todayIso) ? 'اليوم' : (m.date || mIso);
+        statusHtml = `${displayDate} • ${m.time}`;
       }
 
       let scoreDisplayHtml = '';

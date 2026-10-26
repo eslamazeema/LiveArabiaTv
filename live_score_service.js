@@ -440,12 +440,18 @@ async function fetchAndAddTodayFixtures(db) {
 
     // Format local time (HH:mm)
     let matchTimeStr = '20:00';
+    let matchDateIso = todayIso;
     try {
       if (ev.date) {
         const d = new Date(ev.date);
         const hours = String(d.getHours()).padStart(2, '0');
         const mins = String(d.getMinutes()).padStart(2, '0');
         matchTimeStr = `${hours}:${mins}`;
+        try {
+          matchDateIso = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh' }).format(d);
+        } catch (_) {
+          matchDateIso = d.toISOString().split('T')[0];
+        }
       }
     } catch (_) {}
 
@@ -474,8 +480,8 @@ async function fetchAndAddTodayFixtures(db) {
       awayTeam: awayArabic,
       awayLogo: (comps[1].team.logo || ''),
       time: matchTimeStr,
-      date: 'اليوم',
-      dateIso: todayIso,
+      date: matchDateIso,
+      dateIso: matchDateIso,
       status: initialStatus,
       channelName: lgMeta.channel,
       channelId: '',

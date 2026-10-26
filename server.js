@@ -598,7 +598,7 @@ app.post('/api/matches', requireAuth, (req, res) => {
       awayTeam: (b.awayTeam || '').trim(),
       awayLogo: b.awayLogo || '⚽',
       time: (b.time || '').trim(),
-      date: (b.date || 'اليوم').trim(),
+      date: (b.date && b.date !== 'اليوم') ? b.date.trim() : (b.dateIso || b.date_iso || '').trim(),
       dateIso: (b.dateIso || b.date_iso || '').trim(),
       status: b.status || 'upcoming',
       channelName: (b.channelName || '').trim(),
