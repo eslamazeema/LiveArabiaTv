@@ -1182,12 +1182,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const safeName = (teamName || '').replace(/"/g, '&quot;');
     const rawLogo = (logoUrl || '').trim();
     if (rawLogo && (rawLogo.startsWith('http://') || rawLogo.startsWith('https://') || rawLogo.startsWith('/') || rawLogo.startsWith('data:'))) {
-      return `<img src="${rawLogo}" alt="${safeName}" class="match-team-badge" style="width: 18px !important; height: 18px !important; max-width: 18px !important; max-height: 18px !important; object-fit: contain; vertical-align: middle; display: inline-block; border: none; background: transparent; padding: 0; flex-shrink: 0;" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='inline-flex';" /><span class="match-team-badge-fallback" style="display:none; width: 18px; height: 18px;"><i class="fa-solid fa-shield-halved" style="font-size: 0.62rem;"></i></span>`;
+      return `<img src="${rawLogo}" alt="${safeName}" class="match-team-badge" style="width: 20px !important; height: 20px !important; max-width: 20px !important; max-height: 20px !important; object-fit: contain; vertical-align: middle; display: inline-block; border: none; background: transparent; padding: 0; flex-shrink: 0;" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='inline-flex';" /><span class="match-team-badge-fallback" style="display:none; width: 20px; height: 20px;"><i class="fa-solid fa-shield-halved" style="font-size: 0.65rem;"></i></span>`;
     }
     if (rawLogo && rawLogo !== '⚽') {
-      return `<span class="match-team-badge-emoji" title="${safeName}" style="font-size: 0.88rem; line-height: 1; display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px;">${rawLogo}</span>`;
+      return `<span class="match-team-badge-emoji" title="${safeName}" style="font-size: 0.95rem; line-height: 1; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px;">${rawLogo}</span>`;
     }
-    return `<span class="match-team-badge-fallback" title="${safeName}" style="width: 18px; height: 18px; min-width: 18px; min-height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.62rem;"><i class="fa-solid fa-shield-halved"></i></span>`;
+    return `<span class="match-team-badge-fallback" title="${safeName}" style="width: 20px; height: 20px; min-width: 20px; min-height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.65rem;"><i class="fa-solid fa-shield-halved"></i></span>`;
   }
 
   function renderMatches(filterQuery = '') {
