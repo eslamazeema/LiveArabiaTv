@@ -7,6 +7,7 @@
 
 const https = require('https');
 const http = require('http');
+const clubsCatalog = require('./clubs_catalog');
 
 // Bilingual dictionary of common Arabic football teams to standardized English tokens
 const TEAM_ALIASES = {
@@ -422,9 +423,16 @@ async function fetchAndAddTodayFixtures(db) {
 
     const rawHome = comps[0].team.displayName || comps[0].team.name || 'الفريق الأول';
     const rawAway = comps[1].team.displayName || comps[1].team.name || 'الفريق الثاني';
+    const rawHomeLogo = comps[0].team.logo || '';
+    const rawAwayLogo = comps[1].team.logo || '';
 
-    const homeArabic = findArabicTeamName(rawHome);
-    const awayArabic = findArabicTeamName(rawAway);
+    const resolvedHome = clubsCatalog.resolveTeam(rawHome, rawHomeLogo);
+    const resolvedAway = clubsCatalog.resolveTeam(rawAway, rawAwayLogo);
+
+    const homeArabic = resolvedHome.name;
+    const homeLogoUrl = resolvedHome.logo;
+    const awayArabic = resolvedAway.name;
+    const awayLogoUrl = resolvedAway.logo;
 
     // Check if match already exists in DB
     const alreadyExists = currentMatches.some(m => {
@@ -438,15 +446,26 @@ async function fetchAndAddTodayFixtures(db) {
       continue;
     }
 
-    // Format local time (HH:mm)
+    // Format reference time in Mecca / Riyadh timezone (GMT+3) and store exact utcTime
     let matchTimeStr = '20:00';
+    let matchUtcIso = '';
     let matchDateIso = todayIso;
     try {
       if (ev.date) {
         const d = new Date(ev.date);
-        const hours = String(d.getHours()).padStart(2, '0');
-        const mins = String(d.getMinutes()).padStart(2, '0');
-        matchTimeStr = `${hours}:${mins}`;
+        matchUtcIso = d.toISOString();
+        try {
+          matchTimeStr = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Asia/Riyadh',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }).format(d);
+        } catch (_) {
+          const ksaHours = String((d.getUTCHours() + 3) % 24).padStart(2, '0');
+          const mins = String(d.getUTCMinutes()).padStart(2, '0');
+          matchTimeStr = `${ksaHours}:${mins}`;
+        }
         try {
           matchDateIso = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh' }).format(d);
         } catch (_) {
@@ -476,10 +495,11 @@ async function fetchAndAddTodayFixtures(db) {
       league: lgMeta.name,
       leagueFlag: lgMeta.flag,
       homeTeam: homeArabic,
-      homeLogo: (comps[0].team.logo || ''),
+      homeLogo: homeLogoUrl,
       awayTeam: awayArabic,
-      awayLogo: (comps[1].team.logo || ''),
+      awayLogo: awayLogoUrl,
       time: matchTimeStr,
+      utcTime: matchUtcIso,
       date: matchDateIso,
       dateIso: matchDateIso,
       status: initialStatus,

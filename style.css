@@ -713,13 +713,13 @@ body {
 .match-team {
   display: flex;
   align-items: center;
-  font-size: 0.92rem;
+  gap: 8px;
+  font-size: 0.94rem;
   font-weight: 800;
   color: #fff;
   flex: 1;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  min-width: 0;
 }
 .match-team.team-home {
   justify-content: flex-start;
@@ -728,8 +728,62 @@ body {
   justify-content: flex-end;
   text-align: left;
 }
-.team-icon {
-  display: none !important;
+.match-team .team-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: -0.2px;
+}
+.match-badge-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.match-team-badge {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  flex-shrink: 0;
+  display: inline-block;
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), border-color 0.25s ease;
+}
+.match-item:hover .match-team-badge {
+  transform: scale(1.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 12px rgba(0, 230, 118, 0.4);
+}
+.match-team-badge-fallback {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.match-team-badge-emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  line-height: 1;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
 }
 
 /* Dual Score Boxes (One box for each team) */
@@ -3177,6 +3231,74 @@ body {
   .channel-name {
     font-size: 0.78rem !important;
   }
+}
+
+/* ==================== MATCH TIMEZONE BAR ==================== */
+.matches-tz-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(10, 16, 28, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.76rem;
+  backdrop-filter: blur(10px);
+}
+.tz-select-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+.tz-icon {
+  color: var(--primary);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.tz-label {
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.74rem;
+  white-space: nowrap;
+}
+.tz-select {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.74rem;
+  padding: 3px 8px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  max-width: 175px;
+}
+.tz-select:hover, .tz-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 8px rgba(0, 230, 118, 0.25);
+}
+.tz-current-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 230, 118, 0.1);
+  border: 1px solid rgba(0, 230, 118, 0.3);
+  color: var(--primary);
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.tz-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 6px var(--primary);
 }
 
 /* ==================== 3-TAB MATCH SCHEDULE COMPONENT ==================== */

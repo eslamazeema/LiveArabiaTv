@@ -228,6 +228,35 @@
           </div>
         </div>
 
+        <!-- Match Country & Timezone Selector Bar -->
+        <div class="matches-tz-bar" id="matchesTzBar">
+          <div class="tz-select-group">
+            <i class="fa-solid fa-earth-americas tz-icon"></i>
+            <span class="tz-label">التوقيت:</span>
+            <select id="userMatchTimezoneSelect" class="tz-select" title="اختر توقيت دولتك لعرض مواعيد المباريات بدقة">
+              <option value="auto">🌐 توقيت جهازك (تلقائي)</option>
+              <option value="Asia/Riyadh">🇸🇦 مكة المكرمة (+3)</option>
+              <option value="Africa/Cairo">🇪🇬 القاهرة (+3 / +2)</option>
+              <option value="Asia/Dubai">🇦🇪 أبوظبي / دبي (+4)</option>
+              <option value="Asia/Kuwait">🇰🇼 الكويت (+3)</option>
+              <option value="Asia/Baghdad">🇮🇶 بغداد (+3)</option>
+              <option value="Asia/Amman">🇯🇴 عمّان (+3)</option>
+              <option value="Asia/Beirut">🇱🇧 بيروت (+3 / +2)</option>
+              <option value="Africa/Casablanca">🇲🇦 الرباط / الدار البيضاء (+1)</option>
+              <option value="Africa/Algiers">🇩🇿 الجزائر (+1)</option>
+              <option value="Africa/Tunis">🇹🇳 تونس (+1)</option>
+              <option value="Africa/Tripoli">🇱🇾 طرابلس (+2)</option>
+              <option value="Africa/Khartoum">🇸🇩 الخرطوم (+2)</option>
+              <option value="Europe/London">🇬🇧 غرينتش GMT / لندن (0)</option>
+              <option value="Europe/Paris">🇪🇺 باريس / برلين / روما (+1 / +2)</option>
+            </select>
+          </div>
+          <div class="tz-current-pill" id="tzCurrentPill" title="توقيت العرض النشط الآن">
+            <span class="tz-dot"></span>
+            <span id="tzCityName">توقيت جهازك</span>
+          </div>
+        </div>
+
         <!-- Match Filter Tabs: (مباريات سابقة - مباريات اليوم - مباريات قادمة) -->
         <div class="matches-filter-tabs" id="matchTabsContainer">
           <button class="match-tab-btn" data-filter="past" id="tabMatchPast" title="عرض نتائج المباريات السابقة والمنتهية">

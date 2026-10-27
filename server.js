@@ -62,6 +62,7 @@ try {
 
 const db = require('./database');
 const liveScoreService = require('./live_score_service');
+const clubsCatalog = require('./clubs_catalog');
 
 const app = express();
 const PORT = process.env.PORT || 8085;
@@ -590,14 +591,20 @@ app.post('/api/matches', requireAuth, (req, res) => {
         { name: 'سيرفر 2 (احتياطي عالي السرعة)', url: formatStreamUrl(s2) || s2 || 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' }
       ];
     }
+    const rawHome = (b.homeTeam || '').trim();
+    const rawAway = (b.awayTeam || '').trim();
+    const resolvedHome = clubsCatalog.resolveTeam(rawHome, b.homeLogo);
+    const resolvedAway = clubsCatalog.resolveTeam(rawAway, b.awayLogo);
+
     const m = {
       league: (b.league || '').trim(),
       leagueFlag: b.leagueFlag || '🏆',
-      homeTeam: (b.homeTeam || '').trim(),
-      homeLogo: b.homeLogo || '⚽',
-      awayTeam: (b.awayTeam || '').trim(),
-      awayLogo: b.awayLogo || '⚽',
+      homeTeam: resolvedHome.name,
+      homeLogo: resolvedHome.logo || b.homeLogo || '⚽',
+      awayTeam: resolvedAway.name,
+      awayLogo: resolvedAway.logo || b.awayLogo || '⚽',
       time: (b.time || '').trim(),
+      utcTime: (b.utcTime || b.utc_time || '').trim(),
       date: (b.date && b.date !== 'اليوم') ? b.date.trim() : (b.dateIso || b.date_iso || '').trim(),
       dateIso: (b.dateIso || b.date_iso || '').trim(),
       status: b.status || 'upcoming',
@@ -633,11 +640,27 @@ app.put('/api/matches/:id', requireAuth, async (req, res) => {
     const updateData = {};
     if (b.league !== undefined) updateData.league = (b.league || '').trim();
     if (b.leagueFlag !== undefined) updateData.leagueFlag = b.leagueFlag;
-    if (b.homeTeam !== undefined) updateData.homeTeam = (b.homeTeam || '').trim();
-    if (b.homeLogo !== undefined) updateData.homeLogo = b.homeLogo;
-    if (b.awayTeam !== undefined) updateData.awayTeam = (b.awayTeam || '').trim();
-    if (b.awayLogo !== undefined) updateData.awayLogo = b.awayLogo;
+    if (b.homeTeam !== undefined) {
+      const resolvedHome = clubsCatalog.resolveTeam(b.homeTeam, b.homeLogo);
+      updateData.homeTeam = resolvedHome.name;
+      if (b.homeLogo !== undefined || resolvedHome.logo) {
+        updateData.homeLogo = resolvedHome.logo || b.homeLogo;
+      }
+    } else if (b.homeLogo !== undefined) {
+      updateData.homeLogo = b.homeLogo;
+    }
+
+    if (b.awayTeam !== undefined) {
+      const resolvedAway = clubsCatalog.resolveTeam(b.awayTeam, b.awayLogo);
+      updateData.awayTeam = resolvedAway.name;
+      if (b.awayLogo !== undefined || resolvedAway.logo) {
+        updateData.awayLogo = resolvedAway.logo || b.awayLogo;
+      }
+    } else if (b.awayLogo !== undefined) {
+      updateData.awayLogo = b.awayLogo;
+    }
     if (b.time !== undefined) updateData.time = (b.time || '').trim();
+    if (b.utcTime !== undefined || b.utc_time !== undefined) updateData.utcTime = (b.utcTime || b.utc_time || '').trim();
     if (b.date !== undefined) updateData.date = (b.date || 'اليوم').trim();
     if (b.dateIso !== undefined || b.date_iso !== undefined) updateData.dateIso = (b.dateIso || b.date_iso || '').trim();
     if (b.status !== undefined) updateData.status = b.status;

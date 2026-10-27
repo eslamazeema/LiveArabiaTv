@@ -870,11 +870,62 @@ document.addEventListener('DOMContentLoaded', async () => {
     'سبتمبر': 9, 'أكتوبر': 10, 'اكتوبر': 10, 'نوفمبر': 11, 'ديسمبر': 12
   };
 
-  // Helper: return today's ISO date (YYYY-MM-DD) according to client's local calendar
-  function getTodayIsoString() {
+  // ==================== TIMEZONE SUPPORT ====================
+  const TIMEZONE_LABELS = {
+    'Asia/Riyadh': { city: 'مكة المكرمة (+3)', flag: '🇸🇦' },
+    'Africa/Cairo': { city: 'القاهرة (+3 / +2)', flag: '🇪🇬' },
+    'Asia/Dubai': { city: 'أبوظبي / دبي (+4)', flag: '🇦🇪' },
+    'Asia/Kuwait': { city: 'الكويت (+3)', flag: '🇰🇼' },
+    'Asia/Baghdad': { city: 'بغداد (+3)', flag: '🇮🇶' },
+    'Asia/Amman': { city: 'عمّان (+3)', flag: '🇯🇴' },
+    'Asia/Beirut': { city: 'بيروت (+3 / +2)', flag: '🇱🇧' },
+    'Africa/Casablanca': { city: 'المغرب (+1)', flag: '🇲🇦' },
+    'Africa/Algiers': { city: 'الجزائر (+1)', flag: '🇩🇿' },
+    'Africa/Tunis': { city: 'تونس (+1)', flag: '🇹🇳' },
+    'Africa/Tripoli': { city: 'طرابلس (+2)', flag: '🇱🇾' },
+    'Africa/Khartoum': { city: 'الخرطوم (+2)', flag: '🇸🇩' },
+    'Europe/London': { city: 'لندن (GMT 0)', flag: '🇬🇧' },
+    'Europe/Paris': { city: 'أوروبا (CET)', flag: '🇪🇺' }
+  };
+
+  let userPreferredTz = localStorage.getItem('altv_user_timezone') || 'auto';
+
+  function getDeviceTimezone() {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Riyadh';
+    } catch (_) {
+      return 'Asia/Riyadh';
+    }
+  }
+
+  function getEffectiveTimezone() {
+    if (userPreferredTz && userPreferredTz !== 'auto') {
+      return userPreferredTz;
+    }
+    return getDeviceTimezone();
+  }
+
+  function getTimezoneCityDisplayName(tz) {
+    const targetTz = tz || getEffectiveTimezone();
+    if (TIMEZONE_LABELS[targetTz]) {
+      return `${TIMEZONE_LABELS[targetTz].flag} ${TIMEZONE_LABELS[targetTz].city}`;
+    }
+    try {
+      const parts = targetTz.split('/');
+      const city = parts[parts.length - 1].replace(/_/g, ' ');
+      return `🌐 ${city}`;
+    } catch (_) {
+      return '🌐 توقيتك المحلي';
+    }
+  }
+
+  // Helper: return today's ISO date (YYYY-MM-DD) according to client's active timezone
+  function getTodayIsoString(tz) {
+    const targetTz = tz || getEffectiveTimezone();
     const d = new Date();
     try {
       return new Intl.DateTimeFormat('en-CA', {
+        timeZone: targetTz,
         year: 'numeric',
         month: '2-digit',
         day: '2-digit'
@@ -894,11 +945,83 @@ document.addEventListener('DOMContentLoaded', async () => {
       .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
   }
 
-  // Helper: compute ISO date for any match with full Arabic numeral support
-  function getMatchIso(m) {
+  // Parse exact Date object for any match
+  function getMatchDateObject(m) {
+    if (m.utcTime) {
+      const d = new Date(m.utcTime);
+      if (!isNaN(d.getTime())) return d;
+    }
+    const cleanDate = (m.dateIso && /^\d{4}-\d{2}-\d{2}$/.test(m.dateIso))
+      ? m.dateIso
+      : (getMatchIso(m) || getTodayIsoString());
+    const timeStr = normalizeArabicDigits(m.time || '20:00').trim();
+    const timeMatch = timeStr.match(/^(\d{1,2}):(\d{2})/);
+    if (timeMatch) {
+      const h = timeMatch[1].padStart(2, '0');
+      const min = timeMatch[2];
+      // Arab broadcast standard reference baseline: Asia/Riyadh (UTC+3)
+      return new Date(`${cleanDate}T${h}:${min}:00+03:00`);
+    }
+    return new Date(`${cleanDate}T20:00:00+03:00`);
+  }
+
+  // Format match time in user's active timezone
+  function formatMatchTimeForUser(m, tz) {
+    const targetTz = tz || getEffectiveTimezone();
+    const d = getMatchDateObject(m);
+    if (isNaN(d.getTime())) return m.time || '20:00';
+    try {
+      return new Intl.DateTimeFormat('ar-EG', {
+        timeZone: targetTz,
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      }).format(d);
+    } catch (_) {
+      try {
+        return new Intl.DateTimeFormat('en-GB', {
+          timeZone: targetTz,
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }).format(d);
+      } catch (_) {
+        return m.time || '20:00';
+      }
+    }
+  }
+
+  // Format match date in user's active timezone
+  function formatMatchDateForUser(m, tz) {
+    const targetTz = tz || getEffectiveTimezone();
+    const d = getMatchDateObject(m);
+    if (isNaN(d.getTime())) return m.date || 'اليوم';
+    try {
+      return d.toLocaleDateString('ar-EG', {
+        timeZone: targetTz,
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short'
+      });
+    } catch (_) {
+      return m.date || 'اليوم';
+    }
+  }
+
+  // Helper: compute ISO date for any match with full Arabic numeral & timezone support
+  function getMatchIso(m, tz) {
+    const targetTz = tz || getEffectiveTimezone();
+    if (m.utcTime) {
+      const d = new Date(m.utcTime);
+      if (!isNaN(d.getTime())) {
+        try {
+          return new Intl.DateTimeFormat('en-CA', { timeZone: targetTz }).format(d);
+        } catch (_) {}
+      }
+    }
     if (m.dateIso && /^\d{4}-\d{2}-\d{2}$/.test(m.dateIso)) return m.dateIso;
     const str = normalizeArabicDigits(m.date || '').trim();
-    const todayIso = getTodayIsoString();
+    const todayIso = getTodayIsoString(targetTz);
 
     if (!str || str === 'اليوم') {
       if (m.created_at || m.createdAt) {
@@ -941,34 +1064,49 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Helper: generate all Arabic date strings that represent "today"
-  function getTodayArabicStrings() {
+  function getTodayArabicStrings(tz) {
+    const targetTz = tz || getEffectiveTimezone();
     const now = new Date();
     const strs = new Set();
-    // Variant 1: ar-EG full format e.g. "الثلاثاء 14 أكتوبر"
     try {
-      strs.add(now.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' }));
+      strs.add(now.toLocaleDateString('ar-EG', { timeZone: targetTz, weekday: 'long', day: 'numeric', month: 'long' }));
     } catch (_) {}
-    // Variant 2: ar full format e.g. "الثلاثاء، 14 أكتوبر 2026"
     try {
-      strs.add(now.toLocaleDateString('ar', { weekday: 'long', day: 'numeric', month: 'long' }));
+      strs.add(now.toLocaleDateString('ar', { timeZone: targetTz, weekday: 'long', day: 'numeric', month: 'long' }));
     } catch (_) {}
-    // Also accept literal keyword
     strs.add('اليوم');
     return strs;
   }
 
-  // Helper: Format and update today's calendar date badge
+  // Helper: Format and update today's calendar date badge and timezone indicator
   function updateTodayCalendarDate() {
+    const targetTz = getEffectiveTimezone();
     const now = new Date();
     let arabicFormatted = '';
     try {
-      arabicFormatted = now.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' });
+      arabicFormatted = now.toLocaleDateString('ar-EG', {
+        timeZone: targetTz,
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long'
+      });
     } catch (_) {
       arabicFormatted = now.toLocaleDateString('ar', { weekday: 'long', day: 'numeric', month: 'long' });
     }
     const badge = document.getElementById('matchTodayDateBadge');
     if (badge) {
       badge.textContent = arabicFormatted;
+    }
+
+    const tzCityName = document.getElementById('tzCityName');
+    if (tzCityName) {
+      if (userPreferredTz === 'auto') {
+        const detected = getDeviceTimezone();
+        const label = TIMEZONE_LABELS[detected] ? `${TIMEZONE_LABELS[detected].flag} ${TIMEZONE_LABELS[detected].city}` : getTimezoneCityDisplayName(detected);
+        tzCityName.textContent = `${label} (تلقائي)`;
+      } else {
+        tzCityName.textContent = getTimezoneCityDisplayName(userPreferredTz);
+      }
     }
     return arabicFormatted;
   }
@@ -1029,32 +1167,61 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  const userMatchTimezoneSelect = document.getElementById('userMatchTimezoneSelect');
+  if (userMatchTimezoneSelect) {
+    userMatchTimezoneSelect.value = userPreferredTz;
+    userMatchTimezoneSelect.addEventListener('change', (e) => {
+      userPreferredTz = e.target.value;
+      localStorage.setItem('altv_user_timezone', userPreferredTz);
+      updateTodayCalendarDate();
+      renderMatches();
+    });
+  }
+
+  function renderTeamBadge(logoUrl, teamName) {
+    const safeName = (teamName || '').replace(/"/g, '&quot;');
+    const rawLogo = (logoUrl || '').trim();
+    if (rawLogo && (rawLogo.startsWith('http://') || rawLogo.startsWith('https://') || rawLogo.startsWith('/') || rawLogo.startsWith('data:'))) {
+      return `<img src="${rawLogo}" alt="${safeName}" class="match-team-badge" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='inline-flex';" /><span class="match-team-badge-fallback" style="display:none;"><i class="fa-solid fa-shield-halved"></i></span>`;
+    }
+    if (rawLogo && rawLogo !== '⚽') {
+      return `<span class="match-team-badge-emoji" title="${safeName}">${rawLogo}</span>`;
+    }
+    return `<span class="match-team-badge-fallback" title="${safeName}"><i class="fa-solid fa-shield-halved"></i></span>`;
+  }
+
   function renderMatches(filterQuery = '') {
     if (!matchesList) return;
 
-    // Update dynamic calendar date
+    // Update dynamic calendar date & timezone indicator
     updateTodayCalendarDate();
+
+    const targetTz = getEffectiveTimezone();
+    const tzCityName = getTimezoneCityDisplayName(targetTz);
 
     let sorted = [...matches];
     if (activeMatchSort === 'liveFirst') {
       const statusWeight = { 'live': 1, 'upcoming': 2, 'ended': 3 };
       sorted.sort((a, b) => (statusWeight[a.status] || 2) - (statusWeight[b.status] || 2));
     } else if (activeMatchSort === 'time') {
-      sorted.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+      sorted.sort((a, b) => {
+        const tA = getMatchDateObject(a).getTime();
+        const tB = getMatchDateObject(b).getTime();
+        return tA - tB;
+      });
     }
 
-    const todayIso = getTodayIsoString();
-    const todayStrings = getTodayArabicStrings();
+    const todayIso = getTodayIsoString(targetTz);
+    const todayStrings = getTodayArabicStrings(targetTz);
 
     // Filter strictly by the active 3-tab selection
     let filtered = sorted.filter(m => {
-      const mIso = getMatchIso(m);
+      const mIso = getMatchIso(m, targetTz);
       const isEnded = m.status === 'ended';
       const isLive = m.status === 'live';
 
       // ================= TAB 1: مباريات سابقة (Past / Ended matches) =================
       if (activeMatchFilter === 'past') {
-        // Any match that has ended, or any match from yesterday/earlier that is not live
         if (isEnded) return true;
         if (mIso < todayIso && !isLive) return true;
         return false;
@@ -1062,38 +1229,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // ================= TAB 2: مباريات اليوم (Today's matches) =================
       if (activeMatchFilter === 'today') {
-        // Always include currently live matches
         if (isLive) return true;
-
-        // Never show strictly past dates in today (they have ended and moved to past matches!)
         if (mIso < todayIso) return false;
-
-        // Never show strictly future/advanced dates today
         if (mIso > todayIso) return false;
-
-        // If played today and ended today, keep visible in today's fixtures
-        // Strictly matches today's ISO date:
         if (mIso === todayIso) return true;
-
-        // Matches raw string "اليوم" or empty date ONLY if not strictly in past
         const rawDate = normalizeArabicDigits(m.date || '').trim();
         if ((!rawDate || rawDate === 'اليوم' || todayStrings.has(rawDate)) && mIso >= todayIso) return true;
-
         return false;
       }
 
       // ================= TAB 3: مباريات قادمة (Upcoming / Future matches) =================
       if (activeMatchFilter === 'upcoming') {
-        // Exclude ended matches
         if (isEnded) return false;
-
-        // Future calendar date
         if (mIso > todayIso) return true;
-
-        // Explicit upcoming words like "غداً" or "بعد غد"
         const rawDate = normalizeArabicDigits(m.date || '').trim();
         if (rawDate.includes('غد') || rawDate.includes('غدا')) return true;
-
         return false;
       }
 
@@ -1108,13 +1258,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (aLive !== bLive) {
           return bLive - aLive; // Live matches first at the top
         }
-        return (a.time || '').localeCompare(b.time || '');
+        const tA = getMatchDateObject(a).getTime();
+        const tB = getMatchDateObject(b).getTime();
+        return tA - tB;
       });
     }
 
     // If viewing past matches, sort by date/time descending so latest results are at the top
     if (activeMatchFilter === 'past' && activeMatchSort === 'custom') {
-      filtered.sort((a, b) => (b.time || '').localeCompare(a.time || ''));
+      filtered.sort((a, b) => {
+        const tA = getMatchDateObject(a).getTime();
+        const tB = getMatchDateObject(b).getTime();
+        return tB - tA;
+      });
     }
 
     const q = (filterQuery || '').trim().toLowerCase();
@@ -1152,16 +1308,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     matchesList.innerHTML = filtered.map(m => {
-      const mIso = getMatchIso(m);
+      const mIso = getMatchIso(m, targetTz);
+      const localFormattedTime = formatMatchTimeForUser(m, targetTz);
       let statusHtml = '';
       if (m.status === 'live') {
         statusHtml = '<span class="pulse-dot-red"></span> مباشر';
       } else if (m.status === 'ended') {
-        const displayDate = (mIso === todayIso) ? 'اليوم' : (m.date || mIso);
+        const displayDate = (mIso === todayIso) ? 'اليوم' : formatMatchDateForUser(m, targetTz);
         statusHtml = `<i class="fa-solid fa-flag-checkered"></i> انتهت (${displayDate})`;
       } else {
-        const displayDate = (mIso === todayIso) ? 'اليوم' : (m.date || mIso);
-        statusHtml = `${displayDate} • ${m.time}`;
+        const displayDate = (mIso === todayIso) ? 'اليوم' : formatMatchDateForUser(m, targetTz);
+        statusHtml = `${displayDate} • ${localFormattedTime}`;
       }
 
       let scoreDisplayHtml = '';
@@ -1186,7 +1343,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
         `;
       } else {
-        scoreDisplayHtml = `<div class="match-time-pill">${m.time || 'VS'}</div>`;
+        scoreDisplayHtml = `
+          <div class="match-time-pill" title="ميعاد المباراة حسب دولتك (${tzCityName})">
+            <i class="fa-regular fa-clock" style="font-size:0.75rem; margin-left:4px; opacity:0.8;"></i>
+            <span>${localFormattedTime}</span>
+          </div>
+        `;
       }
 
       return `
@@ -1199,11 +1361,13 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
           <div class="match-teams-row">
             <div class="match-team team-home">
+              <span class="match-badge-wrap">${renderTeamBadge(m.homeLogo, m.homeTeam)}</span>
               <span class="team-name">${m.homeTeam}</span>
             </div>
             ${scoreDisplayHtml}
             <div class="match-team team-away">
               <span class="team-name">${m.awayTeam}</span>
+              <span class="match-badge-wrap">${renderTeamBadge(m.awayLogo, m.awayTeam)}</span>
             </div>
           </div>
           <div class="match-footer-row">
@@ -1305,8 +1469,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   function openMatchModal(match) {
     if (!matchModalBackdrop) return;
 
-    modalMatchTitle.innerHTML = `⚽ مشاهدة مباراة: ${match.homeTeam} vs ${match.awayTeam} بث مباشر`;
-    modalMatchMeta.textContent = `🏆 ${match.league} • 🎤 المعلق: ${match.commentator || 'غير محدد'} • 📍 ${match.stadium || 'الملعب الرئيسي'}`;
+    modalMatchTitle.innerHTML = `
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <span class="match-badge-wrap">${renderTeamBadge(match.homeLogo, match.homeTeam)}</span>
+        <span>${match.homeTeam}</span>
+        <span style="color:var(--text-muted); font-size:0.9rem; font-weight:400;">ضد</span>
+        <span>${match.awayTeam}</span>
+        <span class="match-badge-wrap">${renderTeamBadge(match.awayLogo, match.awayTeam)}</span>
+      </div>
+    `;
+    const localTime = formatMatchTimeForUser(match);
+    modalMatchMeta.textContent = `🏆 ${match.league} • ⏱️ ${localTime} (${getTimezoneCityDisplayName()}) • 🎤 المعلق: ${match.commentator || 'غير محدد'} • 📍 ${match.stadium || 'الملعب الرئيسي'}`;
 
     const servers = match.servers && match.servers.length > 0 ? match.servers : [
       { name: 'سيرفر 1 (الكأس HD مباشر)', url: 'https://shoof.alkass.net/live/ch1.m3u8' },
@@ -1372,7 +1545,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (waMatchIdInput) waMatchIdInput.value = match.id;
     if (waModalMatchTitle) waModalMatchTitle.textContent = `${match.homeTeam} 🆚 ${match.awayTeam}`;
-    if (waModalMatchMeta) waModalMatchMeta.textContent = `🏆 ${match.league} • 📅 ${match.date || 'اليوم'} • ⏱️ ${match.time || 'مباشر'}`;
+    const localTime = formatMatchTimeForUser(match);
+    if (waModalMatchMeta) waModalMatchMeta.textContent = `🏆 ${match.league} • 📅 ${match.date || 'اليوم'} • ⏱️ ${localTime} (${getTimezoneCityDisplayName()})`;
     if (waTeamHomeLabel) waTeamHomeLabel.textContent = match.homeTeam;
     if (waTeamAwayLabel) waTeamAwayLabel.textContent = match.awayTeam;
 
@@ -1380,10 +1554,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const waAwayName = document.getElementById('waModalAwayTeamName');
     const waLeague = document.getElementById('waModalMatchLeague');
     const waTime = document.getElementById('waModalMatchTime');
-    if (waHomeName) waHomeName.textContent = match.homeTeam;
-    if (waAwayName) waAwayName.textContent = match.awayTeam;
+    if (waHomeName) waHomeName.innerHTML = `<span class="match-badge-wrap" style="margin-left: 6px;">${renderTeamBadge(match.homeLogo, match.homeTeam)}</span><span>${match.homeTeam}</span>`;
+    if (waAwayName) waAwayName.innerHTML = `<span>${match.awayTeam}</span><span class="match-badge-wrap" style="margin-right: 6px;">${renderTeamBadge(match.awayLogo, match.awayTeam)}</span>`;
     if (waLeague) waLeague.innerHTML = `<i class="fa-solid fa-trophy"></i> ${match.league}`;
-    if (waTime) waTime.textContent = match.status === 'live' ? '🔴 مباشر الآن' : (match.time ? `⏱️ ${match.time}` : 'اليوم');
+    if (waTime) waTime.textContent = match.status === 'live' ? '🔴 مباشر الآن' : `⏱️ ${localTime}`;
 
     // Reset status
     if (waSubscribeStatus) {
