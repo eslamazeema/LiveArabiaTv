@@ -827,6 +827,59 @@ document.addEventListener('DOMContentLoaded', () => {
     if (input) input.value = label;
   };
 
+  // --- Smart League Dropdown Handler ---
+  window.handleLeagueSelectChange = (mode) => {
+    const selectId = mode === 'edit' ? 'editMatchLeagueSelect' : 'mLeagueSelect';
+    const inputId  = mode === 'edit' ? 'editMatchLeague'       : 'mLeague';
+    const sel = document.getElementById(selectId);
+    const inp = document.getElementById(inputId);
+    if (!sel || !inp) return;
+    if (sel.value === '__custom__') {
+      inp.style.display = 'block';
+      inp.required = true;
+      inp.focus();
+    } else {
+      inp.style.display = 'none';
+      inp.required = false;
+      inp.value = sel.value; // keep in sync so form submit can still read it
+    }
+  };
+
+  // Helper: set league select+input to a given value
+  function setLeagueValue(mode, leagueVal) {
+    const selectId = mode === 'edit' ? 'editMatchLeagueSelect' : 'mLeagueSelect';
+    const inputId  = mode === 'edit' ? 'editMatchLeague'       : 'mLeague';
+    const sel = document.getElementById(selectId);
+    const inp = document.getElementById(inputId);
+    if (!sel || !inp) return;
+    // Try to find matching option
+    const option = Array.from(sel.options).find(o => o.value === leagueVal && o.value !== '__custom__');
+    if (option) {
+      sel.value = leagueVal;
+      inp.style.display = 'none';
+      inp.required = false;
+      inp.value = leagueVal;
+    } else {
+      sel.value = '__custom__';
+      inp.style.display = 'block';
+      inp.required = true;
+      inp.value = leagueVal || '';
+    }
+  }
+
+  // Helper: get league value (from custom input if shown, else from select)
+  function getLeagueValue(mode) {
+    const selectId = mode === 'edit' ? 'editMatchLeagueSelect' : 'mLeagueSelect';
+    const inputId  = mode === 'edit' ? 'editMatchLeague'       : 'mLeague';
+    const sel = document.getElementById(selectId);
+    const inp = document.getElementById(inputId);
+    if (!sel) return inp ? inp.value.trim() : '';
+    if (sel.value === '__custom__') {
+      return inp ? inp.value.trim() : '';
+    }
+    return sel.value;
+  }
+
   const mDateInput = document.getElementById('mDateInput');
   const mDate = document.getElementById('mDate');
   if (mDateInput && mDate) {
@@ -915,7 +968,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let statusBadge = '';
       if (m.status === 'live') {
-        statusBadge = `<span class="match-status-tag status-live"><span class="pulse-dot-red"></span> مباشر</span>`;
+        statusBadge = `<span class="match-status-tag status-live"><span class="pulse-dot-red"></span> مباشر الان</span>`;
       } else if (m.status === 'ended') {
         statusBadge = `<span class="match-status-tag" style="background: rgba(158,158,158,0.15); color: #b0bec5; border: 1px solid rgba(158,158,158,0.3);"><i class="fa-solid fa-flag-checkered"></i> انتهت</span>`;
       } else {
@@ -1038,7 +1091,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!m) return;
 
     document.getElementById('editMatchId').value = m.id;
-    document.getElementById('editMatchLeague').value = m.league || '';
+    setLeagueValue('edit', m.league || '');
     document.getElementById('editMatchHomeTeam').value = m.homeTeam || '';
     document.getElementById('editMatchAwayTeam').value = m.awayTeam || '';
     document.getElementById('editMatchDate').value = m.date || 'اليوم';
@@ -1166,7 +1219,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const payload = {
-        league: document.getElementById('editMatchLeague').value.trim(),
+        league: getLeagueValue('edit'),
         homeTeam: document.getElementById('editMatchHomeTeam').value.trim(),
         awayTeam: document.getElementById('editMatchAwayTeam').value.trim(),
         date: editDateVal,
@@ -1235,7 +1288,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const dateIso = parseDateToIsoClient(mDateVal, mDatePicker);
 
       const payload = {
-        league: document.getElementById('mLeague').value.trim(),
+        league: getLeagueValue('add'),
         homeTeam: document.getElementById('mHomeTeam').value.trim(),
         awayTeam: document.getElementById('mAwayTeam').value.trim(),
         time: document.getElementById('mTime').value.trim(),

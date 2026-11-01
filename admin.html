@@ -563,9 +563,71 @@
           </h3>
 
           <form id="addMatchForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-            <div class="form-group">
-              <label>البطولة / الدوري</label>
-              <input type="text" id="mLeague" class="form-control" placeholder="مثال: دوري أبطال إفريقيا" required>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label style="color: #00e676; font-weight: 700;"><i class="fa-solid fa-trophy"></i> البطولة / الدوري (اختر من القائمة أو أدخل يدوياً)</label>
+              <select id="mLeagueSelect" class="form-control" onchange="window.handleLeagueSelectChange('add')" style="background: rgba(0,230,118,0.05); border-color: rgba(0,230,118,0.4); font-weight: 600;">
+                <optgroup label="🇪🇬 الكرة المصرية">
+                  <option value="🇪🇬 الدوري المصري الممتاز">🇪🇬 الدوري المصري الممتاز</option>
+                  <option value="🇪🇬 كأس مصر">🇪🇬 كأس مصر</option>
+                  <option value="🇪🇬 كأس السوبر المصري">🇪🇬 كأس السوبر المصري</option>
+                </optgroup>
+                <optgroup label="🏆 البطولات الأفريقية">
+                  <option value="🏆 دوري أبطال أفريقيا">🏆 دوري أبطال أفريقيا (CAF Champions League)</option>
+                  <option value="🌍 كأس الكونفيدرالية الأفريقية">🌍 كأس الكونفيدرالية الأفريقية (CAF Confederation Cup)</option>
+                  <option value="🌍 كأس أمم أفريقيا">🌍 كأس أمم أفريقيا (AFCON)</option>
+                </optgroup>
+                <optgroup label="🌏 البطولات الآسيوية">
+                  <option value="🌏 دوري أبطال آسيا">🌏 دوري أبطال آسيا (AFC Champions League Elite)</option>
+                  <option value="🌏 كأس آسيا">🌏 كأس آسيا (AFC Asian Cup)</option>
+                  <option value="🌏 كأس الاتحاد الآسيوي">🌏 كأس الاتحاد الآسيوي (AFC Challenge League)</option>
+                </optgroup>
+                <optgroup label="🇸🇦 الكرة السعودية">
+                  <option value="🇸🇦 دوري روشن السعودي للمحترفين">🇸🇦 دوري روشن السعودي للمحترفين</option>
+                  <option value="🇸🇦 كأس الملك السعودي">🇸🇦 كأس الملك السعودي</option>
+                  <option value="🇸🇦 كأس السوبر السعودي">🇸🇦 كأس السوبر السعودي</option>
+                </optgroup>
+                <optgroup label="🇪🇸 الكرة الإسبانية">
+                  <option value="🇪🇸 الدوري الإسباني لالييغا">🇪🇸 الدوري الإسباني لالييغا (La Liga)</option>
+                  <option value="🇪🇸 كأس ملك إسبانيا">🇪🇸 كأس ملك إسبانيا (Copa del Rey)</option>
+                </optgroup>
+                <optgroup label="🇹🇷 الكرة التركية">
+                  <option value="🇹🇷 الدوري التركي سوبر ليج">🇹🇷 الدوري التركي سوبر ليج (Süper Lig)</option>
+                  <option value="🇹🇷 كأس تركيا">🇹🇷 كأس تركيا (Türkiye Kupası)</option>
+                </optgroup>
+                <optgroup label="🇬🇧 الكرة الإنجليزية">
+                  <option value="🏴󠁧󠁢󠁥󠁮󠁧󠁿 الدوري الإنجليزي الممتاز">🏴󠁧󠁢󠁥󠁮󠁧󠁿 الدوري الإنجليزي الممتاز (Premier League)</option>
+                  <option value="🏴󠁧󠁢󠁥󠁮󠁧󠁿 كأس الاتحاد الإنجليزي">🏴󠁧󠁢󠁥󠁮󠁧󠁿 كأس الاتحاد الإنجليزي (FA Cup)</option>
+                </optgroup>
+                <optgroup label="🇩🇪 الكرة الألمانية">
+                  <option value="🇩🇪 الدوري الألماني بوندسليغا">🇩🇪 الدوري الألماني بوندسليغا (Bundesliga)</option>
+                </optgroup>
+                <optgroup label="🇮🇹 الكرة الإيطالية">
+                  <option value="🇮🇹 الدوري الإيطالي سيري أ">🇮🇹 الدوري الإيطالي سيري أ (Serie A)</option>
+                </optgroup>
+                <optgroup label="🇫🇷 الكرة الفرنسية">
+                  <option value="🇫🇷 الدوري الفرنسي ليغ 1">🇫🇷 الدوري الفرنسي ليغ 1 (Ligue 1)</option>
+                </optgroup>
+                <optgroup label="🌍 البطولات القارية والدولية">
+                  <option value="🏆 دوري أبطال أوروبا">🏆 دوري أبطال أوروبا (UEFA Champions League)</option>
+                  <option value="🇪🇺 الدوري الأوروبي">🇪🇺 الدوري الأوروبي (UEFA Europa League)</option>
+                  <option value="🌍 كأس العالم FIFA">🌍 كأس العالم FIFA (World Cup)</option>
+                  <option value="🌍 تصفيات كأس العالم">🌍 تصفيات كأس العالم</option>
+                  <option value="🌏 كأس العالم للأندية">🌏 كأس العالم للأندية (FIFA Club World Cup)</option>
+                </optgroup>
+                <optgroup label="🇦🇪 الإمارات والخليج">
+                  <option value="🇦🇪 دوري أدنوك للمحترفين">🇦🇪 دوري أدنوك للمحترفين (UAE Pro League)</option>
+                  <option value="🇶🇦 دوري نجوم قطر">🇶🇦 دوري نجوم قطر (QNB Stars League)</option>
+                  <option value="🇰🇼 دوري الكويت للمحترفين">🇰🇼 دوري الكويت للمحترفين</option>
+                  <option value="🌍 كأس الخليج العربي">🌍 كأس الخليج العربي (Gulf Cup)</option>
+                </optgroup>
+                <optgroup label="🇲🇦 المغرب العربي">
+                  <option value="🇲🇦 الدوري المغربي">🇲🇦 الدوري المغربي (Botola Pro)</option>
+                  <option value="🇩🇿 الدوري الجزائري">🇩🇿 الدوري الجزائري (Ligue Professionnelle 1)</option>
+                  <option value="🇹🇳 الدوري التونسي">🇹🇳 الدوري التونسي (Ligue 1 Tunisie)</option>
+                </optgroup>
+                <option value="__custom__" style="font-weight: 800; color: #ff9100;">✍️ إدخال يدوي مخصص (اكتب اسم البطولة)</option>
+              </select>
+              <input type="text" id="mLeague" class="form-control" placeholder="اكتب اسم البطولة يدوياً..." style="display: none; margin-top: 8px; border-color: rgba(255,145,0,0.5); background: rgba(255,145,0,0.05);" required>
             </div>
 
             <div class="form-group">
@@ -841,9 +903,72 @@
           <form id="editMatchForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
             <input type="hidden" id="editMatchId">
 
-            <div class="form-group">
-              <label>البطولة / الدوري</label>
-              <input type="text" id="editMatchLeague" class="form-control" required>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label style="color: #00e676; font-weight: 700;"><i class="fa-solid fa-trophy"></i> البطولة / الدوري (اختر من القائمة أو أدخل يدوياً)</label>
+              <select id="editMatchLeagueSelect" class="form-control" onchange="window.handleLeagueSelectChange('edit')" style="background: rgba(0,230,118,0.05); border-color: rgba(0,230,118,0.4); font-weight: 600;">
+                <optgroup label="🇪🇬 الكرة المصرية">
+                  <option value="🇪🇬 الدوري المصري الممتاز">🇪🇬 الدوري المصري الممتاز</option>
+                  <option value="🇪🇬 كأس مصر">🇪🇬 كأس مصر</option>
+                  <option value="🇪🇬 كأس السوبر المصري">🇪🇬 كأس السوبر المصري</option>
+                </optgroup>
+                <optgroup label="🏆 البطولات الأفريقية">
+                  <option value="🏆 دوري أبطال أفريقيا">🏆 دوري أبطال أفريقيا (CAF Champions League)</option>
+                  <option value="🌍 كأس الكونفيدرالية الأفريقية">🌍 كأس الكونفيدرالية الأفريقية (CAF Confederation Cup)</option>
+                  <option value="🌍 كأس أمم أفريقيا">🌍 كأس أمم أفريقيا (AFCON)</option>
+                </optgroup>
+                <optgroup label="🌏 البطولات الآسيوية">
+                  <option value="🌏 دوري أبطال آسيا">🌏 دوري أبطال آسيا (AFC Champions League Elite)</option>
+                  <option value="🌏 كأس آسيا">🌏 كأس آسيا (AFC Asian Cup)</option>
+                  <option value="🌏 كأس الاتحاد الآسيوي">🌏 كأس الاتحاد الآسيوي (AFC Challenge League)</option>
+                </optgroup>
+                <optgroup label="🇸🇦 الكرة السعودية">
+                  <option value="🇸🇦 دوري روشن السعودي للمحترفين">🇸🇦 دوري روشن السعودي للمحترفين</option>
+                  <option value="🇸🇦 كأس الملك السعودي">🇸🇦 كأس الملك السعودي</option>
+                  <option value="🇸🇦 كأس السوبر السعودي">🇸🇦 كأس السوبر السعودي</option>
+                </optgroup>
+                <optgroup label="🇪🇸 الكرة الإسبانية">
+                  <option value="🇪🇸 الدوري الإسباني لالييغا">🇪🇸 الدوري الإسباني لالييغا (La Liga)</option>
+                  <option value="🇪🇸 كأس ملك إسبانيا">🇪🇸 كأس ملك إسبانيا (Copa del Rey)</option>
+                </optgroup>
+                <optgroup label="🇹🇷 الكرة التركية">
+                  <option value="🇹🇷 الدوري التركي سوبر ليج">🇹🇷 الدوري التركي سوبر ليج (Süper Lig)</option>
+                  <option value="🇹🇷 كأس تركيا">🇹🇷 كأس تركيا (Türkiye Kupası)</option>
+                </optgroup>
+                <optgroup label="🇬🇧 الكرة الإنجليزية">
+                  <option value="🏴󠁧󠁢󠁥󠁮󠁧󠁿 الدوري الإنجليزي الممتاز">🏴󠁧󠁢󠁥󠁮󠁧󠁿 الدوري الإنجليزي الممتاز (Premier League)</option>
+                  <option value="🏴󠁧󠁢󠁥󠁮󠁧󠁿 كأس الاتحاد الإنجليزي">🏴󠁧󠁢󠁥󠁮󠁧󠁿 كأس الاتحاد الإنجليزي (FA Cup)</option>
+                </optgroup>
+                <optgroup label="🇩🇪 الكرة الألمانية">
+                  <option value="🇩🇪 الدوري الألماني بوندسليغا">🇩🇪 الدوري الألماني بوندسليغا (Bundesliga)</option>
+                </optgroup>
+                <optgroup label="🇮🇹 الكرة الإيطالية">
+                  <option value="🇮🇹 الدوري الإيطالي سيري أ">🇮🇹 الدوري الإيطالي سيري أ (Serie A)</option>
+                </optgroup>
+                <optgroup label="🇫🇷 الكرة الفرنسية">
+                  <option value="🇫🇷 الدوري الفرنسي ليغ 1">🇫🇷 الدوري الفرنسي ليغ 1 (Ligue 1)</option>
+                </optgroup>
+                <optgroup label="🌍 البطولات القارية والدولية">
+                  <option value="🏆 دوري أبطال أوروبا">🏆 دوري أبطال أوروبا (UEFA Champions League)</option>
+                  <option value="🇪🇺 الدوري الأوروبي">🇪🇺 الدوري الأوروبي (UEFA Europa League)</option>
+                  <option value="🌍 كأس العالم FIFA">🌍 كأس العالم FIFA (World Cup)</option>
+                  <option value="🌍 تصفيات كأس العالم">🌍 تصفيات كأس العالم</option>
+                  <option value="🌏 كأس العالم للأندية">🌏 كأس العالم للأندية (FIFA Club World Cup)</option>
+                </optgroup>
+                <optgroup label="🇦🇪 الإمارات والخليج">
+                  <option value="🇦🇪 دوري أدنوك للمحترفين">🇦🇪 دوري أدنوك للمحترفين (UAE Pro League)</option>
+                  <option value="🇶🇦 دوري نجوم قطر">🇶🇦 دوري نجوم قطر (QNB Stars League)</option>
+                  <option value="🇰🇼 دوري الكويت للمحترفين">🇰🇼 دوري الكويت للمحترفين</option>
+                  <option value="🌍 كأس الخليج العربي">🌍 كأس الخليج العربي (Gulf Cup)</option>
+                </optgroup>
+                <optgroup label="🇲🇦 المغرب العربي">
+                  <option value="🇲🇦 الدوري المغربي">🇲🇦 الدوري المغربي (Botola Pro)</option>
+                  <option value="🇩🇿 الدوري الجزائري">🇩🇿 الدوري الجزائري (Ligue Professionnelle 1)</option>
+                  <option value="🇹🇳 الدوري التونسي">🇹🇳 الدوري التونسي (Ligue 1 Tunisie)</option>
+                </optgroup>
+                <option value="__custom__" style="font-weight: 800; color: #ff9100;">✍️ إدخال يدوي مخصص (اكتب اسم البطولة)</option>
+              </select>
+              <input type="text" id="editMatchLeague" class="form-control" placeholder="اكتب اسم البطولة يدوياً..." style="display: none; margin-top: 8px; border-color: rgba(255,145,0,0.5); background: rgba(255,145,0,0.05);"
+              required>
             </div>
 
             <div class="form-group">

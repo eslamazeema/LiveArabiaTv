@@ -1,0 +1,29 @@
+name: Deploy to Production (Hostinger)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: 🚀 Automatic Deploy to arabialivetv.com
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Check out repository code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 🚀 Deploy Files & Restart Production Server
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST || '82.198.228.113' }}
+          FTP_USER: ${{ secrets.FTP_USER || 'u161125044.arabialivetv.com' }}
+          FTP_PASS: ${{ secrets.FTP_PASS || 'Azeema_2020_Smsm' }}
+        run: |
+          python .github/scripts/deploy.py

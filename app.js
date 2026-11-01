@@ -1213,12 +1213,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const todayIso = getTodayIsoString(targetTz);
     const todayStrings = getTodayArabicStrings(targetTz);
+    const nowMs = Date.now();
+
+    // Helper: resolve dynamic match status in real time
+    function getEffectiveStatus(m) {
+      if (m.status === 'ended') return 'ended';
+      const mDateObj = getMatchDateObject(m);
+      const matchMs = mDateObj.getTime();
+      const elapsedMin = (nowMs - matchMs) / 60000;
+      if (m.status === 'upcoming' && elapsedMin >= 0 && elapsedMin < 120) {
+        return 'live';
+      }
+      if (m.status === 'live' && elapsedMin >= 120) {
+        return 'ended';
+      }
+      return m.status || 'upcoming';
+    }
 
     // Filter strictly by the active 3-tab selection
     let filtered = sorted.filter(m => {
       const mIso = getMatchIso(m, targetTz);
-      const isEnded = m.status === 'ended';
-      const isLive = m.status === 'live';
+      const effStatus = getEffectiveStatus(m);
+      const isEnded = effStatus === 'ended';
+      const isLive = effStatus === 'live';
 
       // ================= TAB 1: مباريات سابقة (Past / Ended matches) =================
       if (activeMatchFilter === 'past') {
@@ -1253,8 +1270,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Sort logic: In "today" tab, always place LIVE matches FIRST at the top!
     if (activeMatchFilter === 'today') {
       filtered.sort((a, b) => {
-        const aLive = a.status === 'live' ? 1 : 0;
-        const bLive = b.status === 'live' ? 1 : 0;
+        const aLive = getEffectiveStatus(a) === 'live' ? 1 : 0;
+        const bLive = getEffectiveStatus(b) === 'live' ? 1 : 0;
         if (aLive !== bLive) {
           return bLive - aLive; // Live matches first at the top
         }
@@ -1310,10 +1327,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     matchesList.innerHTML = filtered.map(m => {
       const mIso = getMatchIso(m, targetTz);
       const localFormattedTime = formatMatchTimeForUser(m, targetTz);
+      const effStatus = getEffectiveStatus(m);
       let statusHtml = '';
-      if (m.status === 'live') {
-        statusHtml = '<span class="pulse-dot-red"></span> مباشر';
-      } else if (m.status === 'ended') {
+      if (effStatus === 'live') {
+        statusHtml = '<span class="pulse-dot-red"></span> مباشر الان';
+      } else if (effStatus === 'ended') {
         const displayDate = (mIso === todayIso) ? 'اليوم' : formatMatchDateForUser(m, targetTz);
         statusHtml = `<i class="fa-solid fa-flag-checkered"></i> انتهت (${displayDate})`;
       } else {
@@ -1323,11 +1341,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       let scoreDisplayHtml = '';
       const hasScore = m.score && m.score !== 'vs';
-      const isLive = m.status === 'live';
-      const isEnded = m.status === 'ended';
+      const isLive = effStatus === 'live';
+      const isEnded = effStatus === 'ended';
 
       if (hasScore || isLive || isEnded) {
-        const parts = String(m.score || '0-0').split(/[-–:]/).map(x => x.trim()).filter(Boolean);
+        const parts = String((hasScore || isEnded) ? m.score : '0 - 0').split(/[-–:]/).map(x => x.trim()).filter(Boolean);
         const homeScore = (!isNaN(parts[0]) && parts[0] !== '') ? parts[0] : '0';
         const awayScore = (!isNaN(parts[1]) && parts[1] !== '') ? parts[1] : '0';
 
@@ -1355,7 +1373,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="match-item" data-match-id="${m.id}">
           <div class="match-league-row">
             <span class="match-league-badge"><i class="fa-solid fa-trophy"></i> ${m.league}</span>
-            <span class="match-status-tag ${m.status === 'live' ? 'status-live' : (m.status === 'ended' ? 'status-ended' : 'status-upcoming')}">
+            <span class="match-status-tag ${effStatus === 'live' ? 'status-live' : (effStatus === 'ended' ? 'status-ended' : 'status-upcoming')}">
               ${statusHtml}
             </span>
           </div>
@@ -2436,6 +2454,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderHighlights();
   initCertificatesGallery();
 
+  // Periodic automatic sync for match schedules, live status, and real-time scores every 60s
+  setInterval(async () => {
+    try {
+      const matchRes = await fetch(`${API_BASE}/api/matches`);
+      if (matchRes.ok) {
+        const matchData = await matchRes.json();
+        if (matchData.success && Array.isArray(matchData.data)) {
+          matches = matchData.data;
+        }
+      }
+    } catch (_) {}
+    renderMatches();
+  }, 60 * 1000);
+
   setTimeout(syncMatchCenterHeight, 100);
   setTimeout(syncMatchCenterHeight, 600);
 });
+

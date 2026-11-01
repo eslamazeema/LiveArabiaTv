@@ -206,6 +206,46 @@ const CLUBS = {
     aliases: ["el gouna", "gouna"],
     logo: "https://upload.wikimedia.org/wikipedia/ar/3/30/El_Gouna_FC_Logo.png"
   },
+  "المقاولون العرب": {
+    aliases: ["al mokawloon", "mokawloon", "arab contractors", "al-mokawloon al-arab", "المقاولون"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/3/36/Al_Mokawloon_Al_Arab_SC_logo.png"
+  },
+  "البنك الأهلي": {
+    aliases: ["national bank of egypt", "bank al ahly", "al bank al ahly", "national bank", "البنك الاهلي"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/b/b3/National_Bank_of_Egypt_SC_logo.png"
+  },
+  "طلائع الجيش": {
+    aliases: ["tala'ea el gaish", "talaea el gaish", "el gaish", "talaee al jaish", "طلائع الجيش"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/5/5f/Tala%27ea_El-Gaish_SC_logo.png"
+  },
+  "فاركو": {
+    aliases: ["pharco", "pharco fc"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/d/d7/Pharco_FC_logo.png"
+  },
+  "غزل المحلة": {
+    aliases: ["ghazl el mahalla", "el mahalla"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/3/3f/Ghazl_El_Mahalla_SC_logo.png"
+  },
+  "حرس الحدود": {
+    aliases: ["haras el hodood", "haras el hodoud"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/f/f6/Haras_El_Hodood_SC_logo.png"
+  },
+  "بتروجيت": {
+    aliases: ["petrojet", "petrojet fc"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/4/4c/Petrojet_SC_logo.png"
+  },
+  "مودرن سبورت": {
+    aliases: ["modern sport", "modern future", "future fc", "مودرن فيوتشر", "فيوتشر"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/a/a2/Modern_Sport_FC_logo.png"
+  },
+  "بلدية المحلة": {
+    aliases: ["baladiyat el mahalla"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/8/87/Baladiyat_El_Mahalla_SC_logo.png"
+  },
+  "الداخلية": {
+    aliases: ["el dakhleya", "el dakhliya", "dakhleya"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/e/e0/El_Dakhleya_SC_logo.png"
+  },
   "الترجي": {
     aliases: ["esperance", "es tunis", "esperance tunis"],
     logo: "https://upload.wikimedia.org/wikipedia/ar/7/7b/Esperance_Sportive_de_Tunis.png"
@@ -651,6 +691,334 @@ const CLUBS = {
   "بريست": {
     aliases: ["brest"],
     logo: "https://a.espncdn.com/i/teamlogos/soccer/500/6997.png"
+  },
+
+  // Turkish Süper Lig
+  "غلطة سراي": {
+    aliases: ["galatasaray", "galatasaray sk"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/432.png"
+  },
+  "فنربخشة": {
+    aliases: ["fenerbahce", "fenerbahçe", "fenerbahce sk"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/431.png"
+  },
+  "بشكتاش": {
+    aliases: ["besiktas", "beşiktaş", "besiktas jk"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/430.png"
+  },
+  "طرابزون سبور": {
+    aliases: ["trabzonspor"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/434.png"
+  },
+  "إسطنبول باشاك شهير": {
+    aliases: ["istanbul basaksehir", "basaksehir", "istanbul başakşehir", "باشاك شهير"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/10398.png"
+  },
+  "قاسم باشا": {
+    aliases: ["kasimpasa", "kasımpaşa"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/8157.png"
+  },
+  "سيفاس سبور": {
+    aliases: ["sivasspor"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/6979.png"
+  },
+  "أنطاليا سبور": {
+    aliases: ["antalyaspor"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/2253.png"
+  },
+  "قونية سبور": {
+    aliases: ["konyaspor"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/2257.png"
+  },
+  "قيصري سبور": {
+    aliases: ["kayserispor"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/6980.png"
+  },
+  "غازي عنتاب": {
+    aliases: ["gaziantep", "gaziantep fk"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/8158.png"
+  },
+  "سامسون سبور": {
+    aliases: ["samsunspor"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/2260.png"
+  },
+  "ريزه سبور": {
+    aliases: ["caykur rizespor", "rizespor"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/2261.png"
+  },
+  "ألانيا سبور": {
+    aliases: ["alanyaspor"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/18182.png"
+  },
+  "أيوب سبور": {
+    aliases: ["eyupspor", "eyüpspor"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/21568.png"
+  },
+  "جوزتيبي": {
+    aliases: ["goztepe", "göztepe"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/2255.png"
+  },
+  "بودروم": {
+    aliases: ["bodrum", "bodrum fk"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/22421.png"
+  },
+  "أضنة ديميرسبور": {
+    aliases: ["adana demirspor", "adana demir"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/8161.png"
+  },
+  "هاتاي سبور": {
+    aliases: ["hatayspor"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/18991.png"
+  },
+
+  // Brazilian Serie A
+  "فلامينغو": {
+    aliases: ["flamengo", "cr flamengo"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/819.png"
+  },
+  "بالميراس": {
+    aliases: ["palmeiras", "se palmeiras"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/2029.png"
+  },
+  "ساو باولو": {
+    aliases: ["sao paulo", "são paulo", "sao paulo fc"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/2026.png"
+  },
+  "كورينثيانز": {
+    aliases: ["corinthians", "sc corinthians"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/874.png"
+  },
+  "فلومينينسي": {
+    aliases: ["fluminense", "fluminense fc"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/3445.png"
+  },
+  "بوتافوغو": {
+    aliases: ["botafogo", "botafogo fr"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/6075.png"
+  },
+  "غريميو": {
+    aliases: ["gremio", "grêmio"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/6273.png"
+  },
+  "إنترناسيونال": {
+    aliases: ["internacional", "sc internacional"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/1936.png"
+  },
+  "أتلتيكو مينيرو": {
+    aliases: ["atletico mineiro", "atlético mineiro", "atletico-mg"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/870.png"
+  },
+  "كروزيرو": {
+    aliases: ["cruzeiro", "cruzeiro ec"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/879.png"
+  },
+  "فاسكو دا غاما": {
+    aliases: ["vasco da gama", "vasco"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/3454.png"
+  },
+  "سانتوس": {
+    aliases: ["santos", "santos fc"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/2674.png"
+  },
+  "باهيا": {
+    aliases: ["bahia", "ec bahia"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/3429.png"
+  },
+  "فورتاليزا": {
+    aliases: ["fortaleza", "fortaleza ec"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/3434.png"
+  },
+  "أتلتيكو باراناينسي": {
+    aliases: ["athletico paranaense", "atletico paranaense", "athletico-pr"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/3426.png"
+  },
+  "ريد بول براغانتينو": {
+    aliases: ["red bull bragantino", "bragantino"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/6076.png"
+  },
+  "كويابا": {
+    aliases: ["cuiaba", "cuiabá"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/17798.png"
+  },
+  "فيتوريا": {
+    aliases: ["vitoria", "vitória", "ec vitoria"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/3455.png"
+  },
+  "يوفنتود": {
+    aliases: ["juventude", "ec juventude"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/3448.png"
+  },
+  "كريسيوما": {
+    aliases: ["criciuma", "criciúma"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/3432.png"
+  },
+  "أتلتيكو غويانينسي": {
+    aliases: ["atletico goianiense", "atlético goianiense", "atletico-go"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/8155.png"
+  },
+
+  // German Cup (DFB-Pokal) & 2. Bundesliga Clubs
+  "شالكه": {
+    aliases: ["schalke 04", "schalke", "fc schalke 04"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/133.png"
+  },
+  "هيرتا برلين": {
+    aliases: ["hertha bsc", "hertha berlin", "hertha"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/129.png"
+  },
+  "هامبورغ": {
+    aliases: ["hamburger sv", "hamburg", "hsv"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/127.png"
+  },
+  "هانوفر": {
+    aliases: ["hannover 96", "hannover"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/128.png"
+  },
+  "كولن": {
+    aliases: ["1. fc koln", "fc koln", "cologne", "koln"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/122.png"
+  },
+  "كايزرسلاوترن": {
+    aliases: ["1. fc kaiserslautern", "kaiserslautern"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/130.png"
+  },
+  "فورتونا دوسلدورف": {
+    aliases: ["fortuna dusseldorf", "dusseldorf", "düsseldorf"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/266.png"
+  },
+  "نورنبرغ": {
+    aliases: ["1. fc nurnberg", "nurnberg", "nürnberg", "نورنبرج"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/135.png"
+  },
+  "بادربورن": {
+    aliases: ["sc paderborn 07", "paderborn", "sc paderborn"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/6986.png"
+  },
+  "ماغديبورغ": {
+    aliases: ["1. fc magdeburg", "magdeburg", "ماجديبورج"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/7058.png"
+  },
+  "دينامو دريسدن": {
+    aliases: ["sg dynamo dresden", "dynamo dresden", "دريسدين"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/7059.png"
+  },
+  "كارلسروه": {
+    aliases: ["karlsruher sc", "karlsruhe"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/267.png"
+  },
+  "أرمينيا بيليفيلد": {
+    aliases: ["arminia bielefeld", "bielefeld"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/123.png"
+  },
+  "غرويتر فورت": {
+    aliases: ["spvgg greuther furth", "greuther furth", "fürth"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/270.png"
+  },
+  "دارمشتات": {
+    aliases: ["sv darmstadt 98", "darmstadt"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/3565.png"
+  },
+  "آينتراخت براونشفايغ": {
+    aliases: ["eintracht braunschweig", "braunschweig"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/265.png"
+  },
+  "إلفرسبيرغ": {
+    aliases: ["sv 07 elversberg", "elversberg"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/7063.png"
+  },
+  "برويسن مونستر": {
+    aliases: ["sc preussen munster", "preussen munster"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/7064.png"
+  },
+  "أولم": {
+    aliases: ["ssv ulm 1846", "ssv ulm", "ulm"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/273.png"
+  },
+  "يان ريغنسبورغ": {
+    aliases: ["ssv jahn regensburg", "jahn regensburg", "regensburg"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/7062.png"
+  },
+
+  // Gulf Club Champions League Clubs
+  "القادسية الكويتي": {
+    aliases: ["al qadsia kuwait", "qadsia sc", "al qadsia sc", "القادسية"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/a/a2/Qadsia_SC_Logo.png"
+  },
+  "العربي الكويتي": {
+    aliases: ["al arabi kuwait", "al arabi sc kuwait", "العربي"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/d/d4/Al-Arabi_SC_logo.png"
+  },
+  "الكويت الكويتي": {
+    aliases: ["kuwait sc", "al kuwait sc", "al kuwait", "نادي الكويت"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/f/fe/Kuwait_SC_Logo.png"
+  },
+  "كاظمة الكويتي": {
+    aliases: ["kazma", "kazma sc"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/8/87/KazmaSC.png"
+  },
+  "السالمية الكويتي": {
+    aliases: ["al salmiya", "al salmiya sc"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/d/dd/Al-Salmiya_SC_logo.png"
+  },
+  "الرفاع البحريني": {
+    aliases: ["al riffa", "riffa sc", "al-riffa", "الرفاع"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/3/30/Al-Riffa_SC_logo.png"
+  },
+  "المحرق البحريني": {
+    aliases: ["al muharraq", "muharraq sc", "al-muharraq", "المحرق"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/3/33/Muharraq_Club_logo.png"
+  },
+  "الخالدية البحريني": {
+    aliases: ["al khaldiya", "khaldiya sc"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/6/6f/Al-Khaldiya_SC_logo.png"
+  },
+  "النصر الإماراتي": {
+    aliases: ["al nasr uae", "al nasr dubai", "al-nasr sc"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/7130.png"
+  },
+  "بني ياس": {
+    aliases: ["baniyas", "baniyas club"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/7131.png"
+  },
+  "خورفكان": {
+    aliases: ["khorfakkan", "khor fakkan"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/21831.png"
+  },
+  "دهوك العراقي": {
+    aliases: ["duhok", "duhok sc", "دهوك"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/3/37/Duhok_SC_logo.png"
+  },
+  "زاخو العراقي": {
+    aliases: ["zakho", "zakho sc", "زاخو"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/6/69/Zakho_SC_logo.png"
+  },
+  "الزوراء": {
+    aliases: ["al zawraa", "al zawra'a"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/5/52/Al-Zawraa_SC_logo.png"
+  },
+  "أربيل": {
+    aliases: ["erbil", "erbil sc"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/c/c8/Erbil_SC_logo.png"
+  },
+  "ظفار العماني": {
+    aliases: ["dhofar", "dhofar club", "ظفار"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/c/c2/Dhofar_Club_logo.png"
+  },
+  "النصر العماني": {
+    aliases: ["al nasr oman", "al-nasr salalah"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/7/7b/Al-Nasr_S.C._%28Salalah%29_logo.png"
+  },
+  "السيب العماني": {
+    aliases: ["al seeb", "seeb club", "السيب"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/4/4c/Al-Seeb_Club_logo.png"
+  },
+  "النهضة العماني": {
+    aliases: ["al nahda oman", "al nahda"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/0/05/Al-Nahda_Club_logo.png"
+  },
+  "أهلي صنعاء": {
+    aliases: ["ahli sanaa", "al ahly sanaa"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/4/4b/Ahli_Sana%27a_logo.png"
   }
 };
 
@@ -724,13 +1092,31 @@ function resolveTeam(rawName, rawLogo) {
     };
   }
 
-  // 4. Fallback for untranslated English: clean up common prefixes
+  // 4. Fallback for untranslated English: translate words and clean up prefixes
+  const WORD_MAP = {
+    'fc': 'إف سي', 'sc': 'سبورتينغ', 'united': 'يونايتد', 'city': 'سيتي',
+    'real': 'ريال', 'atletico': 'أتلتيكو', 'athletic': 'أتلتيك', 'sporting': 'سبورتينغ',
+    'inter': 'إنتر', 'dynamo': 'دينامو', 'borussia': 'بوروسيا', 'bayer': 'باير',
+    'bayern': 'بايرن', 'red bull': 'ريد بول', 'rb': 'آر بي', 'union': 'يونيون',
+    'olympic': 'أولمبيك', 'olympique': 'أولمبيك', 'racing': 'راسينغ', 'saint': 'سانت',
+    'deportivo': 'ديبورتيفو', 'lokomotiv': 'لوكوموتيف', 'sparta': 'سبارتا', 'slavia': 'سلافيا'
+  };
+
   let fallbackName = trimmed;
-  if (fallbackName.toLowerCase().startsWith("al ")) {
-    fallbackName = "الـ " + fallbackName.slice(3);
-  } else if (fallbackName.toLowerCase().startsWith("al-")) {
-    fallbackName = "الـ " + fallbackName.slice(3);
+  let lower = fallbackName.toLowerCase();
+
+  // Strip prefixes
+  if (lower.startsWith("al-") || lower.startsWith("al ")) {
+    fallbackName = "الـ " + fallbackName.slice(3).trim();
   }
+
+  // Check if we can translate English words
+  let words = fallbackName.split(/\s+/);
+  let translatedWords = words.map(w => {
+    const lw = w.toLowerCase().replace(/[^a-z]/g, '');
+    return WORD_MAP[lw] || w;
+  });
+  fallbackName = translatedWords.join(' ');
 
   return {
     name: fallbackName,
