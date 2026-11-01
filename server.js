@@ -325,6 +325,10 @@ app.get('/channel/:slugAndId', serveIndexWithSeo);
 app.get('/ch/:id', serveIndexWithSeo);
 app.get('/sitemap.xml', serveSitemapXml);
 app.get('/robots.txt', serveRobotsTxt);
+app.get('/ads.txt', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.sendFile(path.join(__dirname, 'ads.txt'));
+});
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
 app.get('/admin.html', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
 

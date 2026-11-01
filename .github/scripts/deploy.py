@@ -28,7 +28,10 @@ backend_files = [
     "admin.html",
     "style.css",
     "app.js",
-    "admin.js"
+    "admin.js",
+    "ads.txt",
+    "robots.txt",
+    "sitemap.xml"
 ]
 
 frontend_files = [
@@ -39,7 +42,10 @@ frontend_files = [
     "admin.js",
     "channels_data.js",
     "clubs_catalog.js",
-    "live_score_service.js"
+    "live_score_service.js",
+    "ads.txt",
+    "robots.txt",
+    "sitemap.xml"
 ]
 
 print(f"Connecting to Production FTP ({HOST})...")
@@ -152,3 +158,12 @@ for attempt in range(1, 5):
 
 if not success:
     print("⚠️ Warning: Health verification did not respond with online status yet.")
+
+# Verify ads.txt
+try:
+    print("\nVerifying https://arabialivetv.com/ads.txt ...")
+    req_ads = urllib.request.urlopen("https://arabialivetv.com/ads.txt", context=ctx, timeout=10)
+    ads_content = req_ads.read().decode('utf-8').strip()
+    print("✅ ads.txt content on Live Server:\n", ads_content)
+except Exception as e:
+    print("Warning verifying ads.txt:", e)
