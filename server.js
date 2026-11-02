@@ -1575,6 +1575,24 @@ initDefaultAdmin().then(() => {
   // Periodic auto-sync every 2 minutes (120,000 ms)
   setInterval(runLiveScoreSync, 2 * 60 * 1000);
 
+  // 4. Automated Daily Fixtures Fetcher (runs on startup + every 30 minutes)
+  const runDailyFixturesFetch = async () => {
+    try {
+      const res = await liveScoreService.fetchAndAddTodayFixtures(db);
+      if (res && res.addedCount > 0) {
+        console.log(`📅 [Daily-Fixtures-AutoFetch] Added ${res.addedCount} new match fixture(s) to today's schedule!`);
+      }
+    } catch (e) {
+      console.error('⚠️ [Daily-Fixtures-AutoFetch] Error fetching fixtures:', e.message);
+    }
+  };
+
+  // Run initial fixtures fetch 8 seconds after server startup
+  setTimeout(runDailyFixturesFetch, 8000);
+
+  // Periodic fixtures fetch every 30 minutes
+  setInterval(runDailyFixturesFetch, 30 * 60 * 1000);
+
   app.listen(PORT, () => {
     console.log('====================================================');
     console.log(`📺 Arabia Live TV Server v2.0 running at: http://localhost:${PORT}`);

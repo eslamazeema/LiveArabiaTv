@@ -548,14 +548,22 @@ async function syncLiveScores(db, notifyGoalFn = null) {
 }
 
 const LEAGUE_META = {
-  // Top 7 Priority Competitions requested by user:
+  // Egyptian Competitions:
   'egy.1': { name: 'الدوري المصري الممتاز', flag: '🇪🇬', channel: 'أون تايم سبورتس 1' },
-  'tur.1': { name: 'الدوري التركي الممتاز', flag: '🇹🇷', channel: 'beIN SPORTS TR' },
+  'egy.cup': { name: 'كأس رابطة الأندية المصرية المحترفة', flag: '🇪🇬', channel: 'أون تايم سبورتس 1' },
+  'egy.egypt_cup': { name: 'كأس مصر', flag: '🇪🇬', channel: 'أون تايم سبورتس 1' },
+  'egy.super': { name: 'كأس السوبر المصري', flag: '🇪🇬', channel: 'أون تايم سبورتس 1' },
+
+  // Moroccan Competitions:
+  'mar.1': { name: 'الدوري المغربي - البطولة الاحترافية إنوي', flag: '🇲🇦', channel: 'الرياضية المغربية HD' },
+  'mar.cup': { name: 'كأس العرش المغربي', flag: '🇲🇦', channel: 'الرياضية المغربية HD' },
+
+  // Top Arab & Regional Competitions:
   'ksa.1': { name: 'دوري روشن السعودي', flag: '🇸🇦', channel: 'SSC 1 HD' },
   'afc.champions': { name: 'دوري أبطال آسيا للنخبة', flag: '🌏', channel: 'beIN AFC HD' },
   'gulf.champions': { name: 'دوري أبطال الخليج للأندية', flag: '🏆', channel: 'الكأس 1 HD' },
-  'bra.1': { name: 'الدوري البرازيلي - Serie A', flag: '🇧🇷', channel: 'SSC EXTRA 1 HD' },
-  'ger.dfb_pokal': { name: 'كأس ألمانيا - DFB-Pokal', flag: '🇩🇪', channel: 'دبي الرياضية 1' },
+  'dza.1': { name: 'الرابطة الجزائرية المحترفة', flag: '🇩🇿', channel: 'الجزائرية السادسة' },
+  'syr.1': { name: 'الدوري السوري الممتاز', flag: '🇸🇾', channel: 'سوريا دراما' },
 
   // Major European & Continental Leagues:
   'eng.1': { name: 'الدوري الإنجليزي الممتاز', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', channel: 'بي إن سبورتس 1 HD' },
@@ -563,10 +571,118 @@ const LEAGUE_META = {
   'ita.1': { name: 'الدوري الإيطالي - Serie A', flag: '🇮🇹', channel: 'أبوظبي الرياضية بريميوم 1' },
   'ger.1': { name: 'الدوري الألماني - Bundesliga', flag: '🇩🇪', channel: 'بي إن سبورتس 2 HD' },
   'fra.1': { name: 'الدوري الفرنسي - Ligue 1', flag: '🇫🇷', channel: 'بي إن سبورتس 4 HD' },
+  'por.1': { name: 'الدوري البرتغالي الممتاز', flag: '🇵🇹', channel: 'SSC EXTRA 2 HD' },
+  'tur.1': { name: 'الدوري التركي الممتاز', flag: '🇹🇷', channel: 'beIN SPORTS TR' },
+  'bra.1': { name: 'الدوري البرازيلي - Serie A', flag: '🇧🇷', channel: 'SSC EXTRA 1 HD' },
+  'ger.dfb_pokal': { name: 'كأس ألمانيا - DFB-Pokal', flag: '🇩🇪', channel: 'دبي الرياضية 1' },
   'uefa.champions': { name: 'دوري أبطال أوروبا', flag: '🇪🇺', channel: 'بي إن سبورتس 1 HD' },
   'uefa.europa': { name: 'الدوري الأوروبي', flag: '🇪🇺', channel: 'بي إن سبورتس 2 HD' },
-  'caf.champions': { name: 'دوري أبطال إفريقيا', flag: '🌍', channel: 'بي إن سبورتس 6 HD' }
+  'caf.champions': { name: 'دوري أبطال إفريقيا', flag: '🌍', channel: 'بي إن سبورتس 6 HD' },
+  'caf.confed': { name: 'كأس الكونفدرالية الإفريقية', flag: '🌍', channel: 'بي إن سبورتس 6 HD' }
 };
+
+function detectFilgoalLeague(title, desc) {
+  const text = `${title || ''} ${desc || ''}`.toLowerCase();
+
+  // Egyptian League Cup / كأس الرابطة / كأس عاصمة مصر
+  if (text.includes('كأس عاصمة مصر') || text.includes('كأس الرابطة') || text.includes('رابطة الأندية') || text.includes('كأس رابطة')) {
+    return LEAGUE_META['egy.cup'];
+  }
+  // Egyptian Super Cup
+  if (text.includes('السوبر المصري') || text.includes('سوبر مصر')) {
+    return LEAGUE_META['egy.super'];
+  }
+  // Egypt Cup
+  if (text.includes('كأس مصر')) {
+    return LEAGUE_META['egy.egypt_cup'];
+  }
+  // Egyptian Premier League
+  if (text.includes('الدوري المصري') || text.includes('الدورى المصرى')) {
+    return LEAGUE_META['egy.1'];
+  }
+  // Moroccan League / البطولة المغربية الاحترافية إنوي
+  if (text.includes('الدوري المغربي') || text.includes('البطولة المغربية') || text.includes('البطولة الاحترافية') || text.includes('إنوي') || text.includes('botola')) {
+    return LEAGUE_META['mar.1'];
+  }
+  // Moroccan Throne Cup
+  if (text.includes('كأس العرش')) {
+    return LEAGUE_META['mar.cup'];
+  }
+  // Saudi Pro League
+  if (text.includes('روشن') || text.includes('الدوري السعودي')) {
+    return LEAGUE_META['ksa.1'];
+  }
+  // AFC Champions League
+  if (text.includes('أبطال آسيا') || text.includes('اسيا')) {
+    return LEAGUE_META['afc.champions'];
+  }
+  // Gulf Club Champions League
+  if (text.includes('أبطال الخليج') || text.includes('الخليج للأندية')) {
+    return LEAGUE_META['gulf.champions'];
+  }
+  // English Premier League
+  if (text.includes('الدوري الإنجليزي') || text.includes('الدورى الانجليزى')) {
+    return LEAGUE_META['eng.1'];
+  }
+  // Spanish La Liga
+  if (text.includes('الدوري الإسباني') || text.includes('الدورى الاسبانى') || text.includes('لا ليجا')) {
+    return LEAGUE_META['esp.1'];
+  }
+  // Italian Serie A
+  if (text.includes('الدوري الإيطالي') || text.includes('الدورى الايطالى') || text.includes('سيري آ')) {
+    return LEAGUE_META['ita.1'];
+  }
+  // German Bundesliga
+  if (text.includes('الدوري الألماني') || text.includes('الدورى الالمانى')) {
+    return LEAGUE_META['ger.1'];
+  }
+  // French Ligue 1
+  if (text.includes('الدوري الفرنسي') || text.includes('الدورى الفرنسى')) {
+    return LEAGUE_META['fra.1'];
+  }
+  // Portuguese League
+  if (text.includes('الدوري البرتغالي')) {
+    return LEAGUE_META['por.1'];
+  }
+  // Turkish League
+  if (text.includes('الدوري التركي')) {
+    return LEAGUE_META['tur.1'];
+  }
+  // Algerian League
+  if (text.includes('الجزائرية') || text.includes('الدوري الجزائري')) {
+    return LEAGUE_META['dza.1'];
+  }
+  // Syrian League
+  if (text.includes('الدوري السوري')) {
+    return LEAGUE_META['syr.1'];
+  }
+  // UEFA Champions League
+  if (text.includes('أبطال أوروبا') || text.includes('تشامبيونز ليج')) {
+    return LEAGUE_META['uefa.champions'];
+  }
+  // UEFA Europa League
+  if (text.includes('الدوري الأوروبي')) {
+    return LEAGUE_META['uefa.europa'];
+  }
+  // CAF Champions League
+  if (text.includes('أبطال إفريقيا') || text.includes('أبطال افريقيا')) {
+    return LEAGUE_META['caf.champions'];
+  }
+  // CAF Confederation Cup
+  if (text.includes('الكونفدرالية')) {
+    return LEAGUE_META['caf.confed'];
+  }
+
+  // Fallback: extract league name after "في بطولة "
+  if (text.includes('في بطولة ')) {
+    const raw = (title || desc).split('في بطولة ')[1].split(' - ')[0].trim();
+    if (raw && raw.length > 2 && !raw.includes('سيدات')) {
+      return { name: raw, flag: '⚽', channel: 'القناة الناقلة' };
+    }
+  }
+
+  return null;
+}
 
 function findArabicTeamName(englishName) {
   if (!englishName) return '';
@@ -739,21 +855,14 @@ async function fetchAndAddTodayFixtures(db) {
     }
   }
 
-  // 2. Process FilGoal Events (Egyptian Premier League & Gulf Club Champions League)
+  // 2. Process FilGoal Events (Egyptian League, Egyptian League Cup, Moroccan League, etc.)
   for (const fg of filgoalEvents) {
     const rawHome = fg.homeTeam ? fg.homeTeam.name : '';
     const rawAway = fg.awayTeam ? fg.awayTeam.name : '';
     if (!rawHome || !rawAway) continue;
 
-    const desc = fg.name || fg.description || '';
-    let lgMeta = null;
-    if (desc.includes('المصري') || desc.includes('الدوري المصري')) {
-      lgMeta = LEAGUE_META['egy.1'];
-    } else if (desc.includes('الخليج') || desc.includes('دوري أبطال الخليج')) {
-      lgMeta = LEAGUE_META['gulf.champions'];
-    }
-
-    // Only process if it is Egyptian League or Gulf Champions or target leagues
+    // Detect competition using smart detector
+    const lgMeta = detectFilgoalLeague(fg.name, fg.description);
     if (!lgMeta) continue;
 
     const resolvedHome = clubsCatalog.resolveTeam(rawHome);

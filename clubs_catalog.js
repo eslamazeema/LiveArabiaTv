@@ -278,6 +278,54 @@ const CLUBS = {
     aliases: ["rs berkane"],
     logo: "https://upload.wikimedia.org/wikipedia/ar/4/4b/RS_Berkane_logo.png"
   },
+  "الفتح الرباطي": {
+    aliases: ["fus rabat", "fus"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/0/07/FUS_Rabat_logo.png"
+  },
+  "المغرب الفاسي": {
+    aliases: ["mas fes", "mas fez", "maghreb fes"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/9/91/Maghreb_Association_Sportive_de_F%C3%A8s_logo.png"
+  },
+  "اتحاد طنجة": {
+    aliases: ["ittihad tanger", "ir tanger", "irt"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/3/36/Ittihad_Tanger_logo.png"
+  },
+  "حسنية أكادير": {
+    aliases: ["hassania agadir", "husa"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/3/3d/Hassania_Union_Sport_d%27Agadir.png"
+  },
+  "أولمبيك آسفي": {
+    aliases: ["olympic safi", "ocs"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/a/a2/Olympic_Club_de_Safi_logo.png"
+  },
+  "المغرب التطواني": {
+    aliases: ["moghreb tetouan", "mat tetouan"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/7/75/Moghreb_T%C3%A9touan_logo.png"
+  },
+  "نهضة الزمامرة": {
+    aliases: ["renaissance zemamra", "rcaz"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/8/87/RCAZ_logo.png"
+  },
+  "اتحاد تواركة": {
+    aliases: ["union touarga", "uts"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/f/fe/Union_Touarga_Sport_logo.png"
+  },
+  "شباب السوالم": {
+    aliases: ["js soualem", "jeunesse soualem"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/c/cb/JS_Soualem_logo.png"
+  },
+  "النادي المكناسي": {
+    aliases: ["codm meknes", "codm"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/9/9d/CODM_Meknes_logo.png"
+  },
+  "الدفاع الحسني الجديدي": {
+    aliases: ["dhj el jadida", "dhj"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/3/3d/Difaa_Hassani_El_Jadidi_logo.png"
+  },
+  "وادي دجلة": {
+    aliases: ["wadi degla", "degla"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/5/52/Wadi_Degla_FC_Logo.png"
+  },
   "مولودية الجزائر": {
     aliases: ["mc alger"],
     logo: "https://upload.wikimedia.org/wikipedia/ar/0/0e/MC_Alger_logo.png"
