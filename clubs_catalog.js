@@ -5,6 +5,38 @@
  */
 
 const CLUBS = {
+  "سندرلاند": {
+    aliases: ["sunderland", "sunderland afc", "afc sunderland"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/366.png"
+  },
+  "ليفانتي": {
+    aliases: ["levante", "levante ud", "ud levante"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/98.png"
+  },
+  "تشوروم": {
+    aliases: ["çorum fk", "corum fk", "çorum", "corum", "تشوروم إف كيه"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/19085.png"
+  },
+  "جينتشلاربيرليجي": {
+    aliases: ["genclerbirligi", "gençlerbirliği", "genclerbirligi sk"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/448.png"
+  },
+  "إيرزوروم سبور": {
+    aliases: ["erzurum bb", "erzurumspor", "erzurum bb fk", "bb erzurumspor"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/18856.png"
+  },
+  "تشايكور ريزه سبور": {
+    aliases: ["ريزه سبور", "riizespor", "caykur rizespor", "rizespor", "çaiykur rizespor"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/2202.png"
+  },
+  "نادي رع": {
+    aliases: ["رع", "نادي رع", "ra fc"],
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Soccerball.svg/500px-Soccerball.svg.png"
+  },
+  "القناة": {
+    aliases: ["نادي القناة", "el qanah", "al qanah"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/b/b8/El_Qanah_FC_logo.png"
+  },
   // Saudi Pro League
   "الهلال": {
     aliases: ["al hilal", "al-hilal", "alhilal", "al hilal riyadh"],
@@ -231,8 +263,24 @@ const CLUBS = {
     logo: "https://upload.wikimedia.org/wikipedia/ar/f/f6/Haras_El_Hodood_SC_logo.png"
   },
   "بتروجيت": {
-    aliases: ["petrojet", "petrojet fc"],
+    aliases: ["petrojet", "petrojet fc", "بتروجت", "م.السـويس بتروجت", "م.السويس بتروجت"],
     logo: "https://upload.wikimedia.org/wikipedia/ar/4/4c/Petrojet_SC_logo.png"
+  },
+  "منتخب السويس": {
+    aliases: ["montakhab el suez", "suez sc", "el suez", "م.السويس", "م.السـويس"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/2/25/Suez_SC_logo.png"
+  },
+  "دلفي": {
+    aliases: ["delphi", "delphi sc", "نادي دلفي"],
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Soccerball.svg/500px-Soccerball.svg.png"
+  },
+  "بترول أسيوط": {
+    aliases: ["aspyout petroleum", "petrol asyut", "petrol assiut"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/8/87/Asyut_Petroleum_SC_logo.png"
+  },
+  "النجوم": {
+    aliases: ["nogoom", "nogoom fc", "el nogoom", "نادي النجوم"],
+    logo: "https://upload.wikimedia.org/wikipedia/ar/9/90/Nogoom_FC_Logo.png"
   },
   "مودرن سبورت": {
     aliases: ["modern sport", "modern future", "future fc", "مودرن فيوتشر", "فيوتشر"],
@@ -469,7 +517,7 @@ const CLUBS = {
     logo: "https://a.espncdn.com/i/teamlogos/soccer/500/375.png"
   },
   "إيبسويتش تاون": {
-    aliases: ["ipswich town", "ipswich"],
+    aliases: ["ipswich town", "ipswich", "إبسويتش تاون", "ابسويتش تاون"],
     logo: "https://a.espncdn.com/i/teamlogos/soccer/500/373.png"
   },
   "ساوثهامبتون": {
@@ -523,7 +571,7 @@ const CLUBS = {
     logo: "https://a.espncdn.com/i/teamlogos/soccer/500/97.png"
   },
   "سلتا فيغو": {
-    aliases: ["celta vigo", "celta de vigo", "celta"],
+    aliases: ["celta vigo", "celta de vigo", "celta", "سيلتا فيجو", "سيلتا فيغو", "سلتا فيجو"],
     logo: "https://a.espncdn.com/i/teamlogos/soccer/500/85.png"
   },
   "مايوركا": {
@@ -543,7 +591,7 @@ const CLUBS = {
     logo: "https://a.espncdn.com/i/teamlogos/soccer/500/88.png"
   },
   "رايو فاليكانو": {
-    aliases: ["rayo vallecano"],
+    aliases: ["rayo vallecano", "رايو فايكانو", "فايكانو"],
     logo: "https://a.espncdn.com/i/teamlogos/soccer/500/101.png"
   },
   "لاس بالماس": {

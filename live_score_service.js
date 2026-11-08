@@ -365,6 +365,55 @@ function getMatchKickoffMs(m) {
 /**
  * Fetch today's Arab, Egyptian, and Gulf match fixtures from FilGoal JSON-LD Schema
  */
+/**
+ * Convert Cairo local time ISO string (e.g. from FilGoal: "2026-11-08T14:30:00")
+ * to an accurate UTC Date object, accounting for Egypt standard time (UTC+2) and DST (UTC+3).
+ */
+function parseCairoTimeToDate(isoStr) {
+  if (!isoStr) return null;
+  const match = String(isoStr).match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{1,2}):(\d{2})/);
+  if (!match) {
+    const d = new Date(isoStr);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  const year = parseInt(match[1], 10);
+  const month = parseInt(match[2], 10) - 1;
+  const day = parseInt(match[3], 10);
+  const hour = parseInt(match[4], 10);
+  const min = parseInt(match[5], 10);
+
+  // Guess UTC assuming Cairo is UTC+2 (Egypt standard time)
+  const utcGuess = Date.UTC(year, month, day, hour - 2, min, 0);
+
+  try {
+    const dObj = new Date(utcGuess);
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Africa/Cairo',
+      year: 'numeric', month: 'numeric', day: 'numeric',
+      hour: 'numeric', minute: 'numeric', second: 'numeric',
+      hour12: false
+    }).formatToParts(dObj);
+    const partMap = {};
+    parts.forEach(p => { partMap[p.type] = parseInt(p.value, 10); });
+    
+    const targetMinutes = hour * 60 + min;
+    let actualHours = partMap.hour;
+    if (actualHours === 24) actualHours = 0;
+    const actualMinutes = actualHours * 60 + (partMap.minute || 0);
+    
+    let diffMinutes = targetMinutes - actualMinutes;
+    if (diffMinutes > 720) diffMinutes -= 1440;
+    if (diffMinutes < -720) diffMinutes += 1440;
+    
+    return new Date(utcGuess + diffMinutes * 60000);
+  } catch (_) {
+    // Fallback: winter UTC+2 (Nov-Apr), summer UTC+3 (May-Oct)
+    const isSummer = (month >= 4 && month <= 9);
+    const offsetHours = isSummer ? 3 : 2;
+    return new Date(Date.UTC(year, month, day, hour - offsetHours, min, 0));
+  }
+}
+
 async function fetchFilgoalTodayMatches() {
   const matches = [];
   try {
@@ -889,7 +938,7 @@ async function fetchAndAddTodayFixtures(db) {
 
     try {
       if (fg.startDate) {
-        const d = new Date(fg.startDate);
+        const d = parseCairoTimeToDate(fg.startDate);
         if (!isNaN(d.getTime())) {
           matchUtcIso = d.toISOString();
           kickoffMs = d.getTime();
