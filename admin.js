@@ -1232,8 +1232,8 @@ document.addEventListener('DOMContentLoaded', () => {
         streamUrl: srv1,
         streamUrl2: srv2,
         servers: [
-          { name: 'سيرفر 1 (البث المباشر الأساسي)', url: srv1 || 'https://shoof.alkass.net/live/ch1.m3u8' },
-          { name: 'سيرفر 2 (احتياطي عالي السرعة)', url: srv2 || 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' }
+          ...(srv1 ? [{ name: 'سيرفر 1 (البث المباشر الأساسي)', url: srv1 }] : []),
+          ...(srv2 ? [{ name: 'سيرفر 2 (احتياطي عالي السرعة)', url: srv2 }] : [])
         ]
       };
 
@@ -1301,8 +1301,8 @@ document.addEventListener('DOMContentLoaded', () => {
         streamUrl: rawUrl,
         streamUrl2: rawUrl2,
         servers: [
-          { name: 'سيرفر 1 (البث المباشر الأساسي)', url: rawUrl || 'https://shoof.alkass.net/live/ch1.m3u8' },
-          { name: 'سيرفر 2 (احتياطي عالي السرعة)', url: rawUrl2 || 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' }
+          ...(rawUrl ? [{ name: 'سيرفر 1 (البث المباشر الأساسي)', url: rawUrl }] : []),
+          ...(rawUrl2 ? [{ name: 'سيرفر 2 (احتياطي عالي السرعة)', url: rawUrl2 }] : [])
         ]
       };
 

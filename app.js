@@ -1190,6 +1190,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     return `<span class="match-team-badge-fallback" title="${safeName}" style="width: 20px; height: 20px; min-width: 20px; min-height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.65rem;"><i class="fa-solid fa-shield-halved"></i></span>`;
   }
 
+  function hasMatchStream(m) {
+    if (!m) return false;
+    if (Array.isArray(m.servers) && m.servers.length > 0) {
+      const valid = m.servers.some(s => {
+        const u = (s && s.url) ? String(s.url).trim() : '';
+        if (!u) return false;
+        if (u.includes('test-streams.mux.dev') || u.includes('tears-of-steel.ism')) return false;
+        return true;
+      });
+      if (valid) return true;
+    }
+    if (m.streamUrl && String(m.streamUrl).trim()) {
+      const u = String(m.streamUrl).trim();
+      if (!u.includes('test-streams.mux.dev') && !u.includes('tears-of-steel.ism')) return true;
+    }
+    return false;
+  }
+
   function renderMatches(filterQuery = '') {
     if (!matchesList) return;
 
@@ -1230,6 +1248,40 @@ document.addEventListener('DOMContentLoaded', async () => {
       return m.status || 'upcoming';
     }
 
+    function getStatusPriority(status) {
+      if (status === 'live') return 1;      // 1. مباشر أولاً
+      if (status === 'upcoming') return 2;  // 2. ثم قريباً
+      if (status === 'ended') return 3;     // 3. ثم انتهت
+      return 2;
+    }
+
+    function compareMatchesByStatusAndPriority(a, b) {
+      const stA = getStatusPriority(getEffectiveStatus(a));
+      const stB = getStatusPriority(getEffectiveStatus(b));
+
+      // 1. المباشر أولاً ثم قريباً ثم انتهت
+      if (stA !== stB) {
+        return stA - stB;
+      }
+
+      // 2. طبقاً للترتيب بلوحة التحكم فى الأولوية (sort_order / sortOrder)
+      const ordA = (a.sortOrder !== undefined && a.sortOrder !== null && a.sortOrder !== '')
+        ? Number(a.sortOrder)
+        : ((a.sort_order !== undefined && a.sort_order !== null && a.sort_order !== '') ? Number(a.sort_order) : 999999);
+      const ordB = (b.sortOrder !== undefined && b.sortOrder !== null && b.sortOrder !== '')
+        ? Number(b.sortOrder)
+        : ((b.sort_order !== undefined && b.sort_order !== null && b.sort_order !== '') ? Number(b.sort_order) : 999999);
+
+      if (ordA !== ordB) {
+        return ordA - ordB;
+      }
+
+      // 3. عند تساوي الترتيب: حسب توقيت المباراة
+      const tA = getMatchDateObject(a).getTime();
+      const tB = getMatchDateObject(b).getTime();
+      return tA - tB;
+    }
+
     // Filter strictly by the active 3-tab selection
     let filtered = sorted.filter(m => {
       const mIso = getMatchIso(m, targetTz);
@@ -1267,28 +1319,34 @@ document.addEventListener('DOMContentLoaded', async () => {
       return true;
     });
 
-    // Sort logic: In "today" tab, always place LIVE matches FIRST at the top!
-    if (activeMatchFilter === 'today') {
+    // Sort logic: المباشر أولاً ثم قريباً ثم انتهت طبقاً لترتيب لوحة التحكم فى الأولوية
+    if (activeMatchSort === 'time') {
       filtered.sort((a, b) => {
-        const aLive = getEffectiveStatus(a) === 'live' ? 1 : 0;
-        const bLive = getEffectiveStatus(b) === 'live' ? 1 : 0;
-        if (aLive !== bLive) {
-          return bLive - aLive; // Live matches first at the top
-        }
         const tA = getMatchDateObject(a).getTime();
         const tB = getMatchDateObject(b).getTime();
         return tA - tB;
       });
+    } else {
+      filtered.sort(compareMatchesByStatusAndPriority);
     }
 
-    // If viewing past matches, sort by date/time descending so latest results are at the top
-    if (activeMatchFilter === 'past' && activeMatchSort === 'custom') {
-      filtered.sort((a, b) => {
-        const tA = getMatchDateObject(a).getTime();
-        const tB = getMatchDateObject(b).getTime();
-        return tB - tA;
-      });
-    }
+    // Deduplicate matches to strictly avoid any duplicate entries
+    const seenMatchKeys = new Set();
+    filtered = filtered.filter(m => {
+      if (!m) return false;
+      const keyId = m.id ? String(m.id).trim() : '';
+      const hNorm = (m.homeTeam || '').trim().toLowerCase();
+      const aNorm = (m.awayTeam || '').trim().toLowerCase();
+      const mDate = getMatchIso(m, targetTz);
+      const teamsKey = [hNorm, aNorm].sort().join('___') + '___' + mDate;
+
+      if (keyId && seenMatchKeys.has(keyId)) return false;
+      if (hNorm && aNorm && seenMatchKeys.has(teamsKey)) return false;
+
+      if (keyId) seenMatchKeys.add(keyId);
+      if (hNorm && aNorm) seenMatchKeys.add(teamsKey);
+      return true;
+    });
 
     const q = (filterQuery || '').trim().toLowerCase();
     if (q) {
@@ -1397,9 +1455,10 @@ document.addEventListener('DOMContentLoaded', async () => {
               <button class="match-wa-bell-btn" data-match-id="${m.id}" title="تفعيل تنبيهات الأهداف عبر واتساب (اضغط للاشتراك)">
                 <i class="fa-brands fa-whatsapp"></i> <span>تنبيه الأهداف</span>
               </button>
-              <button class="match-watch-btn">
+              ${hasMatchStream(m) ? `
+              <button class="match-watch-btn" data-match-id="${m.id}" title="مشاهدة البث المباشر">
                 <i class="fa-solid fa-circle-play"></i> مشاهدة
-              </button>
+              </button>` : ''}
             </div>
           </div>
         </div>
@@ -1415,12 +1474,25 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     });
 
+    matchesList.querySelectorAll('.match-watch-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const mId = btn.dataset.matchId;
+        const targetMatch = matches.find(m => m.id === mId);
+        if (targetMatch && hasMatchStream(targetMatch)) {
+          openMatchModal(targetMatch);
+        }
+      });
+    });
+
     matchesList.querySelectorAll('.match-item').forEach(item => {
       item.addEventListener('click', (e) => {
-        if (e.target.closest('.match-wa-bell-btn')) return;
+        if (e.target.closest('.match-wa-bell-btn') || e.target.closest('.match-watch-btn')) return;
         const mId = item.dataset.matchId;
         const targetMatch = matches.find(m => m.id === mId);
-        if (targetMatch) openMatchModal(targetMatch);
+        if (targetMatch && hasMatchStream(targetMatch)) {
+          openMatchModal(targetMatch);
+        }
       });
     });
   }
@@ -1499,27 +1571,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     const localTime = formatMatchTimeForUser(match);
     modalMatchMeta.textContent = `🏆 ${match.league} • ⏱️ ${localTime} (${getTimezoneCityDisplayName()}) • 🎤 المعلق: ${match.commentator || 'غير محدد'} • 📍 ${match.stadium || 'الملعب الرئيسي'}`;
 
-    const servers = match.servers && match.servers.length > 0 ? match.servers : [
-      { name: 'سيرفر 1 (الكأس HD مباشر)', url: 'https://shoof.alkass.net/live/ch1.m3u8' },
-      { name: 'سيرفر 2 (الكويت سبورت HD مباشر)', url: 'https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8' }
-    ];
+    const rawServers = (match.servers && match.servers.length > 0)
+      ? match.servers.filter(s => s && s.url && s.url.trim() && !s.url.includes('test-streams.mux.dev') && !s.url.includes('tears-of-steel.ism'))
+      : [];
+    const servers = rawServers.length > 0
+      ? rawServers
+      : (match.streamUrl && !match.streamUrl.includes('test-streams.mux.dev') ? [{ name: 'سيرفر 1 (البث المباشر الأساسي)', url: match.streamUrl }] : []);
 
-    serverSelector.innerHTML = servers.map((srv, idx) => `
-      <button class="server-btn ${idx === 0 ? 'active' : ''}" data-url="${srv.url}">
-        <i class="fa-solid fa-server"></i> ${srv.name}
-      </button>
-    `).join('');
+    if (servers.length === 0) {
+      serverSelector.innerHTML = '<span style="font-size:0.85rem; color:var(--text-muted); padding: 4px 10px;">لا يوجد اسكريبت بث مباشر مضاف لهذه المباراة حالياً</span>';
+      if (modalVideo) { modalVideo.style.display = 'none'; modalVideo.src = ''; }
+      if (modalPlayerFrame) { modalPlayerFrame.style.display = 'none'; modalPlayerFrame.src = ''; }
+    } else {
+      serverSelector.innerHTML = servers.map((srv, idx) => `
+        <button class="server-btn ${idx === 0 ? 'active' : ''}" data-url="${srv.url}">
+          <i class="fa-solid fa-server"></i> ${srv.name}
+        </button>
+      `).join('');
 
-    // Play default server
-    playMatchServerUrl(servers[0].url);
+      // Play default server
+      playMatchServerUrl(servers[0].url);
 
-    serverSelector.querySelectorAll('.server-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        serverSelector.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        playMatchServerUrl(btn.dataset.url);
+      serverSelector.querySelectorAll('.server-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          serverSelector.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          playMatchServerUrl(btn.dataset.url);
+        });
       });
-    });
+    }
 
     const modalWhatsAppAlertBtn = document.getElementById('modalWhatsAppAlertBtn');
     if (modalWhatsAppAlertBtn) {

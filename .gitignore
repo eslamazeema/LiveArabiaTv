@@ -14,6 +14,7 @@ logs/
 altv_database.db
 altv_database.db-shm
 altv_database.db-wal
+altv_database.json
 *.db
 
 # Python

@@ -709,6 +709,24 @@ function slugify(text) {
     .replace(/^-+|-+$/g, '') || 'match';
 }
 
+function isMatchDuplicate(m, homeRaw, awayRaw, homeAr, awayAr, targetDateIso) {
+  if (!m) return false;
+  const mHome = m.homeTeam || '';
+  const mAway = m.awayTeam || '';
+  const mDate = String(m.dateIso || m.date || '').slice(0, 10);
+
+  const sameTeams = (teamMatches(mHome, homeRaw) && teamMatches(mAway, awayRaw)) ||
+                    (teamMatches(mHome, awayRaw) && teamMatches(mAway, homeRaw)) ||
+                    (teamMatches(mHome, homeAr) && teamMatches(mAway, awayAr)) ||
+                    (teamMatches(mHome, awayAr) && teamMatches(mAway, homeAr)) ||
+                    (mHome === homeAr && mAway === awayAr) ||
+                    (mHome === awayAr && mAway === homeAr);
+
+  if (!sameTeams) return false;
+  if (!targetDateIso || !mDate) return true;
+  return mDate === targetDateIso;
+}
+
 /**
  * Fetch and automatically add today's match fixtures into the database.
  * Supports:
@@ -765,18 +783,6 @@ async function fetchAndAddTodayFixtures(db) {
     const awayArabic = resolvedAway.name;
     const awayLogoUrl = resolvedAway.logo;
 
-    // Deduplication check against DB & added matches
-    const alreadyExists = currentMatches.some(m => {
-      return (teamMatches(m.homeTeam, rawHome) && teamMatches(m.awayTeam, rawAway)) ||
-             (teamMatches(m.homeTeam, rawAway) && teamMatches(m.awayTeam, rawHome)) ||
-             (m.homeTeam === homeArabic && m.awayTeam === awayArabic);
-    }) || addedMatches.some(a => a.homeTeam === homeArabic && a.awayTeam === awayArabic);
-
-    if (alreadyExists) {
-      existingCount++;
-      continue;
-    }
-
     let matchTimeStr = '20:00';
     let matchUtcIso = '';
     let matchDateIso = todayIso;
@@ -805,6 +811,15 @@ async function fetchAndAddTodayFixtures(db) {
         }
       }
     } catch (_) {}
+
+    // Deduplication check against DB & added matches
+    const alreadyExists = currentMatches.some(m => isMatchDuplicate(m, rawHome, rawAway, homeArabic, awayArabic, matchDateIso)) ||
+                          addedMatches.some(a => isMatchDuplicate(a, rawHome, rawAway, homeArabic, awayArabic, matchDateIso));
+
+    if (alreadyExists) {
+      existingCount++;
+      continue;
+    }
 
     const lgCode = ev._leagueCode || 'eng.1';
     const lgMeta = LEAGUE_META[lgCode] || { name: 'مباراة دولية', flag: '⚽', channel: 'قناة رياضية' };
@@ -842,10 +857,7 @@ async function fetchAndAddTodayFixtures(db) {
       commentator: 'معلق متميز',
       stadium: (ev.competitions[0].venue ? ev.competitions[0].venue.fullName : 'استاد المباراة'),
       score: initialScore,
-      servers: [
-        { name: 'سيرفر البث 1 (HD)', url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8' },
-        { name: 'سيرفر البث 2 (سريع)', url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8' }
-      ],
+      servers: [],
       sortOrder: (currentMatches.length + addedMatches.length + 1)
     };
 
@@ -869,17 +881,6 @@ async function fetchAndAddTodayFixtures(db) {
     const resolvedAway = clubsCatalog.resolveTeam(rawAway);
     const homeArabic = resolvedHome.name;
     const awayArabic = resolvedAway.name;
-
-    const alreadyExists = currentMatches.some(m => {
-      return (teamMatches(m.homeTeam, rawHome) && teamMatches(m.awayTeam, rawAway)) ||
-             (teamMatches(m.homeTeam, rawAway) && teamMatches(m.awayTeam, rawHome)) ||
-             (m.homeTeam === homeArabic && m.awayTeam === awayArabic);
-    }) || addedMatches.some(a => a.homeTeam === homeArabic && a.awayTeam === awayArabic);
-
-    if (alreadyExists) {
-      existingCount++;
-      continue;
-    }
 
     let matchTimeStr = '20:00';
     let matchUtcIso = '';
@@ -913,6 +914,15 @@ async function fetchAndAddTodayFixtures(db) {
       }
     } catch (_) {}
 
+    // Deduplication check against DB & added matches
+    const alreadyExists = currentMatches.some(m => isMatchDuplicate(m, rawHome, rawAway, homeArabic, awayArabic, matchDateIso)) ||
+                          addedMatches.some(a => isMatchDuplicate(a, rawHome, rawAway, homeArabic, awayArabic, matchDateIso));
+
+    if (alreadyExists) {
+      existingCount++;
+      continue;
+    }
+
     let initialStatus = 'upcoming';
     let initialScore = 'vs';
     const elapsed = kickoffMs ? (now - kickoffMs) / 60000 : null;
@@ -943,10 +953,7 @@ async function fetchAndAddTodayFixtures(db) {
       commentator: 'معلق متميز',
       stadium: fg.location ? fg.location.name : 'استاد المباراة',
       score: initialScore,
-      servers: [
-        { name: 'سيرفر البث 1 (HD)', url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8' },
-        { name: 'سيرفر البث 2 (سريع)', url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8' }
-      ],
+      servers: [],
       sortOrder: (currentMatches.length + addedMatches.length + 1)
     };
 

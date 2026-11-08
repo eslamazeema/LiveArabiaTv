@@ -1,7 +1,7 @@
 /**
  * بث مباشر للقنوات الفضائية (arabialivetv.com) - Official Channel Data Store
  * Version: 3.8 (74 Live Arabic Channels, 36 Radios & 20 Matches Snapshot)
- * Backup Date: 2026-11-02 09:32:09
+ * Backup Date: 2026-11-08 11:44:28
  */
 
 const DEFAULT_CATEGORIES = [
@@ -1207,7 +1207,7 @@ const DEFAULT_MATCHES = [
     "id": "match-amed-sfk-eyupspor-43281",
     "league": "الدوري التركي الممتاز",
     "leagueFlag": "🇹🇷",
-    "homeTeam": "Amed SFK",
+    "homeTeam": "أميد سبور",
     "homeLogo": "https://a.espncdn.com/i/teamlogos/soccer/500/132335.png",
     "awayTeam": "أيوب سبور",
     "awayLogo": "https://a.espncdn.com/i/teamlogos/soccer/500/20729.png",
@@ -1219,7 +1219,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Diyarbakir Stadyumu",
     "score": "5 - 1",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 17,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T10:30:00.000Z"
@@ -1240,7 +1240,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Giuseppe Sinigaglia",
     "score": "1 - 0",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 6,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T11:30:00.000Z"
@@ -1261,7 +1261,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Estadio Coliseum",
     "score": "3 - 1",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 2,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T13:00:00.000Z"
@@ -1282,7 +1282,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Basaksehir Fatih Terim Stadium",
     "score": "5 - 2",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 18,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T13:00:00.000Z"
@@ -1303,7 +1303,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Papara Park",
     "score": "2 - 0",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 19,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T13:00:00.000Z"
@@ -1312,7 +1312,7 @@ const DEFAULT_MATCHES = [
     "id": "match-frosinone-torino-43266",
     "league": "الدوري الإيطالي - Serie A",
     "leagueFlag": "🇮🇹",
-    "homeTeam": "Frosinone",
+    "homeTeam": "فروسينوني",
     "homeLogo": "https://a.espncdn.com/i/teamlogos/soccer/500/4057.png",
     "awayTeam": "تورينو",
     "awayLogo": "https://a.espncdn.com/i/teamlogos/soccer/500/239.png",
@@ -1324,7 +1324,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Stadio Benito Stirpe",
     "score": "2 - 0",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 7,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T14:00:00.000Z"
@@ -1345,7 +1345,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Olimpico",
     "score": "2 - 1",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 8,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T14:00:00.000Z"
@@ -1356,7 +1356,7 @@ const DEFAULT_MATCHES = [
     "leagueFlag": "🇫🇷",
     "homeTeam": "ستراسبورغ",
     "homeLogo": "https://a.espncdn.com/i/teamlogos/soccer/500/180.png",
-    "awayTeam": "AJ Auxerre",
+    "awayTeam": "أوكسير",
     "awayLogo": "https://a.espncdn.com/i/teamlogos/soccer/500/172.png",
     "time": "17:00",
     "date": "2026-11-01",
@@ -1366,7 +1366,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Stade de la Meinau",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 13,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T14:00:00.000Z"
@@ -1387,7 +1387,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Stadion An der Alten Försterei",
     "score": "1 - 1",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 11,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T14:30:00.000Z"
@@ -1396,7 +1396,7 @@ const DEFAULT_MATCHES = [
     "id": "match-racing-santander-real-madrid-43260",
     "league": "الدوري الإسباني - La Liga",
     "leagueFlag": "🇪🇸",
-    "homeTeam": "راسينغ Santander",
+    "homeTeam": "راسينغ سانتاندير",
     "homeLogo": "https://a.espncdn.com/i/teamlogos/soccer/500/87.png",
     "awayTeam": "ريال مدريد",
     "awayLogo": "https://a.espncdn.com/i/teamlogos/soccer/500/86.png",
@@ -1408,7 +1408,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "El Sardineros",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 3,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T15:15:00.000Z"
@@ -1429,7 +1429,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Recep Tayyip Erdogan Stadium",
     "score": "2 - 2",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 20,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T16:00:00.000Z"
@@ -1440,7 +1440,7 @@ const DEFAULT_MATCHES = [
     "leagueFlag": "🇫🇷",
     "homeTeam": "ليون",
     "homeLogo": "https://a.espncdn.com/i/teamlogos/soccer/500/167.png",
-    "awayTeam": "Angers",
+    "awayTeam": "أنجيه",
     "awayLogo": "https://a.espncdn.com/i/teamlogos/soccer/500/7868.png",
     "time": "19:15",
     "date": "2026-11-01",
@@ -1450,7 +1450,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Groupama Stadium",
     "score": "2 - 0",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 14,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T16:15:00.000Z"
@@ -1471,7 +1471,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Stade Jean Bouin",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 15,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T16:15:00.000Z"
@@ -1492,7 +1492,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Anfield",
     "score": "0 - 1",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 1,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T16:30:00.000Z"
@@ -1513,7 +1513,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Deutsche Bank Park",
     "score": "3 - 1",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 12,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T16:30:00.000Z"
@@ -1534,7 +1534,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Via Del Mare",
     "score": "1 - 2",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 9,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T17:00:00.000Z"
@@ -1543,7 +1543,7 @@ const DEFAULT_MATCHES = [
     "id": "match-elche-valencia-43262",
     "league": "الدوري الإسباني - La Liga",
     "leagueFlag": "🇪🇸",
-    "homeTeam": "Elche",
+    "homeTeam": "إلتشي",
     "homeLogo": "https://a.espncdn.com/i/teamlogos/soccer/500/3751.png",
     "awayTeam": "فالنسيا",
     "awayLogo": "https://a.espncdn.com/i/teamlogos/soccer/500/94.png",
@@ -1555,7 +1555,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Estadio Martínez Valero",
     "score": "0 - 1",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 4,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T17:30:00.000Z"
@@ -1576,7 +1576,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Allianz Stadium",
     "score": "2 - 0",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 10,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T19:45:00.000Z"
@@ -1597,7 +1597,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Stade Vélodrome",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 16,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T19:45:00.000Z"
@@ -1618,7 +1618,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "San Mamés",
     "score": "2 - 1",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 5,
     "dateIso": "2026-11-01",
     "utcTime": "2026-11-01T20:00:00.000Z"
@@ -1639,7 +1639,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "جيليت ستاديوم (الولايات المتحدة)",
     "score": "0 - 0",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 47,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T00:00:00.000Z"
@@ -1660,7 +1660,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "استاد بي إم أو (الولايات المتحدة)",
     "score": "0 - 0",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 46,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T01:30:00.000Z"
@@ -1681,7 +1681,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "بروفيدينس بارك (الولايات المتحدة)",
     "score": "0 - 0",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 45,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T02:45:00.000Z"
@@ -1702,7 +1702,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 43,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T12:00:00.000Z"
@@ -1723,7 +1723,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 44,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T12:00:00.000Z"
@@ -1744,7 +1744,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 41,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T13:00:00.000Z"
@@ -1765,7 +1765,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 42,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T13:00:00.000Z"
@@ -1786,7 +1786,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 40,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T13:45:00.000Z"
@@ -1807,7 +1807,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "استاد السويس (مصر)",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 38,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T15:00:00.000Z"
@@ -1828,7 +1828,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 39,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T15:00:00.000Z"
@@ -1849,7 +1849,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 35,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T16:00:00.000Z"
@@ -1860,7 +1860,7 @@ const DEFAULT_MATCHES = [
     "leagueFlag": "🌏",
     "homeTeam": "السد",
     "homeLogo": "https://a.espncdn.com/i/teamlogos/soccer/500/7135.png",
-    "awayTeam": "الأهلي المصري",
+    "awayTeam": "الأهلي السعودي",
     "awayLogo": "https://upload.wikimedia.org/wikipedia/ar/8/8c/Al_Ahly_SC_logo.png",
     "time": "19:00",
     "date": "2026-11-02",
@@ -1870,7 +1870,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 36,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T16:00:00.000Z"
@@ -1891,7 +1891,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 37,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T16:00:00.000Z"
@@ -1912,7 +1912,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 34,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T16:45:00.000Z"
@@ -1933,7 +1933,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 33,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T17:00:00.000Z"
@@ -1954,7 +1954,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "استاد مابي (إيطاليا)",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 32,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T17:30:00.000Z"
@@ -1975,7 +1975,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "استاد القاهرة الدولي (مصر)",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 31,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T18:00:00.000Z"
@@ -1996,7 +1996,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 29,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T18:15:00.000Z"
@@ -2017,7 +2017,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 30,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T18:15:00.000Z"
@@ -2038,7 +2038,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 28,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T19:00:00.000Z"
@@ -2059,7 +2059,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "نيو بالانس ارينا (إيطاليا)",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 26,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T19:45:00.000Z"
@@ -2080,7 +2080,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 27,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T19:45:00.000Z"
@@ -2101,7 +2101,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "ملعب سانت جيمس بارك (إنجلترا)",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 24,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T20:00:00.000Z"
@@ -2122,7 +2122,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "ريازور (إسبانيا)",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 25,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T20:00:00.000Z"
@@ -2143,7 +2143,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 22,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T20:15:00.000Z"
@@ -2164,7 +2164,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "الملعب الرئيسي",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 23,
     "dateIso": "2026-11-02",
     "utcTime": "2026-11-02T20:15:00.000Z"
@@ -2185,7 +2185,7 @@ const DEFAULT_MATCHES = [
     "commentator": "معلق متميز",
     "stadium": "Estádio Municipal Cicero de Souza Marques",
     "score": "vs",
-    "servers": "[{\"name\":\"سيرفر البث 1 (HD)\",\"url\":\"https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8\"},{\"name\":\"سيرفر البث 2 (سريع)\",\"url\":\"https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8\"}]",
+    "servers": "[]",
     "sortOrder": 21,
     "dateIso": "2026-11-03",
     "utcTime": "2026-11-02T23:00:00.000Z"

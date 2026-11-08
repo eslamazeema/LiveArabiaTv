@@ -326,6 +326,30 @@ const CLUBS = {
     aliases: ["wadi degla", "degla"],
     logo: "https://upload.wikimedia.org/wikipedia/ar/5/52/Wadi_Degla_FC_Logo.png"
   },
+  "أميد سبور": {
+    aliases: ["amed sfk", "amedspor", "amed"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/19084.png"
+  },
+  "فروسينوني": {
+    aliases: ["frosinone", "frosinone calcio"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/6938.png"
+  },
+  "أوكسير": {
+    aliases: ["aj auxerre", "auxerre"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/162.png"
+  },
+  "راسينغ سانتاندير": {
+    aliases: ["racing santander", "racing de santander"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/94.png"
+  },
+  "أنجيه": {
+    aliases: ["angers", "angers sco"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/3243.png"
+  },
+  "إلتشي": {
+    aliases: ["elche", "elche cf"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/3751.png"
+  },
   "مولودية الجزائر": {
     aliases: ["mc alger"],
     logo: "https://upload.wikimedia.org/wikipedia/ar/0/0e/MC_Alger_logo.png"
