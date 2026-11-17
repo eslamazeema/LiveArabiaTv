@@ -1139,7 +1139,542 @@ const CLUBS = {
   "أهلي صنعاء": {
     aliases: ["ahli sanaa", "al ahly sanaa"],
     logo: "https://upload.wikimedia.org/wikipedia/ar/4/4b/Ahli_Sana%27a_logo.png"
-  }
+  },
+  // ==========================================
+  // National Teams (المنتخبات الوطنية العربية والعالمية)
+  // ==========================================
+  "مصر": {
+    aliases: ["egypt"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/egy.png"
+  },
+  "مصر | الأولمبي": {
+    aliases: ["egypt u23","egypt u-23","egypt olympic"],
+    logo: ""
+  },
+  "المغرب": {
+    aliases: ["morocco"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/mar.png"
+  },
+  "الجزائر": {
+    aliases: ["algeria"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/alg.png"
+  },
+  "تونس": {
+    aliases: ["tunisia"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/tun.png"
+  },
+  "ليبيا": {
+    aliases: ["libya"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/lby.png"
+  },
+  "موريتانيا": {
+    aliases: ["mauritania"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/mtn.png"
+  },
+  "السودان": {
+    aliases: ["sudan"],
+    logo: ""
+  },
+  "جنوب السودان": {
+    aliases: ["south sudan"],
+    logo: "https://a.espncdn.com/i/teamlogos/soccer/500/14075.png"
+  },
+  "الصومال": {
+    aliases: ["somalia"],
+    logo: ""
+  },
+  "جيبوتي": {
+    aliases: ["djibouti"],
+    logo: ""
+  },
+  "جزر القمر": {
+    aliases: ["comoros"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/com.png"
+  },
+  "السعودية": {
+    aliases: ["saudi arabia"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/ksa.png"
+  },
+  "الإمارات": {
+    aliases: ["united arab emirates","uae"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/uae.png"
+  },
+  "قطر": {
+    aliases: ["qatar"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/qat.png"
+  },
+  "الكويت": {
+    aliases: ["kuwait"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/kuw.png"
+  },
+  "الكويت الكويتي": {
+    aliases: ["kuwait"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/kuw.png"
+  },
+  "البحرين": {
+    aliases: ["bahrain"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/bhr.png"
+  },
+  "عمان": {
+    aliases: ["oman"],
+    logo: ""
+  },
+  "عُمان": {
+    aliases: ["oman"],
+    logo: ""
+  },
+  "العراق": {
+    aliases: ["iraq"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/irq.png"
+  },
+  "الأردن": {
+    aliases: ["jordan"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/jor.png"
+  },
+  "سوريا": {
+    aliases: ["syria"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/syr.png"
+  },
+  "لبنان": {
+    aliases: ["lebanon"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/lib.png"
+  },
+  "فلسطين": {
+    aliases: ["palestine"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/pal.png"
+  },
+  "اليمن": {
+    aliases: ["yemen"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/yem.png"
+  },
+  "النيجر": {
+    aliases: ["niger"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/nig.png"
+  },
+  "نيجيريا": {
+    aliases: ["nigeria"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/nga.png"
+  },
+  "السنغال": {
+    aliases: ["senegal"],
+    logo: ""
+  },
+  "كوت ديفوار": {
+    aliases: ["ivory coast","cote d'ivoire"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/civ.png"
+  },
+  "ساحل العاج": {
+    aliases: ["ivory coast","cote d'ivoire"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/civ.png"
+  },
+  "غانا": {
+    aliases: ["ghana"],
+    logo: ""
+  },
+  "الكاميرون": {
+    aliases: ["cameroon"],
+    logo: ""
+  },
+  "مالي": {
+    aliases: ["mali"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/mli.png"
+  },
+  "بوركينا فاسو": {
+    aliases: ["burkina faso"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/bka.png"
+  },
+  "غينيا": {
+    aliases: ["guinea"],
+    logo: ""
+  },
+  "غينيا بيساو": {
+    aliases: ["guinea-bissau","guinea bissau"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/gnb.png"
+  },
+  "غينيا الاستوائية": {
+    aliases: ["equatorial guinea"],
+    logo: ""
+  },
+  "جامبيا": {
+    aliases: ["gambia"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/gam.png"
+  },
+  "سيراليون": {
+    aliases: ["sierra leone"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/sle.png"
+  },
+  "ليبيريا": {
+    aliases: ["liberia"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/lbr.png"
+  },
+  "توجو": {
+    aliases: ["togo"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/tog.png"
+  },
+  "بنين": {
+    aliases: ["benin"],
+    logo: ""
+  },
+  "الكونغو": {
+    aliases: ["congo"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/cgo.png"
+  },
+  "الكونغو الديمقراطية": {
+    aliases: ["congo dr","dr congo","democratic republic of the congo"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/rdc.png"
+  },
+  "كاب فيردي": {
+    aliases: ["cape verde"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/cpv.png"
+  },
+  "الرأس الأخضر": {
+    aliases: ["cape verde"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/cpv.png"
+  },
+  "جنوب إفريقيا": {
+    aliases: ["south africa"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/rsa.png"
+  },
+  "أنجولا": {
+    aliases: ["angola"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/ang.png"
+  },
+  "زامبيا": {
+    aliases: ["zambia"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/zam.png"
+  },
+  "زيمبابوي": {
+    aliases: ["zimbabwe"],
+    logo: ""
+  },
+  "موزمبيق": {
+    aliases: ["mozambique"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/moz.png"
+  },
+  "تنزانيا": {
+    aliases: ["tanzania"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/tan.png"
+  },
+  "أوغندا": {
+    aliases: ["uganda"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/uga.png"
+  },
+  "كينيا": {
+    aliases: ["kenya"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/ken.png"
+  },
+  "رواندا": {
+    aliases: ["rwanda"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/rwa.png"
+  },
+  "بوروندي": {
+    aliases: ["burundi"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/bdi.png"
+  },
+  "إثيوبيا": {
+    aliases: ["ethiopia"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/eth.png"
+  },
+  "إريتريا": {
+    aliases: ["eritrea"],
+    logo: ""
+  },
+  "مالاوي": {
+    aliases: ["malawi"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/mwi.png"
+  },
+  "ليسوتو": {
+    aliases: ["lesotho"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/les.png"
+  },
+  "بوتسوانا": {
+    aliases: ["botswana"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/bot.png"
+  },
+  "ناميبيا": {
+    aliases: ["namibia"],
+    logo: ""
+  },
+  "الجابون": {
+    aliases: ["gabon"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/gab.png"
+  },
+  "مدغشقر": {
+    aliases: ["madagascar"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/mad.png"
+  },
+  "ألمانيا": {
+    aliases: ["germany"],
+    logo: ""
+  },
+  "إسبانيا": {
+    aliases: ["spain"],
+    logo: ""
+  },
+  "فرنسا": {
+    aliases: ["france"],
+    logo: ""
+  },
+  "إنجلترا": {
+    aliases: ["england"],
+    logo: ""
+  },
+  "إيطاليا": {
+    aliases: ["italy"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/ita.png"
+  },
+  "البرتغال": {
+    aliases: ["portugal"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/por.png"
+  },
+  "هولندا": {
+    aliases: ["netherlands"],
+    logo: ""
+  },
+  "بلجيكا": {
+    aliases: ["belgium"],
+    logo: ""
+  },
+  "كرواتيا": {
+    aliases: ["croatia"],
+    logo: ""
+  },
+  "سويسرا": {
+    aliases: ["switzerland"],
+    logo: ""
+  },
+  "النمسا": {
+    aliases: ["austria"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/aut.png"
+  },
+  "الدنمارك": {
+    aliases: ["denmark"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/den.png"
+  },
+  "النرويج": {
+    aliases: ["norway"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/nor.png"
+  },
+  "السويد": {
+    aliases: ["sweden"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/swe.png"
+  },
+  "بولندا": {
+    aliases: ["poland"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/pol.png"
+  },
+  "أوكرانيا": {
+    aliases: ["ukraine"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/ukr.png"
+  },
+  "ويلز": {
+    aliases: ["wales"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/wal.png"
+  },
+  "اسكتلندا": {
+    aliases: ["scotland"],
+    logo: ""
+  },
+  "أيرلندا": {
+    aliases: ["republic of ireland","ireland"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/irl.png"
+  },
+  "أيرلندا الشمالية": {
+    aliases: ["northern ireland"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/nir.png"
+  },
+  "صربيا": {
+    aliases: ["serbia"],
+    logo: ""
+  },
+  "البوسنة والهرسك": {
+    aliases: ["bosnia-herzegovina","bosnia and herzegovina","bosnia"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/bih.png"
+  },
+  "رومانيا": {
+    aliases: ["romania"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/rom.png"
+  },
+  "المجر": {
+    aliases: ["hungary"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/hun.png"
+  },
+  "اليونان": {
+    aliases: ["greece"],
+    logo: ""
+  },
+  "تركيا": {
+    aliases: ["turkey","turkiye"],
+    logo: ""
+  },
+  "التشيك": {
+    aliases: ["czech republic","czechia"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/cze.png"
+  },
+  "سلوفاكيا": {
+    aliases: ["slovakia"],
+    logo: ""
+  },
+  "سلوفينيا": {
+    aliases: ["slovenia"],
+    logo: ""
+  },
+  "جورجيا": {
+    aliases: ["georgia"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/geo.png"
+  },
+  "كوسوفو": {
+    aliases: ["kosovo"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/kosovo.png"
+  },
+  "إسرائيل": {
+    aliases: ["israel"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/isr.png"
+  },
+  "روسيا": {
+    aliases: ["russia"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/rus.png"
+  },
+  "البرازيل": {
+    aliases: ["brazil"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/bra.png"
+  },
+  "الأرجنتين": {
+    aliases: ["argentina"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/arg.png"
+  },
+  "أوروجواي": {
+    aliases: ["uruguay"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/uru.png"
+  },
+  "كولومبيا": {
+    aliases: ["colombia"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/col.png"
+  },
+  "تشيلي": {
+    aliases: ["chile"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/chi.png"
+  },
+  "باراجواي": {
+    aliases: ["paraguay"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/par.png"
+  },
+  "بيرو": {
+    aliases: ["peru"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/per.png"
+  },
+  "الإكوادور": {
+    aliases: ["ecuador"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/ecu.png"
+  },
+  "فنزويلا": {
+    aliases: ["venezuela"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/ven.png"
+  },
+  "بوليفيا": {
+    aliases: ["bolivia"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/bol.png"
+  },
+  "أمريكا": {
+    aliases: ["usa","united states"],
+    logo: ""
+  },
+  "المكسيك": {
+    aliases: ["mexico"],
+    logo: ""
+  },
+  "كندا": {
+    aliases: ["canada"],
+    logo: ""
+  },
+  "كوستاريكا": {
+    aliases: ["costa rica"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/crc.png"
+  },
+  "بنما": {
+    aliases: ["panama"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/pan.png"
+  },
+  "جامايكا": {
+    aliases: ["jamaica"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/jam.png"
+  },
+  "هندوراس": {
+    aliases: ["honduras"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/hon.png"
+  },
+  "الدومينيكان": {
+    aliases: ["dominican republic"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/dom.png"
+  },
+  "اليابان": {
+    aliases: ["japan"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/jpn.png"
+  },
+  "اليابان | الأولمبي": {
+    aliases: ["japan u23","japan olympic"],
+    logo: ""
+  },
+  "كوريا الجنوبية": {
+    aliases: ["south korea"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/kors.png"
+  },
+  "الصين": {
+    aliases: ["china","china pr"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/chn.png"
+  },
+  "أستراليا": {
+    aliases: ["australia"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/aus.png"
+  },
+  "إيران": {
+    aliases: ["iran"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/irn.png"
+  },
+  "أوزبكستان": {
+    aliases: ["uzbekistan"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/uzb.png"
+  },
+  "طاجيكستان": {
+    aliases: ["tajikistan"],
+    logo: ""
+  },
+  "قيرغيزستان": {
+    aliases: ["kyrgyz republic","kyrgyzstan"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/kgz.png"
+  },
+  "فيتنام": {
+    aliases: ["vietnam"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/vie.png"
+  },
+  "تايلاند": {
+    aliases: ["thailand"],
+    logo: ""
+  },
+  "ماليزيا": {
+    aliases: ["malaysia"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/mas.png"
+  },
+  "إندونيسيا": {
+    aliases: ["indonesia"],
+    logo: ""
+  },
+  "سنغافورة": {
+    aliases: ["singapore"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/sin.png"
+  },
+  "نيوزيلندا": {
+    aliases: ["new zealand"],
+    logo: ""
+  },
+  "تاهيتي": {
+    aliases: ["tahiti"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/tah.png"
+  },
+  "جزر كوك": {
+    aliases: ["cook islands"],
+    logo: "https://a.espncdn.com/i/teamlogos/countries/500/cok.png"
+  },
 };
 
 function normalizeText(s) {
@@ -1184,7 +1719,7 @@ function resolveTeam(rawName, rawLogo) {
 
   const norm = normalizeText(trimmed);
 
-  // 2. Search aliases and normalized keys
+  // 2. Search aliases and normalized keys (Exact match prioritized first)
   for (const [arName, meta] of Object.entries(CLUBS)) {
     if (norm === normalizeText(arName)) {
       return {
@@ -1193,16 +1728,26 @@ function resolveTeam(rawName, rawLogo) {
       };
     }
     for (const alias of (meta.aliases || [])) {
-      const aliasNorm = normalizeText(alias);
-      const isShort = aliasNorm.length <= 3;
-      const matched = isShort
-        ? (norm === aliasNorm)
-        : (norm === aliasNorm || norm.includes(aliasNorm) || aliasNorm.includes(norm));
-      if (matched) {
+      if (norm === normalizeText(alias)) {
         return {
           name: arName,
           logo: (rawLogo && rawLogo.startsWith("http")) ? rawLogo : (meta.logo || rawLogo || "")
         };
+      }
+    }
+  }
+
+  // 2b. Partial match fallback for longer phrases
+  for (const [arName, meta] of Object.entries(CLUBS)) {
+    for (const alias of (meta.aliases || [])) {
+      const aliasNorm = normalizeText(alias);
+      if (aliasNorm.length > 3) {
+        if (norm.includes(aliasNorm) || aliasNorm.includes(norm)) {
+          return {
+            name: arName,
+            logo: (rawLogo && rawLogo.startsWith("http")) ? rawLogo : (meta.logo || rawLogo || "")
+          };
+        }
       }
     }
   }
