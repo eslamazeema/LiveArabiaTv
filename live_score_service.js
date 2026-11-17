@@ -242,24 +242,167 @@ const TEAM_ALIASES = {
   'سيمبا': ['simba sc', 'simba'],
   'يانغ أفريكانز': ['young africans'],
   'أسيك ميموزا': ['asec mimosas'],
-  'كيتارا الأوغندي': ['kitara', 'kitara fc']
+  'كيتارا الأوغندي': ['kitara', 'kitara fc'],
+
+  // National Teams Mapping
+  'مصر': ["egypt"],
+  'مصر | الأولمبي': ["egypt u23","egypt u-23","egypt olympic"],
+  'المغرب': ["morocco"],
+  'الجزائر': ["algeria"],
+  'تونس': ["tunisia"],
+  'ليبيا': ["libya"],
+  'موريتانيا': ["mauritania"],
+  'السودان': ["sudan"],
+  'جنوب السودان': ["south sudan"],
+  'الصومال': ["somalia"],
+  'جيبوتي': ["djibouti"],
+  'جزر القمر': ["comoros"],
+  'السعودية': ["saudi arabia"],
+  'الإمارات': ["united arab emirates","uae"],
+  'قطر': ["qatar"],
+  'الكويت': ["kuwait"],
+  'الكويت الكويتي': ["kuwait"],
+  'البحرين': ["bahrain"],
+  'عمان': ["oman"],
+  'عُمان': ["oman"],
+  'العراق': ["iraq"],
+  'الأردن': ["jordan"],
+  'سوريا': ["syria"],
+  'لبنان': ["lebanon"],
+  'فلسطين': ["palestine"],
+  'اليمن': ["yemen"],
+  'النيجر': ["niger"],
+  'نيجيريا': ["nigeria"],
+  'السنغال': ["senegal"],
+  'كوت ديفوار': ["ivory coast","cote d'ivoire"],
+  'ساحل العاج': ["ivory coast","cote d'ivoire"],
+  'غانا': ["ghana"],
+  'الكاميرون': ["cameroon"],
+  'مالي': ["mali"],
+  'بوركينا فاسو': ["burkina faso"],
+  'غينيا': ["guinea"],
+  'غينيا بيساو': ["guinea-bissau","guinea bissau"],
+  'غينيا الاستوائية': ["equatorial guinea"],
+  'جامبيا': ["gambia"],
+  'سيراليون': ["sierra leone"],
+  'ليبيريا': ["liberia"],
+  'توجو': ["togo"],
+  'بنين': ["benin"],
+  'الكونغو': ["congo"],
+  'الكونغو الديمقراطية': ["congo dr","dr congo","democratic republic of the congo"],
+  'كاب فيردي': ["cape verde"],
+  'الرأس الأخضر': ["cape verde"],
+  'جنوب إفريقيا': ["south africa"],
+  'أنجولا': ["angola"],
+  'زامبيا': ["zambia"],
+  'زيمبابوي': ["zimbabwe"],
+  'موزمبيق': ["mozambique"],
+  'تنزانيا': ["tanzania"],
+  'أوغندا': ["uganda"],
+  'كينيا': ["kenya"],
+  'رواندا': ["rwanda"],
+  'بوروندي': ["burundi"],
+  'إثيوبيا': ["ethiopia"],
+  'إريتريا': ["eritrea"],
+  'مالاوي': ["malawi"],
+  'ليسوتو': ["lesotho"],
+  'بوتسوانا': ["botswana"],
+  'ناميبيا': ["namibia"],
+  'الجابون': ["gabon"],
+  'مدغشقر': ["madagascar"],
+  'ألمانيا': ["germany"],
+  'إسبانيا': ["spain"],
+  'فرنسا': ["france"],
+  'إنجلترا': ["england"],
+  'إيطاليا': ["italy"],
+  'البرتغال': ["portugal"],
+  'هولندا': ["netherlands"],
+  'بلجيكا': ["belgium"],
+  'كرواتيا': ["croatia"],
+  'سويسرا': ["switzerland"],
+  'النمسا': ["austria"],
+  'الدنمارك': ["denmark"],
+  'النرويج': ["norway"],
+  'السويد': ["sweden"],
+  'بولندا': ["poland"],
+  'أوكرانيا': ["ukraine"],
+  'ويلز': ["wales"],
+  'اسكتلندا': ["scotland"],
+  'أيرلندا': ["republic of ireland","ireland"],
+  'أيرلندا الشمالية': ["northern ireland"],
+  'صربيا': ["serbia"],
+  'البوسنة والهرسك': ["bosnia-herzegovina","bosnia and herzegovina","bosnia"],
+  'رومانيا': ["romania"],
+  'المجر': ["hungary"],
+  'اليونان': ["greece"],
+  'تركيا': ["turkey","turkiye"],
+  'التشيك': ["czech republic","czechia"],
+  'سلوفاكيا': ["slovakia"],
+  'سلوفينيا': ["slovenia"],
+  'جورجيا': ["georgia"],
+  'كوسوفو': ["kosovo"],
+  'إسرائيل': ["israel"],
+  'روسيا': ["russia"],
+  'البرازيل': ["brazil"],
+  'الأرجنتين': ["argentina"],
+  'أوروجواي': ["uruguay"],
+  'كولومبيا': ["colombia"],
+  'تشيلي': ["chile"],
+  'باراجواي': ["paraguay"],
+  'بيرو': ["peru"],
+  'الإكوادور': ["ecuador"],
+  'فنزويلا': ["venezuela"],
+  'بوليفيا': ["bolivia"],
+  'أمريكا': ["usa","united states"],
+  'المكسيك': ["mexico"],
+  'كندا': ["canada"],
+  'كوستاريكا': ["costa rica"],
+  'بنما': ["panama"],
+  'جامايكا': ["jamaica"],
+  'هندوراس': ["honduras"],
+  'الدومينيكان': ["dominican republic"],
+  'اليابان': ["japan"],
+  'اليابان | الأولمبي': ["japan u23","japan olympic"],
+  'كوريا الجنوبية': ["south korea"],
+  'الصين': ["china","china pr"],
+  'أستراليا': ["australia"],
+  'إيران': ["iran"],
+  'أوزبكستان': ["uzbekistan"],
+  'طاجيكستان': ["tajikistan"],
+  'قيرغيزستان': ["kyrgyz republic","kyrgyzstan"],
+  'فيتنام': ["vietnam"],
+  'تايلاند': ["thailand"],
+  'ماليزيا': ["malaysia"],
+  'إندونيسيا': ["indonesia"],
+  'سنغافورة': ["singapore"],
+  'نيوزيلندا': ["new zealand"],
+  'تاهيتي': ["tahiti"],
+  'جزر كوك': ["cook islands"],
 };
 
 // Leagues to query on ESPN
 const SUPPORTED_LEAGUES = [
-  'eng.1',          // English Premier League
-  'esp.1',          // Spanish La Liga
-  'ita.1',          // Italian Serie A
-  'ger.1',          // German Bundesliga
-  'fra.1',          // French Ligue 1
-  'uefa.champions', // UEFA Champions League
-  'uefa.europa',    // UEFA Europa League
-  'caf.champions',  // CAF Champions League
-  'ksa.1',          // Saudi Pro League (دوري روشن السعودي)
-  'afc.champions',  // AFC Champions League Elite (دوري أبطال آسيا للنخبة)
-  'tur.1',          // Turkish Süper Lig (الدوري التركي الممتاز)
-  'bra.1',          // Brazilian Serie A (الدوري البرازيلي)
-  'ger.dfb_pokal'   // German Cup (كأس ألمانيا - DFB-Pokal)
+  'eng.1',                // English Premier League
+  'esp.1',                // Spanish La Liga
+  'ita.1',                // Italian Serie A
+  'ger.1',                // German Bundesliga
+  'fra.1',                // French Ligue 1
+  'uefa.champions',       // UEFA Champions League
+  'uefa.europa',          // UEFA Europa League
+  'caf.champions',        // CAF Champions League
+  'ksa.1',                // Saudi Pro League (دوري روشن السعودي)
+  'afc.champions',        // AFC Champions League Elite (دوري أبطال آسيا للنخبة)
+  'tur.1',                // Turkish Süper Lig (الدوري التركي الممتاز)
+  'bra.1',                // Brazilian Serie A (الدوري البرازيلي)
+  'ger.dfb_pokal',        // German Cup (كأس ألمانيا - DFB-Pokal)
+  'fifa.friendly',        // International Friendlies (مباريات ودية دولية)
+  'uefa.nations',         // UEFA Nations League (دوري الأمم الأوروبية)
+  'caf.nations_qual',     // Africa Cup of Nations Qualifiers (تصفيات كأس الأمم الإفريقية)
+  'fifa.worldq.conmebol', // World Cup Qualifiers - South America
+  'fifa.worldq.concacaf', // World Cup Qualifiers - CONCACAF
+  'fifa.worldq.afc',      // World Cup Qualifiers - Asia
+  'fifa.worldq.caf',      // World Cup Qualifiers - Africa
+  'fifa.worldq.uefa'      // World Cup Qualifiers - Europe
 ];
 
 function normalizeStr(s) {

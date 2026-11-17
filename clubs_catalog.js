@@ -1194,7 +1194,11 @@ function resolveTeam(rawName, rawLogo) {
     }
     for (const alias of (meta.aliases || [])) {
       const aliasNorm = normalizeText(alias);
-      if (norm === aliasNorm || norm.includes(aliasNorm) || aliasNorm.includes(norm)) {
+      const isShort = aliasNorm.length <= 3;
+      const matched = isShort
+        ? (norm === aliasNorm)
+        : (norm === aliasNorm || norm.includes(aliasNorm) || aliasNorm.includes(norm));
+      if (matched) {
         return {
           name: arName,
           logo: (rawLogo && rawLogo.startsWith("http")) ? rawLogo : (meta.logo || rawLogo || "")
