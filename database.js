@@ -2043,6 +2043,7 @@ function seedDefaultData() {
 }
 
 function syncStreamsToDirectHls() {
+  return; // Disabled to preserve user restored database state
   if (useSqlite) {
     const insertChannel = db.prepare(`
       INSERT OR IGNORE INTO channels 
